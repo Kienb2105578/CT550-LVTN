@@ -60,8 +60,7 @@ use App\Http\Controllers\Backend\Crm\AgencyController;
 use App\Http\Controllers\Backend\Crm\ConstructionController;
 use App\Http\Controllers\Ajax\ConstructController as AjaxConstructController;
 use App\Http\Controllers\Ajax\CustomerController as AjaxCustomerController;
-
-
+use App\Http\Controllers\Frontend\MyOrder\MyOrderController;
 
 //@@useController@@
 
@@ -75,8 +74,17 @@ use App\Http\Controllers\Ajax\CustomerController as AjaxCustomerController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::group(['middleware' => 'license'], function () {
+
+
+
 /* FRONTEND ROUTES  */
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
+
+Route::get('/don-hang-cua-toi', [MyOrderController::class, 'index'])->name('my-order.index');
+
+Route::get('/don-hang-cua-toi/c', [MyOrderController::class, 'detail'])->name('my-order.detail');
 
 Route::get('crawler', [CrawlerController::class, 'index'])->name('crawler.ckfinder');
 Route::get('crawlerUpdate', [CrawlerController::class, 'crawlerUpdate'])->name('crawler.update');
@@ -489,3 +497,14 @@ Route::group(['middleware' => ['admin','locale','backend_default_locale']], func
 Route::get('admin', [AuthController::class, 'index'])->name('auth.admin')->middleware('login');
 Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
 Route::post('login', [AuthController::class, 'login'])->name('auth.login');
+
+
+
+
+
+});
+
+
+Route::get('/license/license', function() {
+    return view('vendor.license.index');
+})->name('license');

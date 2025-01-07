@@ -23,6 +23,14 @@
     <script src="{{ asset($item) }}"></script>
 @endforeach
 
+{{-- <script> window.chtlConfig = { chatbotId: "9849716776" } </script>
+<script async data-id="9849716776" id="chatling-embed-script" type="text/javascript" src="https://chatling.ai/js/embed.js"></script> --}}
+
+{{-- <script> window.chtlConfig = { chatbotId: "8774312288" } </script>
+<script async data-id="8774312288" id="chatling-embed-script" type="text/javascript" src="https://chatling.ai/js/embed.js"></script> --}}
+
+<script> window.chtlConfig = { chatbotId: "6331448776" } </script>
+<script async data-id="6331448776" id="chatling-embed-script" type="text/javascript" src="https://chatling.ai/js/embed.js"></script>
 
 
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>

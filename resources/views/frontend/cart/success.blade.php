@@ -15,7 +15,7 @@
                             <div class="order-title uk-text-center">ĐƠN HÀNG #{{ $order->code }}</div>
                         </div>
                         <div class="uk-width-large-1-3">
-                            <div class="order-date">{{ convertDateTime($order->created_at); }}</div>
+                            <div class="order-date">{{ convertDateTime($order->created_at) }}</div>
                         </div>
                     </div>
                 </div>
@@ -34,21 +34,21 @@
                             @php
                                 $carts = $order->products;
                             @endphp
-                            @foreach($carts as $key => $val)
-                            @php
-                                $name = $val->pivot->name;
-                                $qty = $val->pivot->qty;
-                                $price = convert_price($val->pivot->price, true);
-                                $priceOriginal = convert_price($val->pivot->priceOriginal, true);
-                                $subtotal = convert_price($val->pivot->price * $qty, true);
-                            @endphp
-                            <tr>
-                                <td class="uk-text-left">{{ $name }}</td>
-                                <td class="uk-text-center">{{ $qty }}</td>
-                                <td class="uk-text-right">{{ $priceOriginal }}đ</td>
-                                <td class="uk-text-right">{{ $price }}đ</td>
-                                <td class="uk-text-right"><strong>{{ $subtotal }}đ</strong></td>
-                            </tr>
+                            @foreach ($carts as $key => $val)
+                                @php
+                                    $name = $val->pivot->name;
+                                    $qty = $val->pivot->qty;
+                                    $price = convert_price($val->pivot->price, true);
+                                    $priceOriginal = convert_price($val->pivot->priceOriginal, true);
+                                    $subtotal = convert_price($val->pivot->price * $qty, true);
+                                @endphp
+                                <tr>
+                                    <td class="uk-text-left">{{ $name }}</td>
+                                    <td class="uk-text-center">{{ $qty }}</td>
+                                    <td class="uk-text-right">{{ $priceOriginal }}đ</td>
+                                    <td class="uk-text-right">{{ $price }}đ</td>
+                                    <td class="uk-text-right"><strong>{{ $subtotal }}đ</strong></td>
+                                </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
@@ -70,7 +70,8 @@
                             </tr>
                             <tr class="total_payment">
                                 <td colspan="4"><span>Tổng thanh toán</span></td>
-                                <td>{{ convert_price($order->cart['cartTotal'] - $order->promotion['discount'], true) }}</td>
+                                <td>{{ convert_price($order->cart['cartTotal'] - $order->promotion['discount'], true) }}
+                                </td>
                             </tr>
                         </tfoot>
                     </table>
@@ -85,17 +86,26 @@
                 <div>Địa chỉ: {{ $order->address }}<span></span></div>
                 @php
                     $province = $order->provinces->first()->name;
-                    $district = $order->provinces->first()->districts->where('code',$order->district_id)->first()->name;
-                    $ward =$order->provinces->first()->districts->where('code',$order->district_id)->first()->wards->where('code',$order->ward_id)->first()->name;
+                    $district = $order->provinces
+                        ->first()
+                        ->districts->where('code', $order->district_id)
+                        ->first()->name;
+                    $ward = $order->provinces
+                        ->first()
+                        ->districts->where('code', $order->district_id)
+                        ->first()
+                        ->wards->where('code', $order->ward_id)
+                        ->first()->name;
                 @endphp
                 <div>Phường/Xã: <span>{{ $ward }}</span>
                 </div>
                 <div>Quận/Huyện: <span>{{ $district }}</span></div>
                 <div>Tỉnh/Thành phố: <span>{{ $province }}</span></div>
                 <div>Số điện thoại: {{ $order->phone }}<span></span></div>
-                <div>Hình thức thanh toán: {{ array_column(__('payment.method'), 'title', 'name')[$order->method] ?? '-' }}<span></span></div>
+                <div>Hình thức thanh toán:
+                    {{ array_column(__('payment.method'), 'title', 'name')[$order->method] ?? '-' }}<span></span></div>
 
-                @if(isset($template))
+                @if (isset($template))
                     @include($template)
                 @endif
 
@@ -103,5 +113,3 @@
         </div>
     </div>
 @endsection
-
-

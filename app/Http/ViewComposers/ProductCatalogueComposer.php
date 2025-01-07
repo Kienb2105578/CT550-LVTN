@@ -26,7 +26,7 @@ class ProductCatalogueComposer
         
         $categories = $this->productCatalogueRepository->all();
         
-        $categories = $this->productCatalogueRepository->getProductCatalogueByPublish(2);
+        // $categories = $this->productCatalogueRepository->getProductCatalogueByPublish(2);
 
         
         $view->with('categories', $categories);

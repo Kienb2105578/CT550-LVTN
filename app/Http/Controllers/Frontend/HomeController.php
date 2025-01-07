@@ -39,6 +39,8 @@ class HomeController extends FrontendController
         ); 
     }
 
+    
+
 
     public function index(){
 

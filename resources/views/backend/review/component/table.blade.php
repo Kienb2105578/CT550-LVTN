@@ -17,7 +17,13 @@
         @if(isset($reviews) && is_object($reviews))
             @foreach($reviews as $review)
             @php
-                $reviewableLink = $review->reviewable->languages->first()->pivot->canonical;
+                $reviewableLink = '';
+                if ($review->reviewable) {
+                    $language = $review->reviewable->languages->first();
+                    if ($language) {
+                        $reviewableLink = $language->pivot->canonical;
+                    }
+                }
             @endphp
             <tr >
                 <td>
