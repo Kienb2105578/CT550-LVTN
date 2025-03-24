@@ -17,14 +17,16 @@ class PostCatalogueRepository extends BaseRepository implements PostCatalogueRep
 
     public function __construct(
         PostCatalogue $model
-    ){
+    ) {
         $this->model = $model;
     }
 
-    
 
-    public function getPostCatalogueById(int $id = 0, $language_id = 0){
-        return $this->model->select([
+
+    public function getPostCatalogueById(int $id = 0)
+    {
+        return $this->model->select(
+            [
                 'post_catalogues.id',
                 'post_catalogues.parent_id',
                 'post_catalogues.image',
@@ -34,18 +36,44 @@ class PostCatalogueRepository extends BaseRepository implements PostCatalogueRep
                 'post_catalogues.follow',
                 'post_catalogues.lft',
                 'post_catalogues.rgt',
-                'tb2.name',
-                'tb2.description',
-                'tb2.content',
-                'tb2.meta_title',
-                'tb2.meta_keyword',
-                'tb2.meta_description',
-                'tb2.canonical',
+                'post_catalogues.name',
+                'post_catalogues.description',
+                'post_catalogues.content',
+                'post_catalogues.meta_title',
+                'post_catalogues.meta_keyword',
+                'post_catalogues.meta_description',
+                'post_catalogues.canonical',
             ]
         )
-        ->join('post_catalogue_language as tb2', 'tb2.post_catalogue_id', '=','post_catalogues.id')
-        ->where('tb2.language_id', '=', $language_id)
-        ->find($id);
+            ->find($id);
     }
+    public function breadcrumb($model, $language)
+    {
+        return $this->findByCondition([
+            ['lft', '<=', $model->lft],
+            ['rgt', '>=', $model->rgt],
+            config('apps.general.defaultPublish')
+        ], false, [], ['lft', 'asc']);
+    }
+    public function findByCondition(
+        $condition = [],
+        $flag = false,
+        $relation = [],
+        array $orderBy = ['id', 'desc'],
+        array $param = [],
+        array $withCount = [],
+    ) {
 
+        $query = $this->model->newQuery();
+        foreach ($condition as $key => $val) {
+            $query->where($val[0], $val[1], $val[2]);
+        }
+        if (isset($param['whereIn'])) {
+            $query->whereIn($param['whereInField'], $param['whereIn']);
+        }
+
+        $query->withCount($withCount);
+        $query->orderBy($orderBy[0], $orderBy[1]);
+        return ($flag == false) ? $query->first() : $query->get();
+    }
 }

@@ -1,102 +1,53 @@
 <!DOCTYPE html>
 <html>
 
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
 
-        <title>LARAVEL CMS 01</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link href="{{ asset('backend/css/bootstrap.min.css') }}" rel="stylesheet">
-        <link href="{{ asset('backend/font-awesome/css/font-awesome.css') }}" rel="stylesheet">
+    <title>ADMIN INCOM</title>
 
-        <link href="{{ asset('backend/css/animate.css') }}" rel="stylesheet">
-        <link href="{{ asset('backend/css/style.css') }}" rel="stylesheet">
-        <link href="{{ asset('backend/css/customize.css') }}" rel="stylesheet">
+    <link href="backend/css/bootstrap.min.css" rel="stylesheet">
+    <link href="backend/font-awesome/css/font-awesome.css" rel="stylesheet">
 
-    </head>
+    <link href="backend/css/animate.css" rel="stylesheet">
+    <link href="backend/css/style.css" rel="stylesheet">
+    <link href="backend/css/customize.css" rel="stylesheet">
+</head>
 
-    <body class="gray-bg">
+<body class="gray-bg">
 
-        <div class="loginColumns animated fadeInDown">
-            <div class="row">
-
-                <div class="col-md-6">
-                    <h2 class="font-bold">Dashboard</h2>
-
-                    <p>
-                        Chào mừng bạn đến với Bảng điều khiển Quản trị!
-                    </p>
-
-                    <p>
-                         Vui lòng đăng nhập để truy cập và quản lý các chức năng cốt lõi của trang web.
-                    </p>
-
-                    <p>
-                        Tại đây, bạn có thể theo dõi hiệu suất, cập nhật nội dung, quản lý người dùng và nhiều hơn nữa. 
-            
-                    </p>
-
-                    <p>
-                        Hãy đảm bảo rằng thông tin đăng nhập của bạn được bảo mật và chỉ những người có thẩm quyền mới được truy cập.
-                    </p>
-
-                    <p>
-                        Hãy bắt đầu và giữ cho hoạt động của bạn luôn suôn sẻ!
-                    </p>
-
-                </div>
-                <div class="col-md-6">
-                    <div class="ibox-content">
-                      
-                        <form method="post" class="m-t" role="form" action="{{ route('auth.login') }}">
-                            @csrf
-                            <div class="form-group">
-                                <input 
-                                    type="text" 
-                                    name="email"
-                                    class="form-control" 
-                                    placeholder="Email" autofocus
-                                    value="{{ old('email') }}"
-                                >
-                                @if ($errors->has('email'))
-                                    <span class="error-message">* {{ $errors->first('email') }}</span>
-                                @endif
-                            </div>
-                            <div class="form-group">
-                                <input 
-                                    type="password" 
-                                    name="password"
-                                    class="form-control" 
-                                    placeholder="Password" 
-                                >
-                                @if ($errors->has('password'))
-                                    <span class="error-message">* {{ $errors->first('password') }}</span>
-                                @endif
-                            </div>
-                            <button type="submit" class="btn btn-success block full-width m-b">Đăng nhập</button>
-
-                            {{-- <a href="#">
-                                <small>Forgot password?</small>
-                            </a> --}}
-                        </form>
-                        <p class="m-t">
-                            <small>Đăng nhập để vào trang quản trị</small>
-                        </p>
-                    </div>
-                </div>
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            <div>
+                <h1 class="logo-name" style="font-size: 110px">INCOM</h1>
             </div>
-            <hr/>
-            <div class="row">
-                <div class="col-md-6">
-                    Copyright Khoa Nguyen
+            <p>CHÀO MỪNG BẠN ĐẾN VỚI TRANG ĐĂNG NHẬP CỦA HỆ THỐNG CỦA HÀNG NỘI THẤT</p>
+            <form class="m-t" method="post" role="form" action="{{ route('auth.login') }}">
+                @csrf
+                <div class="form-group">
+                    <input type="text" name="email" class="form-control" placeholder="email"
+                        value="{{ old('email') }}">
+                    @if ($errors->has('email'))
+                        <span class="error-message">* {{ $errors->first('email') }}</span>
+                    @endif
                 </div>
-                <div class="col-md-6 text-right">
-                <small>© 2024</small>
+                <div class="form-group">
+                    <input type="password" name="password" class="form-control" placeholder="password">
+                    @if ($errors->has('password'))
+                        <span class="error-message">* {{ $errors->first('password') }}</span>
+                    @endif
                 </div>
-            </div>
+                <button type="submit" class="btn btn-primary block full-width m-b">Đăng nhập</button>
+            </form>
         </div>
+    </div>
 
-    </body>
+    <!-- Mainly scripts -->
+    <script src="backend/js/jquery-3.1.1.min.js"></script>
+    <script src="backend/js/bootstrap.min.js"></script>
+
+</body>
 
 </html>

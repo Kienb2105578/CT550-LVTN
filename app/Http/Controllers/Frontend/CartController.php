@@ -9,6 +9,7 @@ use App\Repositories\Interfaces\ProvinceRepositoryInterface  as ProvinceReposito
 use App\Repositories\Interfaces\PromotionRepositoryInterface  as PromotionRepository;
 use App\Repositories\Interfaces\OrderRepositoryInterface  as OrderRepository;
 use App\Http\Requests\StoreCartRequest;
+use Illuminate\Support\Facades\Auth;
 use Cart;
 use App\Classes\Vnpay;
 use App\Classes\Momo;
@@ -17,7 +18,7 @@ use App\Classes\Zalo;
 
 class CartController extends FrontendController
 {
-  
+
     protected $provinceRepository;
     protected $promotionRepository;
     protected $orderRepository;
@@ -36,8 +37,8 @@ class CartController extends FrontendController
         Momo $momo,
         Paypal $paypal,
         Zalo $zalo,
-    ){
-       
+    ) {
+
         $this->provinceRepository = $provinceRepository;
         $this->promotionRepository = $promotionRepository;
         $this->orderRepository = $orderRepository;
@@ -50,10 +51,23 @@ class CartController extends FrontendController
     }
 
 
-    public function checkout(){
+    public function checkout()
+    {
         $provinces = $this->provinceRepository->all();
-        $carts = Cart::instance('shopping')->content();
-        $carts = $this->cartService->remakeCart($carts);
+
+        $user = Auth::guard('customer')->user();
+        if ($user) {
+
+            $carts = $this->cartService->convertCartFormCart($user->id);
+            $carts = collect($carts);
+            $carts = $carts->map(function ($cart) {
+                return (object) $cart;
+            });
+        } else {
+            $carts = Cart::instance('shopping')->content();
+            $carts = $this->cartService->remakeCart($carts);
+        }
+
         $cartCaculate = $this->cartService->reCaculateCart();
         $cartPromotion = $this->cartService->cartPromotion($cartCaculate['cartTotal']);
 
@@ -66,6 +80,7 @@ class CartController extends FrontendController
         ];
         $system = $this->system;
         $config = $this->config();
+
         return view('frontend.cart.index', compact(
             'config',
             'seo',
@@ -75,29 +90,31 @@ class CartController extends FrontendController
             'cartPromotion',
             'cartCaculate',
         ));
-        
     }
 
-    public function store(StoreCartRequest $request){
+
+    public function store(StoreCartRequest $request)
+    {
         $system = $this->system;
         $order = $this->cartService->order($request, $system);
-        if($order['flag']){
-            if($order['order']->method !== 'cod'){
+        if ($order['flag']) {
+            if ($order['order']->method !== 'cod') {
                 $response = $this->paymentMethod($order);
-                if($response['errorCode'] == 0){
+                if ($response['errorCode'] == 0) {
                     return redirect()->away($response['url']);
                 }
             }
-            return redirect()->route('cart.success', ['code' => $order['order']->code])->with('success','Đặt hàng thành công');
+            return redirect()->route('cart.success', ['code' => $order['order']->code])->with('success', 'Đặt hàng thành công');
         }
-        return redirect()->route('cart.checkout')->with('error','Đặt hàng không thành công. Hãy thử lại');
+        return redirect()->route('cart.checkout')->with('error', 'Đặt hàng không thành công. Hãy thử lại');
     }
 
-    public function success($code){
+    public function success($code)
+    {
         $order = $this->orderRepository->findByCondition([
             ['code', '=', $code],
         ], false, ['products']);
-        
+
         $seo = [
             'meta_title' => 'Thanh toán đơn hàng thành công',
             'meta_keyword' => '',
@@ -106,23 +123,41 @@ class CartController extends FrontendController
             'canonical' => write_url('cart/success', TRUE, TRUE),
         ];
         $system = $this->system;
+
+
+        $user = Auth::guard('customer')->user();
+        if ($user) {
+
+            $carts = $this->cartService->convertCartFormCart($user->id);
+            $carts = collect($carts);
+            $carts = $carts->map(function ($cart) {
+                return (object) $cart;
+            });
+        } else {
+            $carts = Cart::instance('shopping')->content();
+        }
+
+
         $config = $this->config();
         return view('frontend.cart.success', compact(
             'config',
             'seo',
             'system',
-            'order'
+            'order',
+            'carts'
         ));
     }
 
-    public function paymentMethod($order = null){
+    public function paymentMethod($order = null)
+    {
         $class = $order['order']->method;
         $response = $this->{$class}->payment($order['order']);
         return $response;
     }
 
-    
-    private function config(){
+
+    private function config()
+    {
         return [
             'language' => $this->language,
             'css' => [
@@ -135,6 +170,4 @@ class CartController extends FrontendController
             ]
         ];
     }
-  
-
 }

@@ -21,14 +21,14 @@ class UpdateProductRequest extends FormRequest
      */
     public function rules(): array
     {
-
-
         return [
             'name' => 'required',
-            'canonical' => 'required|unique:routers,canonical, '.$this->id.',module_id',
+            'canonical' => 'required|unique:routers,canonical,' . $this->id . ',module_id',
             'product_catalogue_id' => 'gt:0',
+            'code' => 'required|unique:products,code,' . $this->id,
         ];
     }
+
 
     public function messages(): array
     {
@@ -37,6 +37,8 @@ class UpdateProductRequest extends FormRequest
             'canonical.required' => 'Bạn chưa nhập vào ô đường dẫn',
             'canonical.unique' => 'Đường dẫn đã tồn tại, Hãy chọn đường dẫn khác',
             'product_catalogue_id.gt' => 'Bạn phải nhập vào danh mục cha',
+            'code.required' => 'Bạn chưa nhập vào mã sản phẩm.',
+            'code.unique' => 'Mã sản phẩm đã tồn tại, vui lòng chọn mã khác.',
         ];
     }
 }

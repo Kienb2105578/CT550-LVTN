@@ -19,11 +19,23 @@ class Review extends Model
         'phone',
         'description',
         'score',
+        'product_id',
+        'customer_id',
     ];
 
     protected $table = 'reviews';
 
-    public function reviewable(){
+    public function reviewable()
+    {
         return $this->morphTo();
+    }
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
     }
 }

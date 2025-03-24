@@ -9,6 +9,7 @@ use App\Services\Interfaces\PostCatalogueServiceInterface as PostCatalogueServic
 use App\Services\Interfaces\PostServiceInterface as PostService;
 use App\Services\Interfaces\WidgetServiceInterface as WidgetService;
 use App\Models\System;
+use Gloudemans\Shoppingcart\Facades\Cart;
 
 class PostCatalogueController extends FrontendController
 {
@@ -24,22 +25,23 @@ class PostCatalogueController extends FrontendController
         PostCatalogueService $postCatalogueService,
         PostService $postService,
         WidgetService $widgetService,
-    ){
+    ) {
         $this->postCatalogueRepository = $postCatalogueRepository;
         $this->postCatalogueService = $postCatalogueService;
         $this->postService = $postService;
         $this->widgetService = $widgetService;
-        parent::__construct(); 
+        parent::__construct();
     }
 
 
-    public function index($id, $request, $page = 1){
+    public function index($id, $request, $page = 1)
+    {
         $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($id, $this->language);
         $breadcrumb = $this->postCatalogueRepository->breadcrumb($postCatalogue, $this->language);
         $posts = $this->postService->paginate(
-            $request, 
-            $this->language, 
-            $postCatalogue, 
+            $request,
+            $this->language,
+            $postCatalogue,
             $page,
             ['path' => $postCatalogue->canonical],
         );
@@ -51,17 +53,16 @@ class PostCatalogueController extends FrontendController
             ['keyword' => 'staff', 'object' => true],
         ], $this->language);
 
-
-        if($postCatalogue->canonical == 've-chung-toi'){
+        if ($postCatalogue->canonical == 've-chung-toi') {
             $template = 'frontend.post.catalogue.intro';
-        }else if($postCatalogue->canonical == 'du-an-noi-bat'){
+        } else if ($postCatalogue->canonical == 'du-an-noi-bat') {
             $template = 'frontend.post.catalogue.project';
-        }else{
+        } else {
             $template = 'frontend.post.catalogue.index';
         }
-
         $config = $this->config();
         $system = $this->system;
+        $carts = Cart::instance('shopping')->content();
         $seo = seo($postCatalogue, $page);
         return view($template, compact(
             'config',
@@ -71,16 +72,17 @@ class PostCatalogueController extends FrontendController
             'postCatalogue',
             'posts',
             'widgets',
+            'carts'
         ));
     }
 
 
-   
 
-    private function config(){
+
+    private function config()
+    {
         return [
             'language' => $this->language,
         ];
     }
-
 }

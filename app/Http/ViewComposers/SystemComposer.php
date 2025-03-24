@@ -1,8 +1,10 @@
-<?php  
+<?php
+
 namespace App\Http\ViewComposers;
 
 use Illuminate\View\View;
 use App\Repositories\Interfaces\SystemRepositoryInterface  as SystemRepository;
+use Illuminate\Support\Facades\Auth;
 
 class SystemComposer
 {
@@ -12,7 +14,7 @@ class SystemComposer
     public function __construct(
         SystemRepository $systemRepository,
         $language
-    ){
+    ) {
         $this->systemRepository = $systemRepository;
         $this->language = $language;
     }

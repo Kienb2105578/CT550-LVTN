@@ -20,61 +20,66 @@ class LanguageService implements LanguageServiceInterface
 {
     protected $languageRepository;
     protected $routerRepository;
-    
+
 
     public function __construct(
         LanguageRepository $languageRepository,
         RouterRepository $routerRepository,
-    ){
+    ) {
         $this->languageRepository = $languageRepository;
         $this->routerRepository = $routerRepository;
     }
 
-    
 
-    public function paginate($request){
+
+    public function paginate($request)
+    {
 
         $condition['keyword'] = addslashes($request->input('keyword'));
         $condition['publish'] = $request->integer('publish');
         $perPage = $request->integer('perpage');
         $languages = $this->languageRepository->pagination(
-            $this->paginateSelect(), 
-            $condition, 
-            $perPage, 
-            ['path' => 'language/index'], 
+            $this->paginateSelect(),
+            $condition,
+            $perPage,
+            ['path' => 'language/index'],
         );
         return $languages;
     }
 
-    public function create($request){
+    public function create($request)
+    {
         DB::beginTransaction();
-        try{
-            $payload = $request->except(['_token','send']);
+        try {
+            $payload = $request->except(['_token', 'send']);
             $payload['user_id'] = Auth::id();
             $language = $this->languageRepository->create($payload);
             DB::commit();
             return true;
-        }catch(\Exception $e ){
+        } catch (\Exception $e) {
             DB::rollBack();
             // Log::error($e->getMessage());
-            echo $e->getMessage();die();
+            echo $e->getMessage();
+            die();
             return false;
         }
     }
 
 
-    public function update($id, $request){
+    public function update($id, $request)
+    {
         DB::beginTransaction();
-        try{
+        try {
 
-            $payload = $request->except(['_token','send']);
+            $payload = $request->except(['_token', 'send']);
             $language = $this->languageRepository->update($id, $payload);
             DB::commit();
             return true;
-        }catch(\Exception $e ){
+        } catch (\Exception $e) {
             DB::rollBack();
             // Log::error($e->getMessage());
-            echo $e->getMessage();die();
+            echo $e->getMessage();
+            die();
             return false;
         }
     }
@@ -99,26 +104,29 @@ class LanguageService implements LanguageServiceInterface
         }
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
         DB::beginTransaction();
-        try{
+        try {
             $language = $this->languageRepository->delete($id);
 
             DB::commit();
             return true;
-        }catch(\Exception $e ){
+        } catch (\Exception $e) {
             DB::rollBack();
             // Log::error($e->getMessage());
-            echo $e->getMessage();die();
+            echo $e->getMessage();
+            die();
             return false;
         }
     }
 
-    
 
-    public function switch($id){
+
+    public function switch($id)
+    {
         DB::beginTransaction();
-        try{
+        try {
             $language = $this->languageRepository->update($id, ['current' => 1]);
             $payload = ['current' => 0];
             $where = [
@@ -128,18 +136,19 @@ class LanguageService implements LanguageServiceInterface
 
             DB::commit();
             return true;
-        }catch(\Exception $e ){
+        } catch (\Exception $e) {
             DB::rollBack();
             // Log::error($e->getMessage());
-            echo $e->getMessage();die();
+            echo $e->getMessage();
+            die();
             return false;
         }
-      
     }
 
-    public function saveTranslate($option, $request){
+    public function saveTranslate($option, $request)
+    {
         DB::beginTransaction();
-        try{
+        try {
             $payload = [
                 'name' => $request->input('translate_name'),
                 'description' => $request->input('translate_description'),
@@ -151,19 +160,19 @@ class LanguageService implements LanguageServiceInterface
                 $this->converModelToField($option['model']) => $option['id'],
                 'language_id' => $option['languageId']
             ];
-            $controllerName = $option['model'].'Controller';
+            $controllerName = $option['model'] . 'Controller';
             $repositoryNamespace = '\App\Repositories\\' . ucfirst($option['model']) . 'Repository';
             if (class_exists($repositoryNamespace)) {
                 $repositoryInstance = app($repositoryNamespace);
             }
             $model = $repositoryInstance->findById($option['id']);
             $model->languages()->detach([$option['languageId'], $model->id]);
-            $repositoryInstance->createPivot($model, $payload,'languages');
+            $repositoryInstance->createPivot($model, $payload, 'languages');
 
             $this->routerRepository->forceDeleteByCondition(
                 [
                     ['module_id', '=', $option['id']],
-                    ['controllers', '=', 'App\Http\Controllers\Frontend\\'.$controllerName],
+                    ['controllers', '=', 'App\Http\Controllers\Frontend\\' . $controllerName],
                     ['language_id', '=', $option['languageId']]
                 ]
             );
@@ -171,34 +180,35 @@ class LanguageService implements LanguageServiceInterface
                 'canonical' => Str::slug($request->input('translate_canonical')),
                 'module_id' => $model->id,
                 'language_id' => $option['languageId'],
-                'controllers' => 'App\Http\Controllers\Frontend\\'.$controllerName.'',
+                'controllers' => 'App\Http\Controllers\Frontend\\' . $controllerName . '',
             ];
             $this->routerRepository->create($router);
             DB::commit();
             return true;
-        }catch(\Exception $e ){
+        } catch (\Exception $e) {
             DB::rollBack();
             // Log::error($e->getMessage());
-            echo $e->getMessage();die();
+            echo $e->getMessage();
+            die();
             return false;
         }
     }
 
-    private function converModelToField($model){
+    private function converModelToField($model)
+    {
         $temp = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $model));
-        return $temp.'_id';
+        return $temp . '_id';
     }
 
-  
-    private function paginateSelect(){
+
+    private function paginateSelect()
+    {
         return [
-            'id', 
-            'name', 
+            'id',
+            'name',
             'canonical',
             'publish',
             'image'
         ];
     }
-
-
 }

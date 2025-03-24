@@ -8,10 +8,15 @@ use App\Repositories\Interfaces\SlideRepositoryInterface  as SlideRepository;
 use App\Repositories\Interfaces\SystemRepositoryInterface  as SystemRepository;
 use App\Services\Interfaces\WidgetServiceInterface  as WidgetService;
 use App\Services\Interfaces\SlideServiceInterface  as SlideService;
+use App\Services\Interfaces\ProductServiceInterface  as ProductService;
+use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
 use App\Enums\SlideEnum;
 use App\Events\TestEvent;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Gloudemans\Shoppingcart\Facades\Cart;
 
 
 class HomeController extends FrontendController
@@ -21,45 +26,90 @@ class HomeController extends FrontendController
     protected $systemRepository;
     protected $widgetService;
     protected $slideService;
+    protected $productService;
     protected $system;
+    protected $productRepository;
 
     public function __construct(
         SlideRepository $slideRepository,
         WidgetService $widgetService,
         SlideService $slideService,
         SystemRepository $systemRepository,
-    ){
+        ProductRepository $productRepository,
+        ProductService $productService,
+    ) {
         $this->slideRepository = $slideRepository;
         $this->widgetService = $widgetService;
         $this->slideService = $slideService;
         $this->systemRepository = $systemRepository;
-
+        $this->productRepository = $productRepository;
+        $this->productService = $productService;
         parent::__construct(
-           $systemRepository,
-        ); 
+            $systemRepository,
+        );
     }
 
-    
-
-
-    public function index(){
+    public function index()
+    {
 
 
         $config = $this->config();
         $widgets = $this->widgetService->getWidget([
-            // ['keyword' => 'category', 'countObject' => true],
-            // ['keyword' => 'homepage-customer', 'children' => true],
-            // ['keyword' => 'category-highlight'],
             ['keyword' => 'product', 'children' => true, 'promotion' => TRUE, 'object' => TRUE],
-            ['keyword' => 'flash-sale','promotion' => true],
-            // ['keyword' => 'home-intro'],
-            // ['keyword' => 'home-project', 'object' => true],
-            // ['keyword' => 'home-video', 'object' => true],
-            // ['keyword' => 'home-whyus', 'object' => true],
+            ['keyword' => 'flash-sale', 'promotion' => true],
             ['keyword' => 'posts', 'object' => true],
         ], $this->language);
 
-        // dd($widgets);
+        try {
+            $id = Auth::guard('customer')->check() ? Auth::guard('customer')->user()->id : null;
+            $apiUrl = 'http://127.0.0.1:5555/api/customer-recommendations';
+
+            $response = Http::timeout(3)->get($apiUrl, $id ? ['customer_id' => $id] : []);
+
+            if ($response->successful()) {
+                $relatedProducts = $response->json('related_products') ?? $response->json('popular_products');
+            } else {
+                $relatedProducts = [];
+            }
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi gọi API: ' . $e->getMessage());
+            $relatedProducts = []; // Nếu lỗi thì gán rỗng
+        }
+
+        // Nếu không có sản phẩm đề xuất từ API, thì lấy sản phẩm phổ biến
+        if (empty($relatedProducts)) {
+            $relatedProducts = $this->productRepository->getPopularProducts(1)->pluck('id')->toArray();
+        }
+
+        // Lấy thông tin chi tiết sản phẩm
+        $product_recommend = [];
+        foreach ($relatedProducts as $id) {
+            $product_recommend[] = $this->productRepository->getProductById($id, 1);
+        }
+
+        // Nếu vẫn không có sản phẩm thì lấy danh sách sản phẩm phổ biến làm mặc định
+        if (empty($product_recommend)) {
+            $product_recommend = $this->productRepository->getPopularProducts(1);
+        }
+
+        $productId =  $relatedProducts;
+
+        if (count($productId) && !is_null($productId)) {
+            $product_recommend = $this->productService->combineProductAndPromotion($productId, $product_recommend);
+        }
+
+        $product_new = $this->productRepository->getLatestProducts();
+
+        $product_d = $product_new->pluck('id')->toArray();
+        if (count($product_d) && !is_null($product_d)) {
+            $product_new = $this->productService->combineProductAndPromotion($product_d, $product_new);
+        }
+
+        foreach ($widgets['product']->object as $key => $category) {
+            $widgets['product']->object->products = $this->productRepository->widgetProductTotalQuantity($category->products);
+        }
+        $product_new = $this->productRepository->updateProductTotalQuantity($product_new);
+        $product_recommend = $this->productRepository->updateProductTotalQuantity($product_recommend);
 
         $slides = $this->slideService->getSlide([SlideEnum::BANNER, SlideEnum::MAIN, 'banner'], $this->language);
         $system = $this->system;
@@ -76,16 +126,20 @@ class HomeController extends FrontendController
             'widgets',
             'seo',
             'system',
+            'product_recommend',
+            'product_new'
         ));
     }
 
-    public function ckfinder(){
+    public function ckfinder()
+    {
         return view('frontend.homepage.home.ckfinder');
     }
 
-  
 
-    private function config(){
+
+    private function config()
+    {
         return [
             'language' => $this->language,
             'css' => [
@@ -98,5 +152,4 @@ class HomeController extends FrontendController
             ]
         ];
     }
-
 }

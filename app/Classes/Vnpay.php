@@ -1,29 +1,30 @@
 <?php
+
 namespace App\Classes;
 
-class Vnpay{
+class Vnpay
+{
 
-    public function __construct(){
+    public function __construct() {}
 
-    }
-
-    public function payment($order){
+    public function payment($order)
+    {
         // đ
 
         $configVnpay = vnpayConfig();
         $startTime = date("YmdHis");
-        $expire = date('YmdHis',strtotime('+15 minutes',strtotime($startTime)));
-        
-        
+        $expire = date('YmdHis', strtotime('+15 minutes', strtotime($startTime)));
+
+
         $vnp_TmnCode = $configVnpay['vnp_TmnCode'];
-        $vnp_HashSecret = $configVnpay['vnp_HashSecret']; 
+        $vnp_HashSecret = $configVnpay['vnp_HashSecret'];
         $vnp_Url = $configVnpay['vnp_Url'];
         $vnp_Returnurl = $configVnpay['vnp_Returnurl'];
-       
-        
+
+
 
         $vnp_TxnRef = $order->code; //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
-        $vnp_OrderInfo = (!empty($order->description)) ? $order->description : 'Thanh toán đơn hàng #'.$order->code.' qua VNPAY';
+        $vnp_OrderInfo = (!empty($order->description)) ? $order->description : 'Thanh toán đơn hàng #' . $order->code . ' qua VNPAY';
         $vnp_OrderType = 'billpayment';
 
         $vnp_Amount = ($order->cart['cartTotal'] - $order->promotion['discount']) * 100;
@@ -50,7 +51,7 @@ class Vnpay{
         if (isset($vnp_BankCode) && $vnp_BankCode != "") {
             $inputData['vnp_BankCode'] = $vnp_BankCode;
         }
-        
+
         ksort($inputData);
         $query = "";
         $i = 0;
@@ -64,19 +65,17 @@ class Vnpay{
             }
             $query .= urlencode($key) . "=" . urlencode($value) . '&';
         }
-        
+
         $vnp_Url = $vnp_Url . "?" . $query;
         if (isset($vnp_HashSecret)) {
-            $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret);//  
+            $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret); //  
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
         $returnData = array(
-            'errorCode' => 0, 
-            'message' => 'success', 
+            'errorCode' => 0,
+            'message' => 'success',
             'url' => $vnp_Url
         );
         return $returnData;
     }
-    
-	
 }

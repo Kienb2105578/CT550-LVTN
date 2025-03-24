@@ -46,11 +46,6 @@ return [
             'provider' => 'customers'
         ],
 
-        'agency' => [
-            'driver' => 'session',
-            'provider' => 'agencys'
-        ]
-
     ],
 
     /*
@@ -81,10 +76,6 @@ return [
             'model' => App\Models\Customer::class,
         ],
 
-        'agencys' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\Agency::class,
-        ],
     ],
 
     /*
@@ -117,13 +108,6 @@ return [
         'customers' => [
             'provider' => 'customers',  // Xác định provider cho bảng customers
             'table' => 'customer_password_resets',  // Tên của bảng reset password tokens cho customers
-            'expire' => 60,
-            'throttle' => 60,
-        ],
-
-        'agencys' => [
-            'provider' => 'agencys',  // Xác định provider cho bảng customers
-            'table' => 'agency_password_resets',  // Tên của bảng reset password tokens cho customers
             'expire' => 60,
             'throttle' => 60,
         ],

@@ -9,8 +9,9 @@ use App\Services\Interfaces\PostCatalogueServiceInterface as PostCatalogueServic
 use App\Services\Interfaces\PostServiceInterface as PostService;
 use App\Repositories\Interfaces\PostRepositoryInterface as PostRepository;
 use App\Models\System;
+use Gloudemans\Shoppingcart\Facades\Cart;
 
-class postController extends FrontendController
+class PostController extends FrontendController
 {
     protected $language;
     protected $system;
@@ -24,37 +25,51 @@ class postController extends FrontendController
         PostCatalogueService $postCatalogueService,
         PostService $postService,
         PostRepository $postRepository,
-    ){
+    ) {
         $this->postCatalogueRepository = $postCatalogueRepository;
         $this->postCatalogueService = $postCatalogueService;
         $this->postService = $postService;
         $this->postRepository = $postRepository;
-        parent::__construct(); 
+        parent::__construct();
+    }
+    public function main($id, $page = 1)
+    {
+        $posts = $this->postRepository->getAllPosts();
+        $config = $this->config();
+        $system = $this->system;
+        $seo = [
+            'meta_title' => 'Bài Viết',
+            'meta_keyword' => '',
+            'meta_description' => '',
+            'meta_image' => '',
+            'canonical' => route('post.main')
+        ];
+        return view('frontend.post.post.main', compact(
+            'config',
+            'seo',
+            'system',
+            'posts',
+        ));
     }
 
-
-    public function index($id, $request){
+    public function index($id, $request)
+    {
         $language = $this->language;
         $post = $this->postRepository->getPostById($id, $this->language, config('apps.general.defaultPublish'));
-        if(is_null($post)){
+        if (is_null($post)) {
             abort(404);
         }
         $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($post->post_catalogue_id, $this->language);
         $breadcrumb = $this->postCatalogueRepository->breadcrumb($postCatalogue, $this->language);
-        
+
 
         $asidePost = $this->postService->paginate(
-            $request, 
-            $this->language, 
-            $postCatalogue, 
+            $request,
+            $this->language,
+            $postCatalogue,
             1,
             ['path' => $postCatalogue->canonical],
         );
-
-
-        /* ------------------- */
-        
-
         $config = $this->config();
         $system = $this->system;
         $seo = seo($post);
@@ -69,10 +84,10 @@ class postController extends FrontendController
         ));
     }
 
-    private function config(){
+    private function config()
+    {
         return [
             'language' => $this->language,
         ];
     }
-
 }

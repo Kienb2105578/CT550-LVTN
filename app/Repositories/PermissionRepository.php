@@ -16,9 +16,12 @@ class PermissionRepository extends BaseRepository implements PermissionRepositor
 
     public function __construct(
         Permission $model
-    ){
+    ) {
         $this->model = $model;
     }
 
-
+    public function getAllPermissions()
+    {
+        return $this->model->pluck('canonical', 'id')->toArray();
+    }
 }

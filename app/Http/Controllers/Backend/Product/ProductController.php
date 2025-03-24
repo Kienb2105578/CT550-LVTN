@@ -28,8 +28,8 @@ class ProductController extends Controller
         ProductRepository $productRepository,
         AttributeCatalogueRepository $attributeCatalogue,
         AttributeRepository $attributeRepository,
-    ){
-        $this->middleware(function($request, $next){
+    ) {
+        $this->middleware(function ($request, $next) {
             $locale = app()->getLocale(); // vn en cn
             $language = Language::where('canonical', $locale)->first();
             $this->language = $language->id;
@@ -42,20 +42,22 @@ class ProductController extends Controller
         $this->attributeCatalogue = $attributeCatalogue;
         $this->attributeRepository = $attributeRepository;
         $this->initialize();
-        
     }
 
-    private function initialize(){
+    private function initialize()
+    {
         $this->nestedset = new Nestedsetbie([
             'table' => 'product_catalogues',
             'foreignkey' => 'product_catalogue_id',
             'language_id' =>  $this->language,
         ]);
-    } 
+    }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $this->authorize('modules', 'product.index');
         $products = $this->productService->paginate($request, $this->language);
+        $products = $this->productRepository->addProductCatalogueNamesToProducts($products);
         $config = [
             'js' => [
                 'backend/js/plugins/switchery/switchery.js',
@@ -78,7 +80,8 @@ class ProductController extends Controller
         ));
     }
 
-    public function create(){
+    public function create()
+    {
         $this->authorize('modules', 'product.create');
         $attributeCatalogue = $this->attributeCatalogue->getAll($this->language);
         $config = $this->configData();
@@ -94,14 +97,16 @@ class ProductController extends Controller
         ));
     }
 
-    public function store(StoreProductRequest $request){
-        if($this->productService->create($request, $this->language)){
-            return redirect()->route('product.index')->with('success','Thêm mới bản ghi thành công');
+    public function store(StoreProductRequest $request)
+    {
+        if ($this->productService->create($request, $this->language)) {
+            return redirect()->route('product.index')->with('success', 'Thêm mới bản ghi thành công');
         }
-        return redirect()->route('product.index')->with('error','Thêm mới bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('product.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
 
-    public function edit($id, Request $request){
+    public function edit($id, Request $request)
+    {
         $this->authorize('modules', 'product.update');
         $product = $this->productRepository->getProductById($id, $this->language);
         $attributeCatalogue = $this->attributeCatalogue->getAll($this->language);
@@ -123,15 +128,17 @@ class ProductController extends Controller
         ));
     }
 
-    public function update($id, UpdateProductRequest $request){
+    public function update($id, UpdateProductRequest $request)
+    {
         $queryUrl = base64_decode($request->getQueryString());
-        if($this->productService->update($id, $request, $this->language)){
-            return redirect()->route('product.index', $queryUrl)->with('success','Cập nhật bản ghi thành công');
+        if ($this->productService->update($id, $request, $this->language)) {
+            return redirect()->route('product.index', $queryUrl)->with('success', 'Cập nhật bản ghi thành công');
         }
-        return redirect()->route('product.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('product.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $this->authorize('modules', 'product.destroy');
         $config['seo'] = __('messages.product');
         $product = $this->productRepository->getProductById($id, $this->language);
@@ -143,14 +150,16 @@ class ProductController extends Controller
         ));
     }
 
-    public function destroy($id){
-        if($this->productService->destroy($id, $this->language)){
-            return redirect()->route('product.index')->with('success','Xóa bản ghi thành công');
+    public function destroy($id)
+    {
+        if ($this->productService->destroy($id, $this->language)) {
+            return redirect()->route('product.index')->with('success', 'Xóa bản ghi thành công');
         }
-        return redirect()->route('product.index')->with('error','Xóa bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('product.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
 
-    private function configData(){
+    private function configData()
+    {
         return [
             'js' => [
                 'backend/plugins/ckeditor/ckeditor.js',
@@ -167,10 +176,7 @@ class ProductController extends Controller
                 'backend/plugins/nice-select/css/nice-select.css',
                 'backend/css/plugins/switchery/switchery.css',
             ]
-          
+
         ];
     }
-
-   
-
 }

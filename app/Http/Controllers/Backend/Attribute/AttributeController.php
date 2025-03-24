@@ -22,8 +22,8 @@ class AttributeController extends Controller
     public function __construct(
         AttributeService $attributeService,
         AttributeRepository $attributeRepository,
-    ){
-        $this->middleware(function($request, $next){
+    ) {
+        $this->middleware(function ($request, $next) {
             $locale = app()->getLocale(); // vn en cn
             $language = Language::where('canonical', $locale)->first();
             $this->language = $language->id;
@@ -34,20 +34,22 @@ class AttributeController extends Controller
         $this->attributeService = $attributeService;
         $this->attributeRepository = $attributeRepository;
         $this->initialize();
-        
     }
 
-    private function initialize(){
+    private function initialize()
+    {
         $this->nestedset = new Nestedsetbie([
             'table' => 'attribute_catalogues',
             'foreignkey' => 'attribute_catalogue_id',
             'language_id' =>  $this->language,
         ]);
-    } 
+    }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $this->authorize('modules', 'attribute.index');
         $attributes = $this->attributeService->paginate($request, $this->language);
+        $attributes = $this->attributeRepository->addAttributeCatalogueNamesToAttributes($attributes);
         $config = [
             'js' => [
                 'backend/js/plugins/switchery/switchery.js',
@@ -70,7 +72,8 @@ class AttributeController extends Controller
         ));
     }
 
-    public function create(){
+    public function create()
+    {
         $this->authorize('modules', 'attribute.create');
         $config = $this->configData();
         $config['seo'] = __('messages.attribute');
@@ -84,16 +87,18 @@ class AttributeController extends Controller
         ));
     }
 
-    public function store(StoreAttributeRequest $request){
-        if($this->attributeService->create($request, $this->language)){
-            return redirect()->route('attribute.index')->with('success','Thêm mới bản ghi thành công');
+    public function store(StoreAttributeRequest $request)
+    {
+        if ($this->attributeService->create($request, $this->language)) {
+            return redirect()->route('attribute.index')->with('success', 'Thêm mới bản ghi thành công');
         }
-        return redirect()->route('attribute.index')->with('error','Thêm mới bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('attribute.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
 
-    public function edit($id, Request $request){
+    public function edit($id, Request $request)
+    {
         $this->authorize('modules', 'attribute.update');
-        $attribute = $this->attributeRepository->getAttributeById($id, $this->language);
+        $attribute = $this->attributeRepository->getAttributeById($id);
         $queryUrl = $request->getQueryString();
         $config = $this->configData();
         $config['seo'] = __('messages.attribute');
@@ -111,18 +116,20 @@ class AttributeController extends Controller
         ));
     }
 
-    public function update($id, UpdateAttributeRequest $request){
+    public function update($id, UpdateAttributeRequest $request)
+    {
         $queryUrl = base64_decode($request->getQueryString());
-        if($this->attributeService->update($id, $request, $this->language)){
-            return redirect()->route('attribute.index',$queryUrl)->with('success','Cập nhật bản ghi thành công');
+        if ($this->attributeService->update($id, $request, $this->language)) {
+            return redirect()->route('attribute.index', $queryUrl)->with('success', 'Cập nhật bản ghi thành công');
         }
-        return redirect()->route('attribute.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('attribute.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $this->authorize('modules', 'attribute.destroy');
         $config['seo'] = __('messages.attribute');
-        $attribute = $this->attributeRepository->getAttributeById($id, $this->language);
+        $attribute = $this->attributeRepository->getAttributeById($id);
         $template = 'backend.attribute.attribute.delete';
         return view('backend.dashboard.layout', compact(
             'template',
@@ -131,14 +138,16 @@ class AttributeController extends Controller
         ));
     }
 
-    public function destroy($id){
-        if($this->attributeService->destroy($id, $this->language)){
-            return redirect()->route('attribute.index')->with('success','Xóa bản ghi thành công');
+    public function destroy($id)
+    {
+        if ($this->attributeService->destroy($id, $this->language)) {
+            return redirect()->route('attribute.index')->with('success', 'Xóa bản ghi thành công');
         }
-        return redirect()->route('attribute.index')->with('error','Xóa bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('attribute.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
 
-    private function configData(){
+    private function configData()
+    {
         return [
             'js' => [
                 'backend/plugins/ckeditor/ckeditor.js',
@@ -150,10 +159,7 @@ class AttributeController extends Controller
             'css' => [
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
             ]
-          
+
         ];
     }
-
-   
-
 }

@@ -6,6 +6,7 @@ use App\Services\Interfaces\PostCatalogueServiceInterface;
 use App\Services\BaseService;
 use App\Repositories\Interfaces\PostCatalogueRepositoryInterface as PostCatalogueRepository;
 use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
+use App\Repositories\Interfaces\PostRepositoryInterface as PostRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Carbon;
@@ -24,17 +25,20 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
 
     protected $postCatalogueRepository;
     protected $routerRepository;
+    protected $postRepository;
     protected $nestedset;
     protected $language;
     protected $controllerName = 'PostCatalogueController';
-    
+
 
     public function __construct(
         PostCatalogueRepository $postCatalogueRepository,
         RouterRepository $routerRepository,
-    ){
+        PostRepository $postRepository,
+    ) {
         $this->postCatalogueRepository = $postCatalogueRepository;
         $this->routerRepository = $routerRepository;
+        $this->postRepository = $postRepository;
         // $this->nestedset = new Nestedsetbie([
         //     'table' => 'post_catalogues',
         //     'foreignkey' => 'post_catalogue_id',
@@ -42,88 +46,111 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         // ]);
     }
 
-    
-    
 
 
-    public function paginate($request, $languageId){
+
+
+    public function paginate($request, $languageId)
+    {
         $perPage = $request->integer('perpage');
         $condition = [
             'keyword' => addslashes($request->input('keyword')),
             'publish' => $request->integer('publish'),
-            'where' => [
-                ['tb2.language_id', '=', $languageId]
-            ]
+
         ];
         $postCatalogues = $this->postCatalogueRepository->pagination(
-            $this->paginateSelect(), 
-            $condition, 
+            $this->paginateSelect(),
+            $condition,
             $perPage,
-            ['path' => 'post.catalogue.index'],  
+            ['path' => 'post.catalogue.index'],
             ['post_catalogues.lft', 'ASC'],
-            [
-                ['post_catalogue_language as tb2','tb2.post_catalogue_id', '=' , 'post_catalogues.id']
-            ], 
-            ['languages']
+
         );
 
         return $postCatalogues;
     }
 
-    public function create($request, $languageId){
+    public function create($request, $languageId)
+    {
         DB::beginTransaction();
-        try{
+        try {
+            Log::info("Bắt đầu tạo postCatalogue...");
+
             $postCatalogue = $this->createCatalogue($request);
-            if($postCatalogue->id > 0){
-                $this->updateLanguageForCatalogue($postCatalogue, $request, $languageId);
+            Log::info("Tạo postCatalogue thành công, ID: " . $postCatalogue->id);
+
+            if ($postCatalogue->id > 0) {
+                //$this->updateLanguageForCatalogue($postCatalogue, $request, $languageId);
+                Log::info("Cập nhật ngôn ngữ cho postCatalogue thành công!");
+                Log::info("Dữ liệu postCatalogue trước khi tạo Router", ['postCatalogue' => $postCatalogue]);
+
                 $this->createRouter($postCatalogue, $request, $this->controllerName, $languageId);
+                Log::info("Tạo router thành công!");
+
                 $this->nestedset = new Nestedsetbie([
                     'table' => 'post_catalogues',
                     'foreignkey' => 'post_catalogue_id',
-                    'language_id' =>  $languageId ,
+                    'language_id' => $languageId,
                 ]);
-                $this->nestedset();
+
+                Log::info("Đối tượng Nestedsetbie đã được khởi tạo:", (array) $this->nestedset);
+
+                $this->nestedset->Get();
+                Log::info("Lấy dữ liệu cây phân cấp thành công", ['data' => $this->nestedset->data]);
+
+                $arrSet = $this->nestedset->Set();
+                Log::info("Mảng Set() thu được", ['arrSet' => $arrSet]);
+
+                $this->nestedset->Recursive(0, $arrSet);
+                Log::info("Đã chạy Recursive!");
+
+                $this->nestedset->Action();
+                Log::info("Đã cập nhật Nested Set thành công!");
             }
+
             DB::commit();
+            Log::info("Hoàn thành!");
             return true;
-        }catch(\Exception $e ){
+        } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();die();
+            Log::error("Lỗi xảy ra: " . $e->getMessage());
             return false;
         }
     }
-
-    public function update($id, $request, $languageId){
+    public function update($id, $request)
+    {
         DB::beginTransaction();
-        try{
+        try {
             $postCatalogue = $this->postCatalogueRepository->findById($id);
             $flag = $this->updateCatalogue($postCatalogue, $request);
-            if($flag == TRUE){
-                $this->updateLanguageForCatalogue($postCatalogue, $request, $languageId);
+            if ($flag == TRUE) {
                 $this->updateRouter(
-                    $postCatalogue, $request, $this->controllerName, $languageId
+                    $postCatalogue,
+                    $request,
+                    $this->controllerName,
+                    1
                 );
                 $this->nestedset = new Nestedsetbie([
                     'table' => 'post_catalogues',
                     'foreignkey' => 'post_catalogue_id',
-                    'language_id' =>  $languageId ,
                 ]);
                 $this->nestedset();
             }
             DB::commit();
             return true;
-        }catch(\Exception $e ){
+        } catch (\Exception $e) {
             DB::rollBack();
             // Log::error($e->getMessage());
-            echo $e->getMessage();die();
+            echo $e->getMessage();
+            die();
             return false;
         }
     }
 
-    public function destroy($id, $languageId){
+    public function destroy($id, $languageId)
+    {
         DB::beginTransaction();
-        try{
+        try {
             $postCatalogue = $this->postCatalogueRepository->delete($id);
             $this->routerRepository->forceDeleteByCondition([
                 ['module_id', '=', $id],
@@ -133,21 +160,31 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             $this->nestedset = new Nestedsetbie([
                 'table' => 'post_catalogues',
                 'foreignkey' => 'post_catalogue_id',
-                'language_id' =>  $languageId ,
             ]);
             $this->nestedset();
 
             DB::commit();
             return true;
-        }catch(\Exception $e ){
+        } catch (\Exception $e) {
             DB::rollBack();
             // Log::error($e->getMessage());
-            echo $e->getMessage();die();
+            echo $e->getMessage();
+            die();
             return false;
         }
     }
 
-    private function createCatalogue($request){
+    public function breadcrumb($model, $language)
+    {
+        return $this->postCatalogueRepository->findByCondition([
+            ['lft', '<=', $model->lft],
+            ['rgt', '>=', $model->rgt],
+            config('apps.general.defaultPublish')
+        ], ['lft', 'asc']);
+    }
+
+    private function createCatalogue($request)
+    {
         $payload = $request->only($this->payload());
         $payload['album'] = $this->formatAlbum($request);
         $payload['user_id'] = Auth::id();
@@ -155,61 +192,90 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         return $postCatalogue;
     }
 
-    private function updateCatalogue($postCatalogue, $request){
+    private function updateCatalogue($postCatalogue, $request)
+    {
         $payload = $request->only($this->payload());
         $payload['album'] = $this->formatAlbum($request);
         $flag = $this->postCatalogueRepository->update($postCatalogue->id, $payload);
         return $flag;
     }
 
-    private function updateLanguageForCatalogue($postCatalogue, $request, $languageId){
-        $payload = $this->formatLanguagePayload($postCatalogue, $request, $languageId);
-        $postCatalogue->languages()->detach([$languageId, $postCatalogue->id]);
-        $language = $this->postCatalogueRepository->createPivot($postCatalogue, $payload, 'languages');
-        return $language;
+    public function updateStatus($post = [])
+    {
+        DB::beginTransaction();
+        try {
+            $payload[$post['field']] = (($post['value'] == 1) ? 2 : 1);
+
+            $user = $this->postCatalogueRepository->update($post['modelId'], $payload);
+            $this->changeUserStatus($post, $payload[$post['field']]);
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            echo $e->getMessage();
+            die();
+            return false;
+        }
     }
 
-    private function formatLanguagePayload($postCatalogue, $request, $languageId){
-        $payload = $request->only($this->payloadLanguage());
-        $payload['canonical'] = Str::slug($payload['canonical']);
-        $payload['language_id'] =  $languageId;
-        $payload['post_catalogue_id'] = $postCatalogue->id;
-        return $payload;
+
+    private function changeUserStatus($post, $value)
+    {
+        DB::beginTransaction();
+        try {
+            $array = [];
+            if (isset($post['modelId'])) {
+                $array[] = $post['modelId'];
+            } else {
+                $array = $post['id'];
+            }
+            $payload[$post['field']] = $value;
+            $this->postRepository->updateByWhereIn('post_catalogue_id', $array, $payload);
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // Log::error($e->getMessage());
+            echo $e->getMessage();
+            die();
+            return false;
+        }
     }
 
 
-    private function paginateSelect(){
+    private function paginateSelect()
+    {
         return [
-            'post_catalogues.id', 
+            'post_catalogues.id',
             'post_catalogues.publish',
             'post_catalogues.image',
             'post_catalogues.level',
             'post_catalogues.order',
-            'tb2.name', 
-            'tb2.canonical',
+            'post_catalogues.name',
+            'post_catalogues.canonical',
+            'post_catalogues.meta_title',
+            'post_catalogues.meta_keyword',
+            'post_catalogues.meta_description',
+            'post_catalogues.description',
+            'post_catalogues.content',
         ];
     }
 
-    private function payload(){
+    private function payload()
+    {
         return [
             'parent_id',
             'follow',
             'publish',
             'image',
             'album',
-        ];
-    }
-    private function payloadLanguage(){
-        return [
             'name',
-            'description',
-            'content',
+            'canonical',
             'meta_title',
             'meta_keyword',
             'meta_description',
-            'canonical'
+            'description',
+            'content',
         ];
     }
-
-
 }

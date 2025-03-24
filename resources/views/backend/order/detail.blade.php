@@ -42,7 +42,7 @@
                                         </div>
                                     </td>
                                     <td style="width:285px;">
-                                        <div class="order-item-name" title=""{{ $name }}">
+                                        <div class="order-item-name" title=""{{ $name }}>
                                             {{ $name }}</div>
                                         <div class="order-item-voucher">Mã giảm giá: Không có</div>
                                     </td>
@@ -102,39 +102,48 @@
                             </div>
                         </div>
                         <div class="cancle-block">
-
-                            @if ($order->confirm == 'confirm' && $order->payment != 'paid')
+                            @if (
+                                $order->confirm == 'confirm' &&
+                                    $order->payment != 'paid' &&
+                                    $order->payment !== 'refunded' &&
+                                    $order->delivery !== 'returned')
                                 <button class="button updateField" data-field="confirm" data-value="cancle"
                                     data-title="ĐÃ HỦY THANH TOÁN ĐƠN HÀNG">Hủy đơn</button>
                             @elseif($order->payment == 'paid')
                                 Đơn hàng đã thanh toán
                             @elseif($order->confirm == 'cancle')
                                 Đơn hàng đã hủy
+                            @elseif($order->confirm == 'returned')
+                                Trả hàng thành công
+                            @elseif($order->payment == 'refunded' && $order->delivery == 'returned')
+                                <button class="button updateField" data-field="confirm" data-value="returned"
+                                    data-title="XÁC NHẬN HOÀN TRẢ">Xác nhận hoàn trả</button>
                             @endif
-
 
                         </div>
                     </div>
                 </div>
-                <div class="payment-confirm">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div class="uk-flex uk-flex-middle">
-                            <span class="icon"><i class="fa fa-truck"></i></span>
-                            <div class="payment-title">
-                                <div class="text_1">Xác nhận đơn hàng</div>
+                @if ($order->payment !== 'refunded' && $order->delivery !== 'returned')
+                    <div class="payment-confirm">
+                        <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                            <div class="uk-flex uk-flex-middle">
+                                <span class="icon"><i class="fa fa-truck"></i></span>
+                                <div class="payment-title">
+                                    <div class="text_1">Xác nhận đơn hàng</div>
+                                </div>
+                            </div>
+                            <div class="confirm-block">
+                                @if ($order->confirm == 'pending')
+                                    <button class="button confirm updateField" data-field="confirm" data-value="confirm"
+                                        data-title="ĐÃ XÁC NHẬN ĐƠN HÀNG TRỊ GIÁ">Xác nhận</button>
+                                @else
+                                    Đã xác nhận
+                                @endif
+
                             </div>
                         </div>
-                        <div class="confirm-block">
-                            @if ($order->confirm == 'pending')
-                                <button class="button confirm updateField" data-field="confirm" data-value="confirm"
-                                    data-title="ĐÃ XÁC NHẬN ĐƠN HÀNG TRỊ GIÁ">Xác nhận</button>
-                            @else
-                                Đã xác nhận
-                            @endif
-
-                        </div>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
         <div class="col-lg-4 order-aside">
@@ -192,6 +201,16 @@
                     </div>
                 </div>
             </div>
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <a href="{{ route('order.exportPdf', ['id' => $order->id]) }}" target="_blank"
+                            id="printButton" class="btn btn-primary">
+                            <i class="fa fa-print"></i> In hóa đơn
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -207,4 +226,18 @@
                     'name' => $item->name,
                 ];
             })->values());
+
+
+    document.getElementById("printButton").addEventListener("click", function(event) {
+        event.preventDefault();
+
+        var url = this.href;
+        var printWindow = window.open(url, '_blank');
+
+        if (printWindow) {
+            printWindow.onload = function() {
+                printWindow.print();
+            };
+        }
+    });
 </script>

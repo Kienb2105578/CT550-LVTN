@@ -6,7 +6,7 @@ use App\Http\Controllers\FrontendController;
 use Illuminate\Http\Request;
 // use App\Services\Interfaces\ContactServiceInterface as ContactService;
 // use App\Repositories\Interfaces\ContactRepositoryInterface as ContactRepository;
-
+use Gloudemans\Shoppingcart\Facades\Cart;
 
 class ContactController extends FrontendController
 {
@@ -18,21 +18,24 @@ class ContactController extends FrontendController
     public function __construct(
         // ContactService $contactService,
         // ContactRepository $contactRepository,
-    ){
+    )
+    {
         // $this->ContactService = $contactService;
         // $this->ContactRepository = $contactRepository;
-        parent::__construct(); 
+        parent::__construct();
     }
 
 
-    public function index(Request $request){
-       
-       
+    public function index(Request $request)
+    {
+
+
         $config = $this->config();
         $system = $this->system;
+        $carts = Cart::instance('shopping')->content();
         $seo = [
             'meta_title' => 'Trang Thông tin liên hệ',
-            'meta_description' => 'Thông tin liên hệ của '.$system['homepage_company'],
+            'meta_description' => 'Thông tin liên hệ của ' . $system['homepage_company'],
             'meta_keyword' => '',
             'meta_image' => '',
             'canonical' => write_url('lien-he')
@@ -41,10 +44,12 @@ class ContactController extends FrontendController
             'config',
             'seo',
             'system',
+            'carts'
         ));
     }
 
-    private function config(){
+    private function config()
+    {
         return [
             'language' => $this->language,
             'css' => [
@@ -57,5 +62,4 @@ class ContactController extends FrontendController
             ]
         ];
     }
-
 }

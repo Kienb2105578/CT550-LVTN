@@ -20,17 +20,19 @@ class DashboardController extends Controller
         OrderService $orderService,
         CustomerService $customerService,
         OrderRepository $orderRepository,
-    ){
+    ) {
         $this->orderService = $orderService;
         $this->orderRepository = $orderRepository;
         $this->customerService = $customerService;
     }
 
-    public function index(){
-        $orderStatistic = $this->orderService->statistic(); 
+    public function index()
+    {
+
+        $orderStatistic = $this->orderService->statistic();
         $customerStatistic = $this->customerService->statistic();
-        $startDate = convertDateTime( now(), 'Y-m-d 00:00:00');
-        $endDate = convertDateTime( now(), 'Y-m-d 23:59:59');
+        $startDate = convertDateTime(now(), 'Y-m-d 00:00:00');
+        $endDate = convertDateTime(now(), 'Y-m-d 23:59:59');
         $newOrders = $this->orderRepository->newOrder($startDate, $endDate);
         $config = $this->config();
         $template = 'backend.dashboard.home.index';
@@ -43,13 +45,14 @@ class DashboardController extends Controller
         ));
     }
 
-    private function config(){
+    private function config()
+    {
         return [
             'js' => [
                 'backend/js/plugins/chartJs/Chart.min.js',
                 'backend/library/dashboard.js',
+                'backend/library/dashboard_2.js',
             ]
         ];
     }
-
 }

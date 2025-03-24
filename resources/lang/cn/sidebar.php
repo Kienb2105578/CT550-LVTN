@@ -30,7 +30,7 @@ return [
         [
             'title' => '产品',
             'icon' => 'fa fa-cube',
-            'name' => ['product','attribute'],
+            'name' => ['product', 'attribute'],
             'subModule' => [
                 [
                     'title' => '类别',
@@ -120,7 +120,7 @@ return [
         [
             'title' => '用户',
             'icon' => 'fa fa-user',
-            'name' => ['user','permission'],
+            'name' => ['user', 'permission'],
             'subModule' => [
                 [
                     'title' => '群组',
@@ -175,7 +175,7 @@ return [
                     'title' => '小工具',
                     'route' => 'widget/index'
                 ],
-                
+
             ]
         ]
     ],

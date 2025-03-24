@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Http\ViewComposers\AgencyComposer;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
@@ -26,14 +25,15 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\UserServiceInterface' => 'App\Services\UserService',
         'App\Services\Interfaces\UserCatalogueServiceInterface' => 'App\Services\UserCatalogueService',
         'App\Services\Interfaces\CustomerServiceInterface' => 'App\Services\CustomerService',
+        'App\Services\Interfaces\InventoryBatchServiceInterface' => 'App\Services\InventoryBatchService',
+        'App\Services\Interfaces\StockMovementServiceInterface' => 'App\Services\StockMovementService',
+        'App\Services\Interfaces\SupplierServiceInterface' => 'App\Services\SupplierService',
         'App\Services\Interfaces\CustomerCatalogueServiceInterface' => 'App\Services\CustomerCatalogueService',
         'App\Services\Interfaces\LanguageServiceInterface' => 'App\Services\LanguageService',
         'App\Services\Interfaces\PostCatalogueServiceInterface' => 'App\Services\PostCatalogueService',
         'App\Services\Interfaces\GenerateServiceInterface' => 'App\Services\GenerateService',
         'App\Services\Interfaces\PermissionServiceInterface' => 'App\Services\PermissionService',
         'App\Services\Interfaces\PostServiceInterface' => 'App\Services\PostService',
-        'App\Services\Interfaces\ProductCatalogueServiceInterface' => 'App\Services\ProductCatalogueService',
-        'App\Services\Interfaces\ProductServiceInterface' => 'App\Services\ProductService',
         'App\Services\Interfaces\ProductCatalogueServiceInterface' => 'App\Services\ProductCatalogueService',
         'App\Services\Interfaces\ProductServiceInterface' => 'App\Services\ProductService',
         'App\Services\Interfaces\AttributeCatalogueServiceInterface' => 'App\Services\AttributeCatalogueService',
@@ -49,8 +49,8 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\OrderServiceInterface' => 'App\Services\OrderService',
         'App\Services\Interfaces\ReviewServiceInterface' => 'App\Services\ReviewService',
         'App\Services\Interfaces\DistributionServiceInterface' => 'App\Services\DistributionService',
-        'App\Services\Interfaces\AgencyServiceInterface' => 'App\Services\AgencyService',
         'App\Services\Interfaces\ConstructServiceInterface' => 'App\Services\ConstructService',
+        'App\Services\Interfaces\PurchaseOrderServiceInterface' => 'App\Services\PurchaseOrderService',
     ];
 
     /**
@@ -58,13 +58,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        foreach($this->bindings as $key => $val)
-        {
+        foreach ($this->bindings as $key => $val) {
             $this->app->bind($key, $val);
         }
 
         $this->app->register(RepositoryServiceProvider::class);
-
     }
 
     /**
@@ -72,23 +70,23 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        
+
         $locale = app()->getLocale(); // vn en cn
         $language = Language::where('canonical', $locale)->first();
 
-        Validator::extend('custom_date_format', function($attribute, $value, $parameters, $validator){
+        Validator::extend('custom_date_format', function ($attribute, $value, $parameters, $validator) {
             return Datetime::createFromFormat('d/m/Y H:i', $value) !== false;
         });
 
-        Validator::extend('custom_after', function($attribute, $value, $parameters, $validator){
+        Validator::extend('custom_after', function ($attribute, $value, $parameters, $validator) {
             $startDate = Carbon::createFromFormat('d/m/Y H:i', $validator->getData()[$parameters[0]]);
             $endDate = Carbon::createFromFormat('d/m/Y H:i', $value);
-            
+
             return $endDate->greaterThan($startDate) !== false;
         });
 
 
-        view()->composer('*', function($view) use ($language){
+        view()->composer('*', function ($view) use ($language) {
             $composerClasses = [
                 // SystemComposer::class,
                 MenuComposer::class,
@@ -97,19 +95,18 @@ class AppServiceProvider extends ServiceProvider
                 CartComposer::class,
                 WishlistComposer::class,
                 CustomerComposer::class,
-                AgencyComposer::class,
                 ProductCatalogueComposer::class,
             ];
 
-            foreach($composerClasses as $key => $val){
+            foreach ($composerClasses as $key => $val) {
                 $composer = app()->make($val, ['language' => $language->id]);
                 $composer->compose($view);
             }
         });
 
-      
 
-     
+
+
 
         Schema::defaultStringLength(191);
     }

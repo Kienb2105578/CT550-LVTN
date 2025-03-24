@@ -27,7 +27,6 @@
         .discover-text>* {
             display: inline-block;
             padding: 10px 25px;
-            background: #2f5acf;
             border-radius: 16px;
             cursor: pointer;
             color: #fff;
@@ -38,9 +37,8 @@
         }
 
         .checkout-box {
-            border: 1px solid #000;
             padding: 15px 20px;
-            border-radius: 16px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .cart-success .panel-body {
@@ -52,7 +50,6 @@
         }
 
         .checkout-box-head .order-title {
-            border: 1px solid #000;
             border-radius: 16px;
             padding: 10px 15px;
             font-weight: 700;
@@ -70,13 +67,10 @@
         .cart-success .table {
             width: 100%;
             border-spacing: 0;
-            background: #d9d9d9;
             border-collapse: inherit;
         }
 
         .cart-success .table thead>tr th {
-            color: #fff;
-            background: #2f5acf;
             font-weight: 500;
             font-size: 14px;
             vertical-align: middle;
@@ -131,6 +125,11 @@
         .uk-text-center {
             text-align: center;
         }
+
+        .detail-order div {
+            margin-bottom: 5px;
+            padding: 5px;
+        }
     </style>
 </head>
 
@@ -139,14 +138,35 @@
         <div class="panel-body">
             <h2 class="cart-heading"><span>Thông tin đơn hàng</span></h2>
             <div class="checkout-box">
-                <div class="checkout-box-head">
+                <div class="checkout-box-head" style="border-bottom: 1px solid #ccc;">
                     <div class="uk-grid uk-grid-medium uk-flex uk-flex-middle">
                         <div class="uk-width-large-1-3"></div>
-                        <div class="uk-width-large-1-3">
-                            <div class="order-title uk-text-center">ĐƠN HÀNG #{{ $data['order']->code }}</div>
-                        </div>
-                        <div class="uk-width-large-1-3">
-                            <div class="order-date">{{ convertDateTime($data['order']->created_at) }}</div>
+                        <div class="detail-order">
+                            <div><strong>Mã đơn hàng:</strong> #{{ $data['order']->code }}</div>
+                            <div><strong>Ngày đặt hàng:</strong> {{ convertDateTime($data['order']->created_at) }}</div>
+                            <div><strong>Tên người nhận: </strong>{{ $data['order']->fullname }}<span></span></div>
+                            <div><strong>Email:</strong> {{ $data['order']->email }}<span></span></div>
+                            @php
+                                $province = $data['order']->provinces->first()->name;
+                                $district = $data['order']->provinces
+                                    ->first()
+                                    ->districts->where('code', $data['order']->district_id)
+                                    ->first()->name;
+                                $ward = $data['order']->provinces
+                                    ->first()
+                                    ->districts->where('code', $data['order']->district_id)
+                                    ->first()
+                                    ->wards->where('code', $data['order']->ward_id)
+                                    ->first()->name;
+                            @endphp
+                            <div><strong>Địa chỉ: </strong>{{ $data['order']->address }}, {{ $ward }},
+                                {{ $district }},
+                                <span>{{ $province }}<span></span>
+                            </div>
+                            <div><strong>Số điện thoại: </strong>{{ $data['order']->phone }}<span></span></div>
+                            <div><strong>Hình thức thanh toán:</strong>
+                                {{ array_column(__('payment.method'), 'title', 'name')[$data['order']->method] ?? '-' }}<span></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -182,7 +202,8 @@
                         <tfoot>
                             <tr>
                                 <td colspan="4">Mã giảm giá</td>
-                                <td><strong>{{ $data['cartPromotion']['selectedPromotion']->code ?? '-' }}</strong></td>
+                                <td><strong>{{ $data['cartPromotion']['selectedPromotion']->code ?? '-' }}</strong>
+                                </td>
                             </tr>
                             <tr>
                                 <td colspan="4">Tổng giá trị sản phẩm</td>
@@ -207,18 +228,7 @@
                 </div>
             </div>
         </div>
-        <div class="panel-foot">
-            <h2 class="cart-heading"><span>Thông tin nhận hàng</span></h2>
-            <div class="checkout-box">
-                <div>Tên người nhận: {{ $data['order']->fullname }}<span></span></div>
-                <div>Email: {{ $data['order']->email }}<span></span></div>
-                <div>Địa chỉ: {{ $data['order']->address }}<span></span></div>
-                <div>Số điện thoại: {{ $data['order']->phone }}<span></span></div>
-                <div>Hình thức thanh toán:
-                    {{ array_column(__('payment.method'), 'title', 'name')[$data['order']->method] ?? '-' }}<span></span>
-                </div>
-            </div>
-        </div>
+
     </div>
 </body>
 

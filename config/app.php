@@ -171,6 +171,7 @@ return [
         App\Providers\LanguageComposerServiceProvider::class,
         App\Providers\LanguageProvider::class,
         Gloudemans\Shoppingcart\ShoppingcartServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
     ])->toArray(),
 
     /*

@@ -1,19 +1,21 @@
 <?php
+
 namespace App\Classes;
+
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
-class Paypal{
+class Paypal
+{
 
-    public function __construct(){
+    public function __construct() {}
 
-    }
-
-    public function payment($order){
+    public function payment($order)
+    {
 
         $usd = 23000;
         $cartTotal = $order->cart['cartTotal'] - $order->promotion['discount'];
 
-        $paypalValue = number_format($cartTotal/$usd, 2, '.', '');
+        $paypalValue = number_format($cartTotal / $usd, 2, '.', '');
 
         $provider = new PayPalClient;
         $provider = \PayPal::setProvider();
@@ -35,14 +37,14 @@ class Paypal{
                 ]
             ]
         ];
-                   
+
 
 
         $response = $provider->createOrder($data);
         $res['url'] = '';
-        if(!empty($response['id']) && $response['id'] != ''){
-            foreach($response['links'] as $key => $val){
-                if($val['rel'] == 'approve'){
+        if (!empty($response['id']) && $response['id'] != '') {
+            foreach ($response['links'] as $key => $val) {
+                if ($val['rel'] == 'approve') {
                     $res['url'] = $val['href'];
                     $res['errorCode'] = 0;
                 }
@@ -50,6 +52,4 @@ class Paypal{
         }
         return $res;
     }
-    
-	
 }

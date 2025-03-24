@@ -16,23 +16,32 @@ class ProductVariantRepository extends BaseRepository implements ProductVariantR
 
     public function __construct(
         ProductVariant $model
-    ){
+    ) {
         $this->model = $model;
     }
 
-    public function findVariant($code, $productId, $languageId){
-       $code = trim($code);
-        return $this->model->where(
-            [
-                ['code', '=', $code],
-                ['product_id', '=', $productId]
-            ]
-        )
-        ->with('languages', function($query) use ($languageId){
-            $query->where('language_id', $languageId);
-        })
-        ->first();
+    public function findVariant($code, $productId)
+    {
+        $code = trim($code);
+        return $this->model->where([
+            ['code', '=', $code],
+            ['product_id', '=', $productId]
+        ])
+            ->first();
     }
 
-    
+    public function getVariantInfo($variantId)
+    {
+        return $this->model->select('name', 'uuid')
+            ->where('id', $variantId)
+            ->first();
+    }
+
+    public function findProductVariant($productId, $uuid)
+    {
+        return $this->model->where([
+            ['product_id', '=', $productId],
+            ['uuid', '=', $uuid]
+        ])->first();
+    }
 }

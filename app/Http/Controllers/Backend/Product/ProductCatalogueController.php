@@ -14,6 +14,7 @@ use App\Classes\Nestedsetbie;
 use Auth;
 use App\Models\Language;
 use Illuminate\Support\Facades\App;
+
 class ProductCatalogueController extends Controller
 {
 
@@ -25,8 +26,8 @@ class ProductCatalogueController extends Controller
     public function __construct(
         ProductCatalogueService $productCatalogueService,
         ProductCatalogueRepository $productCatalogueRepository
-    ){
-        $this->middleware(function($request, $next){
+    ) {
+        $this->middleware(function ($request, $next) {
             $locale = app()->getLocale();
             $language = Language::where('canonical', $locale)->first();
             $this->language = $language->id;
@@ -39,15 +40,17 @@ class ProductCatalogueController extends Controller
         $this->productCatalogueRepository = $productCatalogueRepository;
     }
 
-    private function initialize(){
+    private function initialize()
+    {
         $this->nestedset = new Nestedsetbie([
             'table' => 'product_catalogues',
             'foreignkey' => 'product_catalogue_id',
             'language_id' =>  $this->language,
         ]);
-    } 
- 
-    public function index(Request $request){
+    }
+
+    public function index(Request $request)
+    {
         $this->authorize('modules', 'product.catalogue.index');
         $productCatalogues = $this->productCatalogueService->paginate($request, $this->language);
         $config = [
@@ -70,7 +73,8 @@ class ProductCatalogueController extends Controller
         ));
     }
 
-    public function create(){
+    public function create()
+    {
         $this->authorize('modules', 'product.catalogue.create');
         $config = $this->configData();
         $config['seo'] = __('messages.productCatalogue');
@@ -84,14 +88,16 @@ class ProductCatalogueController extends Controller
         ));
     }
 
-    public function store(StoreProductCatalogueRequest $request){
-        if($this->productCatalogueService->create($request, $this->language)){
-            return redirect()->route('product.catalogue.index')->with('success','Thêm mới bản ghi thành công');
+    public function store(StoreProductCatalogueRequest $request)
+    {
+        if ($this->productCatalogueService->create($request, $this->language)) {
+            return redirect()->route('product.catalogue.index')->with('success', 'Thêm mới bản ghi thành công');
         }
-        return redirect()->route('product.catalogue.index')->with('error','Thêm mới bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('product.catalogue.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
 
-    public function edit($id, Request $request){
+    public function edit($id, Request $request)
+    {
         $this->authorize('modules', 'product.catalogue.update');
         $productCatalogue = $this->productCatalogueRepository->getProductCatalogueById($id, $this->language);
         $queryUrl = $request->getQueryString();
@@ -109,15 +115,17 @@ class ProductCatalogueController extends Controller
         ));
     }
 
-    public function update($id, UpdateProductCatalogueRequest $request){
+    public function update($id, UpdateProductCatalogueRequest $request)
+    {
         $queryString = base64_decode($request->getQueryString());
-        if($this->productCatalogueService->update($id, $request, $this->language)){
-            return redirect()->route('product.catalogue.index', $queryString)->with('success','Cập nhật bản ghi thành công');
+        if ($this->productCatalogueService->update($id, $request, $this->language)) {
+            return redirect()->route('product.catalogue.index', $queryString)->with('success', 'Cập nhật bản ghi thành công');
         }
-        return redirect()->route('product.catalogue.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('product.catalogue.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $this->authorize('modules', 'product.catalogue.destroy');
         $config['seo'] = __('messages.productCatalogue');
         $productCatalogue = $this->productCatalogueRepository->getProductCatalogueById($id, $this->language);
@@ -129,14 +137,16 @@ class ProductCatalogueController extends Controller
         ));
     }
 
-    public function destroy(DeleteProductCatalogueRequest $request, $id){
-        if($this->productCatalogueService->destroy($id, $this->language)){
-            return redirect()->route('product.catalogue.index')->with('success','Xóa bản ghi thành công');
+    public function destroy(DeleteProductCatalogueRequest $request, $id)
+    {
+        if ($this->productCatalogueService->destroy($id, $this->language)) {
+            return redirect()->route('product.catalogue.index')->with('success', 'Xóa bản ghi thành công');
         }
-        return redirect()->route('product.catalogue.index')->with('error','Xóa bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('product.catalogue.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
 
-    private function configData(){
+    private function configData()
+    {
         return [
             'js' => [
                 'backend/plugins/ckeditor/ckeditor.js',
@@ -148,8 +158,7 @@ class ProductCatalogueController extends Controller
             'css' => [
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
             ]
-          
+
         ];
     }
-
 }

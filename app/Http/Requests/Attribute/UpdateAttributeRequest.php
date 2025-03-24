@@ -25,7 +25,8 @@ class UpdateAttributeRequest extends FormRequest
 
         return [
             'name' => 'required',
-            'canonical' => 'required|unique:routers,canonical, '.$this->id.',module_id',
+            'canonical' => 'required|unique:routers,canonical, ' . $this->id . ',module_id',
+            'attribute_catalogue_id' => 'gt:0',
         ];
     }
 
@@ -35,6 +36,7 @@ class UpdateAttributeRequest extends FormRequest
             'name.required' => 'Bạn chưa nhập vào ô tiêu đề.',
             'canonical.required' => 'Bạn chưa nhập vào ô đường dẫn',
             'canonical.unique' => 'Đường dẫn đã tồn tại, Hãy chọn đường dẫn khác',
+            'attribute_catalogue_id.gt' => 'Bạn phải nhập vào danh mục cha'
         ];
     }
 }

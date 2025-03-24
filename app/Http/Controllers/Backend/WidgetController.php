@@ -26,11 +26,11 @@ class WidgetController extends Controller
         WidgetService $widgetService,
         WidgetRepository $widgetRepository,
         LanguageRepository $languageRepository,
-    ){
+    ) {
         $this->widgetService = $widgetService;
         $this->widgetRepository = $widgetRepository;
         $this->languageRepository = $languageRepository;
-        $this->middleware(function($request, $next){
+        $this->middleware(function ($request, $next) {
             $locale = app()->getLocale(); // vn en cn
             $language = Language::where('canonical', $locale)->first();
             $this->language = $language->id;
@@ -38,10 +38,11 @@ class WidgetController extends Controller
         });
     }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $this->authorize('modules', 'widget.index');
         $widgets = $this->widgetService->paginate($request);
-      
+
         $config = [
             'js' => [
                 'backend/js/plugins/switchery/switchery.js',
@@ -62,7 +63,8 @@ class WidgetController extends Controller
         ));
     }
 
-    public function create(){
+    public function create()
+    {
         $this->authorize('modules', 'widget.create');
         $config = $this->config();
         $config['seo'] = __('messages.widget');
@@ -71,24 +73,26 @@ class WidgetController extends Controller
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
-            
+
         ));
     }
 
-    public function store(StoreWidgetRequest $request){
-        if($this->widgetService->create($request, $this->language)){
-            return redirect()->route('widget.index')->with('success','Thêm mới bản ghi thành công');
+    public function store(StoreWidgetRequest $request)
+    {
+        if ($this->widgetService->create($request, $this->language)) {
+            return redirect()->route('widget.index')->with('success', 'Thêm mới bản ghi thành công');
         }
-        return redirect()->route('widget.index')->with('error','Thêm mới bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('widget.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
 
-    private function menuItemAgrument(array $whereIn = []){
+    private function menuItemAgrument(array $whereIn = [])
+    {
         $language = $this->language;
         return [
             'condition' => [],
             'flag' => true,
             'relation' => [
-                'languages' => function($query) use ($language) {
+                'languages' => function ($query) use ($language) {
                     $query->where('language_id',  $language);
                 }
             ],
@@ -100,17 +104,17 @@ class WidgetController extends Controller
         ];
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         $this->authorize('modules', 'widget.update');
         $widget = $this->widgetRepository->findById($id);
         $widget->description = $widget->description[$this->language];
         $modelClass = loadClass($widget->model);
-        
 
 
-        $widgetItem = convertArrayByKey($modelClass->findByCondition(
-            ...array_values($this->menuItemAgrument($widget->model_id))
-         ), ['id','name.languages', 'image']);
+
+        $menuItems = $this->menuItemAgrument(is_array($widget->model_id) ? $widget->model_id : []);
+        $widgetItem = convertArrayByKey($modelClass->findByCondition(...array_values($menuItems)), ['id', 'name.languages', 'image']);
         $config = $this->config();
 
         $config['seo'] = __('messages.widget');
@@ -124,14 +128,16 @@ class WidgetController extends Controller
         ));
     }
 
-    public function update($id, UpdateWidgetRequest $request){
-        if($this->widgetService->update($id, $request, $this->language)){
-            return redirect()->route('widget.index')->with('success','Cập nhật bản ghi thành công');
+    public function update($id, UpdateWidgetRequest $request)
+    {
+        if ($this->widgetService->update($id, $request, $this->language)) {
+            return redirect()->route('widget.index')->with('success', 'Cập nhật bản ghi thành công');
         }
-        return redirect()->route('widget.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('widget.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $this->authorize('modules', 'widget.destroy');
         $config['seo'] = __('messages.widget');
         $widget = $this->widgetRepository->findById($id);
@@ -143,14 +149,16 @@ class WidgetController extends Controller
         ));
     }
 
-    public function destroy($id){
-        if($this->widgetService->destroy($id)){
-            return redirect()->route('widget.index')->with('success','Xóa bản ghi thành công');
+    public function destroy($id)
+    {
+        if ($this->widgetService->destroy($id)) {
+            return redirect()->route('widget.index')->with('success', 'Xóa bản ghi thành công');
         }
-        return redirect()->route('widget.index')->with('error','Xóa bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('widget.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
 
-    public function translate($languageId, $widgetId){
+    public function translate($languageId, $widgetId)
+    {
         $this->authorize('modules', 'widget.translate');
         $widget = $this->widgetRepository->findById($widgetId);
         $widget->jsonDescription = $widget->description;
@@ -174,14 +182,16 @@ class WidgetController extends Controller
         ));
     }
 
-    public function saveTranslate(Request $request){
-        if($this->widgetService->saveTranslate($request, $this->language)){
-            return redirect()->route('widget.index')->with('success','Tạo bản dịch thành công');
+    public function saveTranslate(Request $request)
+    {
+        if ($this->widgetService->saveTranslate($request, $this->language)) {
+            return redirect()->route('widget.index')->with('success', 'Tạo bản dịch thành công');
         }
-        return redirect()->route('widget.index')->with('error','Tạo bản dịch không thành công. Hãy thử lại');
+        return redirect()->route('widget.index')->with('error', 'Tạo bản dịch không thành công. Hãy thử lại');
     }
 
-    private function config(){
+    private function config()
+    {
         return [
             'css' => [
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
@@ -195,5 +205,4 @@ class WidgetController extends Controller
             ]
         ];
     }
-
 }

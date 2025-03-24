@@ -6,32 +6,33 @@ use App\Http\Controllers\FrontendController;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\OrderRepositoryInterface  as OrderRepository;
 use App\Services\Interfaces\OrderServiceInterface  as OrderService;
-
+use Illuminate\Support\Facades\Log;
 
 class VnpayController extends FrontendController
 {
-  
+
     protected $orderRepository;
     protected $orderService;
 
     public function __construct(
         OrderRepository $orderRepository,
         OrderService $orderService,
-    ){
-       
+    ) {
+
         $this->orderRepository = $orderRepository;
         $this->orderService = $orderService;
         parent::__construct();
     }
 
 
-    public function vnpay_return(Request $request){
+    public function vnpay_return(Request $request)
+    {
 
         $orderCode = $request->input('vnp_TxnRef');
-       
+
         $system = $this->system;
         $seo = [
-            'meta_title' => 'Thông tin thanh toán mã đơn hàng #'.$orderCode,
+            'meta_title' => 'Thông tin thanh toán mã đơn hàng #' . $orderCode,
             'meta_keyword' => '',
             'meta_description' => '',
             'meta_image' => '',
@@ -39,15 +40,15 @@ class VnpayController extends FrontendController
         ];
 
         $configVnpay = vnpayConfig();
-          
+
         $vnp_TmnCode = $configVnpay['vnp_TmnCode'];
-        $vnp_HashSecret = $configVnpay['vnp_HashSecret']; 
+        $vnp_HashSecret = $configVnpay['vnp_HashSecret'];
         $vnp_Url = $configVnpay['vnp_Url'];
         $vnp_Returnurl = $configVnpay['vnp_Returnurl'];
         $vnp_apiUrl = $configVnpay['vnp_apiUrl'];
         $apiUrl = $configVnpay['apiUrl'];
         $startTime = date("YmdHis");
-        $expire = date('YmdHis',strtotime('+15 minutes',strtotime($startTime)));
+        $expire = date('YmdHis', strtotime('+15 minutes', strtotime($startTime)));
 
 
         $vnp_SecureHash = $_GET['vnp_SecureHash'];
@@ -57,7 +58,7 @@ class VnpayController extends FrontendController
                 $inputData[$key] = $value;
             }
         }
-        
+
         unset($inputData['vnp_SecureHash']);
         ksort($inputData);
         $i = 0;
@@ -79,6 +80,19 @@ class VnpayController extends FrontendController
                 ], false, ['products']);
 
 
+                if ($order->payment != NULL && $order->payment == 'unpaid') {
+                    if ($_GET['vnp_ResponseCode'] == '00' || $_GET['vnp_TransactionStatus'] == '00') {
+                        Log::info('THÀNH CÔNG');
+                        $payload['payment'] = 'paid';
+                        $payload['confirm'] = 'confirm';
+                    } else {
+                        $payload['payment'] = 'failed';
+                        $payload['confirm'] = 'confirm';
+                    }
+
+                    $this->orderService->updatePaymentOnline($payload, $order);
+                }
+
                 $template = 'frontend.cart.component.vnpay';
                 return view('frontend.cart.success', compact(
                     'seo',
@@ -88,27 +102,23 @@ class VnpayController extends FrontendController
                     'secureHash',
                     'vnp_SecureHash',
                 ));
-            } 
-            else {
-                echo "GD Khong thanh cong"; die();
             }
-        } else {
-            echo "Chu ky khong hop le"; die();
         }
     }
 
-    public function vnpay_ipn(){
+    public function vnpay_ipn()
+    {
 
         $configVnpay = vnpayConfig();
-          
+
         $vnp_TmnCode = $configVnpay['vnp_TmnCode'];
-        $vnp_HashSecret = $configVnpay['vnp_HashSecret']; 
+        $vnp_HashSecret = $configVnpay['vnp_HashSecret'];
         $vnp_Url = $configVnpay['vnp_Url'];
         $vnp_Returnurl = $configVnpay['vnp_Returnurl'];
         $vnp_apiUrl = $configVnpay['vnp_apiUrl'];
         $apiUrl = $configVnpay['apiUrl'];
         $startTime = date("YmdHis");
-        $expire = date('YmdHis',strtotime('+15 minutes',strtotime($startTime)));
+        $expire = date('YmdHis', strtotime('+15 minutes', strtotime($startTime)));
 
 
 
@@ -138,11 +148,11 @@ class VnpayController extends FrontendController
         $secureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
         $vnpTranId = $inputData['vnp_TransactionNo']; //Mã giao dịch tại VNPAY
         $vnp_BankCode = $inputData['vnp_BankCode']; //Ngân hàng thanh toán
-        $vnp_Amount = $inputData['vnp_Amount']/100; // Số tiền thanh toán VNPAY phản hồi
+        $vnp_Amount = $inputData['vnp_Amount'] / 100; // Số tiền thanh toán VNPAY phản hồi
 
         $Status = 0; // Là trạng thái thanh toán của giao dịch chưa có IPN lưu tại hệ thống của merchant chiều khởi tạo URL thanh toán.
         $orderId = $inputData['vnp_TxnRef'];
-        
+
         try {
             //Check Orderid    
             //Kiểm tra checksum của dữ liệu
@@ -160,28 +170,27 @@ class VnpayController extends FrontendController
 
                     $orderAmount = $order->cart['cartTotal'] - $order->promotion['discount'];
 
-                    if($orderAmount == $vnp_Amount) //Kiểm tra số tiền thanh toán của giao dịch: giả sử số tiền kiểm tra là đúng. //$order["Amount"] == $vnp_Amount
+                    if ($orderAmount == $vnp_Amount) //Kiểm tra số tiền thanh toán của giao dịch: giả sử số tiền kiểm tra là đúng. //$order["Amount"] == $vnp_Amount
                     {
                         if ($order->payment != NULL && $order->payment == 'unpaid') {
                             if ($inputData['vnp_ResponseCode'] == '00' || $inputData['vnp_TransactionStatus'] == '00') {
-                               $payload['payment'] = 'paid';
-                               $payload['confirm'] = 'confirm';
-                            }else{
+                                $payload['payment'] = 'paid';
+                                $payload['confirm'] = 'confirm';
+                            } else {
                                 $payload['payment'] = 'failed';
                                 $payload['confirm'] = 'confirm';
                             }
 
                             $flag = $this->orderService->updatePaymentOnline($payload, $order);
 
-                                  
+
                             $returnData['RspCode'] = '00';
                             $returnData['Message'] = 'Confirm Success';
                         } else {
                             $returnData['RspCode'] = '02';
                             $returnData['Message'] = 'Order already confirmed';
                         }
-                    }
-                    else {
+                    } else {
                         $returnData['RspCode'] = '04';
                         $returnData['Message'] = 'invalid amount';
                     }
@@ -199,9 +208,5 @@ class VnpayController extends FrontendController
         }
         //Trả lại VNPAY theo định dạng JSON
         echo json_encode($returnData);
-                
     }
-
-  
-
 }

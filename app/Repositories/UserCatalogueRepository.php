@@ -16,8 +16,15 @@ class UserCatalogueRepository extends BaseRepository implements UserCatalogueRep
 
     public function __construct(
         UserCatalogue $model
-    ){
+    ) {
         $this->model = $model;
     }
-    
+
+    public function getActiveUserCatalogueList()
+    {
+        return $this->model
+            ->where('publish', 2)
+            ->pluck('name', 'id')
+            ->toArray();
+    }
 }

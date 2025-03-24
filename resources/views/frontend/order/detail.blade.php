@@ -1,12 +1,229 @@
-<html>
+@extends('frontend.homepage.layout')
+@section('content')
+    <div id="customer-container" class="customer-container container p-5">
+        <div class="row">
+            <div class="col-12 col-lg-3 mx-auto mt-20">
+                <div class="list-group">
+                    <a href="{{ route('customer.profile') }}" class="list-group-item list-group-item-action"
+                        aria-current="true">
+                        Tài khoản của tôi
+                    </a>
+                    <a href="{{ route('my-order.index') }}" class="list-group-item list-group-item-action active"
+                        aria-current="true">
+                        Đơn hàng đã mua
+                    </a>
+                    <a href="{{ route('customer.password.change') }}" class="list-group-item list-group-item-action">Đổi
+                        mật
+                        khẩu</a>
+                    <a href="{{ route('customer.logout') }}" class="list-group-item list-group-item-action">Đăng
+                        xuất</a>
+                </div>
+            </div>
+            <div class="col-12  col-lg-9 mx-auto">
+                @include('backend/dashboard/component/formError')
 
-<head>
-    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+                <h4 class="text-center mb-3">Chi Tiết Đơn Hàng</h4>
+                <div class="order-section px-5">
+                    <!-- Thông tin người mua -->
+                    <div class="order-header row mb-20"
+                        style="background-color: rgb(246, 246, 246);
+                            padding: 10px;">
+                        <div class="order-info row">
+                            <div class="col-lg-6">
+                                <div class="order-item">
+                                    <div class="label"><strong>Tên người mua:</strong></div>
+                                    <div class="value">{{ $order->fullname }}</div>
+                                </div>
+                                <div class="order-item">
+                                    <div class="label"><strong>Email:</strong></div>
+                                    <div class="value">{{ $order->email }}</div>
+                                </div>
+                                <div class="order-item">
+                                    <div class="label"><strong>Số điện thoại:</strong></div>
+                                    <div class="value">{{ $order->phone }}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="order-item">
+                                    <div class="label"><strong>Địa chỉ:</strong></div>
+                                    <div class="value">{{ $order->address }}</div>
+                                </div>
+                                <div class="order-item">
+                                    <div class="label"><strong>Phường/Xã:</strong></div>
+                                    <div class="value">{{ $order->ward_name }}</div>
+                                </div>
+                                <div class="order-item">
+                                    <div class="label"><strong>Quận/Huyện:</strong></div>
+                                    <div class="value">{{ $order->district_name }}</div>
+                                </div>
+                                <div class="order-item">
+                                    <div class="label"><strong>Tỉnh/Thành phố:</strong></div>
+                                    <div class="value">{{ $order->province_name }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trạng thái đơn hàng -->
+                    <div class="row order-status mb-20" style="background-color: rgb(246, 246, 246); padding: 10px;">
+                        <div class="col-lg-6">
+                            <div class="order-item align-items-center">
+                                <div class="label"><strong>Trạng thái:</strong></div>
+                                <div class="value">
+                                    @if ($order->confirm == 'confirm')
+                                        @if ($order->delivery == 'pending')
+                                            <span class="text-warning"><strong>ĐANG CHỜ VẬN CHUYỂN</strong></span>
+                                        @elseif ($order->delivery == 'processing')
+                                            <span class="text-info"><strong>ĐANG VẬN CHUYỂN</strong></span>
+                                        @elseif ($order->delivery == 'success')
+                                            <span class="text-success"><strong>GIAO HÀNG THÀNH CÔNG</strong></span>
+                                        @elseif ($order->delivery == 'returned' && $order->payment == 'refunded')
+                                            <span class="text-info"><strong>ĐƠN HÀNG ĐANG ĐƯỢC HOÀN TRẢ</strong></span>
+                                        @endif
+                                    @elseif ($order->confirm == 'cancle')
+                                        <span class="text-danger"><strong>ĐƠN HÀNG ĐÃ ĐƯỢC HỦY</strong></span>
+                                    @elseif ($order->confirm == 'pending')
+                                        <span class="text-primary"><strong>CHỜ XÁC NHẬN ĐƠN HÀNG</strong></span>
+                                    @elseif ($order->confirm == 'returned')
+                                        <span class="text-success"><strong>TRẢ HÀNG THÀNH CÔNG</strong></span>
+                                    @endif
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 text-right">
+                            @if ($order->confirm != 'cancle' && $order->payment == 'unpaid' && $order->delivery == 'pending')
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="button cancelOrderButton">
+                                    HỦY ĐƠN
+                                </button>
+                            @endif
+                            @if (
+                                $order->confirm == 'confirm' &&
+                                    $order->payment == 'paid' &&
+                                    $order->delivery == 'success' &&
+                                    \Carbon\Carbon::parse($order->updated_at)->diffInDays(now()) < 15)
+                                <button type="button" class="button returnOrderButton">
+                                    TRẢ HÀNG
+                                </button>
+                            @endif
+
+
+                        </div>
+                    </div>
+
+                    <!-- Danh sách sản phẩm -->
+                    <div class="order-items row "
+                        style="background-color: rgb(246, 246, 246);
+                            padding: 10px; margin-bottom: 10px;">
+                        @foreach ($order->products as $key => $val)
+                            @php
+                                $name = $val->pivot->name;
+                                $qty = $val->pivot->qty;
+                                $price = convert_price($val->pivot->price, true);
+                                $priceOriginal = convert_price($val->pivot->priceOriginal, true);
+                                $subtotal = convert_price($val->pivot->price * $qty, true);
+                                $image = image($val->image);
+                            @endphp
+                            <div class="order-item">
+                                <img alt="Mặc định" height="100" src="{{ $image }}" width="100" />
+                                <div class="item-details">
+                                    <div class="item-name">
+                                        {{ $name }}
+                                    </div>
+                                    <div class="item-category">
+                                        Phân loại hàng: {{ $val->pivot->category }}
+                                    </div>
+                                    <div class="item-quantity">
+                                        x{{ $qty }}
+                                    </div>
+                                </div>
+                                <div class="item-price">
+                                    <div class="text-danger">
+                                        {{ $price }} đ
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    <input type="hidden" class="orderId" value="{{ $order->id }}">
+                    <div class="orderData" data-order='@json($order)'></div>
+
+                    <!-- Tổng tiền -->
+                    <div class="order-footer row "
+                        style="background-color: rgb(246, 246, 246);
+                            padding: 10px;">
+                        <div class="col-lg-8"></div>
+                        <div class="col-lg-4 total-price">
+                            <strong>Thành tiền:</strong>
+                            {{ convert_price($order->cart['cartTotal'], true) }} đ
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+@endsection
+@section('css')
     <style>
-        body {
-            background-color: #f5f5f5;
+        .order-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .button.cancelOrderButton {
+            background: linear-gradient(to right, #cc0000, #ff3300);
+            color: white;
+            text-transform: uppercase;
+            border-radius: 5px;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .mt-20 {
+            margin-bottom: 20px
+        }
+
+        .button.cancelOrderButton:hover {
+            background: darkred;
+        }
+
+
+        .order-item {
+            display: flex;
+        }
+
+        .order-status .text-right {
+            text-align: right;
+        }
+
+        .order-info {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .order-item {
+            display: flex;
+        }
+
+        .label {
+            flex: 0 0 40%;
+            font-weight: bold;
+        }
+
+        .value {
+            flex: 1;
+        }
+
+        .order-item strong {
+            margin-right: 10px;
         }
 
         .profile-section {
@@ -14,6 +231,10 @@
             padding: 20px;
             border-radius: 5px;
             margin-bottom: 20px;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px
         }
 
         .profile-section img {
@@ -41,7 +262,6 @@
 
         .order-section {
             background-color: #fff;
-            padding: 20px;
             border-radius: 5px;
         }
 
@@ -57,6 +277,11 @@
             font-weight: bold;
         }
 
+        #backround-padding {
+            background-color: rgb(246, 246, 246);
+            padding: 20px;
+        }
+
         .order-header .btn {
             font-size: 14px;
         }
@@ -65,7 +290,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            margin-top: 10px;
         }
 
         .order-item img {
@@ -110,256 +336,37 @@
             font-size: 14px;
         }
     </style>
-
-
-
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            function updateContainerClass() {
+                const container = document.getElementById("customer-container");
+                if (window.innerWidth > 960) {
+                    container.classList.add("container");
+                } else {
+                    container.classList.remove("container");
+                }
+            }
+            updateContainerClass();
+            window.addEventListener("resize", updateContainerClass);
+        });
+    </script>
     <style>
-        body {
-            background-color: #f5f5f5;
-        }
-    
-        .product-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 20px;
-        }
-    
-        .product-item img {
-            width: 60px;
-            height: 60px;
-            margin-right: 10px;
-        }
-    
-        .product-item .badge {
-            background-color: #ff424f;
-            color: white;
-            font-size: 12px;
-            margin-right: 5px;
-        }
-    
-        .product-item .product-details {
-            flex-grow: 1;
-        }
-    
-        .product-item .product-details p {
-            margin: 0;
-        }
-    
-        .product-item .product-details .product-name {
-            font-size: 14px;
-            font-weight: bold;
-        }
-    
-        .product-item .product-details .product-type {
-            font-size: 12px;
-            color: #666;
-        }
-    
-        .product-item .product-details .product-quantity {
-            font-size: 12px;
-            color: #666;
-        }
-    
-        .summary-table {
-            width: 100%;
-            margin-top: 20px;
-        }
-    
-        .summary-table td {
-            padding: 10px 0;
-        }
-    
-        .summary-table .total-amount {
-            font-size: 18px;
-            color: #ff424f;
-            font-weight: bold;
-        }
-    
-        .summary-table .total-amount-cell {
-            text-align: right;
-        }
-    
-        .summary-table .info-icon {
-            font-size: 12px;
-            color: #999;
-        }
-    
-        .payment-method {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #fff8e1;
-            border: 1px solid #ffecb3;
-            color: #ff9800;
-            font-size: 14px;
-        }
-    
-        .payment-method .payment-amount {
-            font-size: 18px;
-            color: #ff424f;
-            font-weight: bold;
+        .btn-main {
+            height: 33px;
+            background: #da2229;
+            text-transform: uppercase;
+            color: #fff;
+            font-weight: 600;
+            right: 5px;
+            top: 6px;
+            border: 12px;
+            padding: 0 20px;
+            border-radius: 5px;
         }
     </style>
-</head>
-
-<body>
-    <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-3">
-                <div class="profile-section text-center">
-                    <img alt="User profile picture" height="100"
-                        src="https://storage.googleapis.com/a1aa/image/F20ybQFkEpoQH9YP8b46FDQHfxgUi88veXsvNpnvHak62MzTA.jpg"
-                        width="100" />
-                    <div class="username mt-2">
-                        Bảo Minh
-                    </div>
-                    <div class="edit-profile">
-                        <i class="fas fa-edit">
-                        </i>
-                        Sửa Hồ Sơ
-                    </div>
-                </div>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-user">
-                            </i>
-                            Tài Khoản Của Tôi
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">
-                            <i class="fas fa-shopping-bag">
-                            </i>
-                            Đơn Mua
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-bell">
-                            </i>
-                            Thông Báo
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-md-9">
-                <div class="order-section">
-
-                    <div class="product-item">
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d149498.57983001356!2d105.84611573691804!3d10.055947492398122!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2s!4v1732190959809!5m2!1sen!2s"
-                            width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    </div>
-                    
-                    <div class="product-item">
-                        <img alt="Product image of a black face mask with a hat" height="60"
-                            src="https://storage.googleapis.com/a1aa/image/3pwjc6dA2OrwKhAjSTDf5pe93f3mW31qZ9qgxk7WS2xMgamnA.jpg"
-                            width="60" />
-                        <div class="product-details">
-                            <span class="badge">
-                                Quà Tặng
-                            </span>
-                            <p class="product-name">
-                                Khẩu Trang Có Nón Che Mặt Cổ Vai Chống Tia UV Vải Nhung Cao Cấp Thoáng Mát ( Fashion Hat Mask Co
-                                Giãn Tản Nhiệt Tốt )
-                            </p>
-                            <p class="product-type">
-                                Phân loại hàng: ✤ 1 Khẩu Trang 5D
-                            </p>
-                            <p class="product-quantity">
-                                x1
-                            </p>
-                        </div>
-                    </div>
-                    <div class="product-item">
-                        <img alt="Product image of a black face mask with a hat" height="60"
-                            src="https://storage.googleapis.com/a1aa/image/3pwjc6dA2OrwKhAjSTDf5pe93f3mW31qZ9qgxk7WS2xMgamnA.jpg"
-                            width="60" />
-                        <div class="product-details">
-                            <span class="badge">
-                                Quà Tặng
-                            </span>
-                            <p class="product-name">
-                                Bịt Mặt Chống Nắng Nam Khăn Ống Đa Năng Đi Phượt Chống Tia UV ( Khẩu Trang Trùm Đầu Full Kín Vải Dày
-                                Logo Đổi Màu )
-                            </p>
-                            <p class="product-type">
-                                Phân loại hàng: ✤ 1 Khẩu Trang 5D
-                            </p>
-                            <p class="product-quantity">
-                                x1
-                            </p>
-                        </div>
-                    </div>
-                    <div class="product-item">
-                        <img alt="Product image of a UV test card and a small UV flashlight" height="60"
-                            src="https://storage.googleapis.com/a1aa/image/JRhZLKCOEvaoMVfSeE9IE2GJ1FbzM1hf6MqYsK35WcNRgamnA.jpg"
-                            width="60" />
-                        <div class="product-details">
-                            <span class="badge">
-                                Quà Tặng
-                            </span>
-                            <p class="product-name">
-                                [ Thẻ Test UV ] Đèn Pin UV Mini Nhỏ Gọn Có Móc Khóa Soi Huỳnh Quang Vi Khuẩn Đa Năng ( Đèn Tia Cực
-                                Tím )
-                            </p>
-                            <p class="product-type">
-                                Phân loại hàng: 1 Thẻ Nhựa UV / Ánh Tím
-                            </p>
-                            <p class="product-quantity">
-                                x1
-                            </p>
-                        </div>
-                    </div>
-                    <table class="summary-table">
-                        <tr>
-                            <td>
-                                Tổng tiền hàng
-                            </td>
-                            <td class="total-amount-cell">
-                                ₫51.800
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Phí vận chuyển
-                            </td>
-                            <td class="total-amount-cell">
-                                ₫32.200
-                            </td>
-                        </tr>
-                        
-                    
-                        <tr>
-                            <td>
-                                Thành tiền
-                            </td>
-                            <td class="total-amount total-amount-cell">
-                                ₫58.300
-                            </td>
-                        </tr>
-                    </table>
-                    <div class="payment-method">
-                        <span>
-                            Vui lòng thanh toán
-                            <span class="payment-amount">
-                                ₫58.300
-                            </span>
-                            khi nhận hàng.
-                        </span>
-                    </div>
-
-
-                    <hr>
-
-                    
-            
-
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-
-</html>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
+@endsection

@@ -16,37 +16,41 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
     public function __construct(
         User $model
-    ){
+    ) {
         $this->model = $model;
     }
-    
+
     public function userPagination(
-        array $column = ['*'], 
-        array $condition = [], 
+        array $column = ['*'],
+        array $condition = [],
         int $perPage = 1,
         array $extend = [],
         array $orderBy = ['id', 'DESC'],
         array $join = [],
         array $relations = [],
-    ){
+    ) {
 
-        $query = $this->model->select($column)->where(function($query) use ($condition){
-            if(isset($condition['keyword']) && !empty($condition['keyword'])){
-                $query->where('name', 'LIKE', '%'.$condition['keyword'].'%')
-                      ->orWhere('email', 'LIKE', '%'.$condition['keyword'].'%')
-                      ->orWhere('address', 'LIKE', '%'.$condition['keyword'].'%')
-                      ->orWhere('phone', 'LIKE', '%'.$condition['keyword'].'%');
+        $query = $this->model->select($column)->where(function ($query) use ($condition) {
+            if (isset($condition['keyword']) && !empty($condition['keyword'])) {
+                $query->where('name', 'LIKE', '%' . $condition['keyword'] . '%')
+                    ->orWhere('email', 'LIKE', '%' . $condition['keyword'] . '%')
+                    ->orWhere('address', 'LIKE', '%' . $condition['keyword'] . '%')
+                    ->orWhere('phone', 'LIKE', '%' . $condition['keyword'] . '%');
             }
-            if(isset($condition['publish']) && $condition['publish'] != 0){
+            if (isset($condition['publish']) && $condition['publish'] != 0) {
                 $query->where('publish', '=', $condition['publish']);
             }
             return $query;
         })->with('user_catalogues');
-        if(!empty($join)){
+        if (!empty($join)) {
             $query->join(...$join);
         }
 
         return $query->paginate($perPage)
-                    ->withQueryString()->withPath(env('APP_URL').$extend['path']);
+            ->withQueryString()->withPath(env('APP_URL') . $extend['path']);
+    }
+    public function getUserByEmail(string $email)
+    {
+        return $this->model->where('email', $email)->first();
     }
 }

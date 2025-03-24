@@ -21,18 +21,19 @@ class ReportController extends Controller
         OrderService $orderService,
         CustomerService $customerService,
         OrderRepository $orderRepository,
-    ){
+    ) {
         $this->orderService = $orderService;
         $this->customerService = $customerService;
         $this->orderRepository = $orderRepository;
     }
 
-    public function time(Request $request){
+    public function time(Request $request)
+    {
         $user = Auth::guard('web')->User();
-        $orderStatistic = $this->orderService->statistic(); 
+        $orderStatistic = $this->orderService->statistic();
         $customerStatistic = $this->customerService->statistic();
         $reports = [];
-        if($request->input('startDate')){
+        if ($request->input('startDate')) {
             $startDate = $request->input('startDate');
             $endDate = $request->input('endDate');
             $startDate = date("Y-m-d H:i:s", strtotime(str_replace('/', '-', $startDate)));
@@ -50,13 +51,14 @@ class ReportController extends Controller
             'reports'
         ));
     }
-    
-    public function product(Request $request){
+
+    public function product(Request $request)
+    {
         $user = Auth::guard('web')->User();
-        $orderStatistic = $this->orderService->statistic(); 
+        $orderStatistic = $this->orderService->statistic();
         $customerStatistic = $this->customerService->statistic();
         $reports = [];
-        if($request->input('startDate')){
+        if ($request->input('startDate')) {
             $startDate = $request->input('startDate');
             $endDate = $request->input('endDate');
             $startDate = date("Y-m-d H:i:s", strtotime(str_replace('/', '-', $startDate)));
@@ -75,13 +77,14 @@ class ReportController extends Controller
         ));
     }
 
-    public function customer(Request $request){
+    public function customer(Request $request)
+    {
         $user = Auth::guard('web')->User();
-        $orderStatistic = $this->orderService->statistic(); 
+        $orderStatistic = $this->orderService->statistic();
         $customerStatistic = $this->customerService->statistic();
         $reports = [];
         $totalSumaryRevenue = [];
-        if($request->input('startDate')){
+        if ($request->input('startDate')) {
             $startDate = $request->input('startDate');
             $endDate = $request->input('endDate');
             $startDate = date("Y-m-d H:i:s", strtotime(str_replace('/', '-', $startDate)));
@@ -104,7 +107,8 @@ class ReportController extends Controller
     }
 
 
-    private function config(){
+    private function config()
+    {
         return [
             'js' => [
                 'backend/js/plugins/chartJs/Chart.min.js',
@@ -117,5 +121,4 @@ class ReportController extends Controller
             ]
         ];
     }
-
 }

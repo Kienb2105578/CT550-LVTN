@@ -15,23 +15,24 @@ use Illuminate\Support\Facades\Auth;
 class SystemService implements SystemServiceInterface
 {
     protected $systemRepository;
-    
+
 
     public function __construct(
         SystemRepository $systemRepository
-    ){
+    ) {
         $this->systemRepository = $systemRepository;
     }
 
-    
-    public function save($request, $languageId){
+
+    public function save($request, $languageId)
+    {
         DB::beginTransaction();
-        try{
+        try {
 
             $config = $request->input('config');
             $payload = [];
-            if(count($config)){
-                foreach($config as $key => $val){
+            if (count($config)) {
+                foreach ($config as $key => $val) {
                     $payload = [
                         'keyword' => $key,
                         'content' => $val,
@@ -42,18 +43,14 @@ class SystemService implements SystemServiceInterface
                     $this->systemRepository->updateOrInsert($payload, $condition);
                 }
             }
-            
-           
             DB::commit();
             return true;
-        }catch(\Exception $e ){
+        } catch (\Exception $e) {
             DB::rollBack();
             // Log::error($e->getMessage());
-            echo $e->getMessage();die();
+            echo $e->getMessage();
+            die();
             return false;
         }
     }
-
-    
-
 }

@@ -14,6 +14,7 @@ use App\Classes\Nestedsetbie;
 use Auth;
 use App\Models\Language;
 use Illuminate\Support\Facades\App;
+
 class PostCatalogueController extends Controller
 {
 
@@ -25,8 +26,8 @@ class PostCatalogueController extends Controller
     public function __construct(
         PostCatalogueService $postCatalogueService,
         PostCatalogueRepository $postCatalogueRepository
-    ){
-        $this->middleware(function($request, $next){
+    ) {
+        $this->middleware(function ($request, $next) {
             $locale = app()->getLocale();
             $language = Language::where('canonical', $locale)->first();
             $this->language = $language->id;
@@ -39,15 +40,16 @@ class PostCatalogueController extends Controller
         $this->postCatalogueRepository = $postCatalogueRepository;
     }
 
-    private function initialize(){
+    private function initialize()
+    {
         $this->nestedset = new Nestedsetbie([
             'table' => 'post_catalogues',
             'foreignkey' => 'post_catalogue_id',
-            'language_id' =>  $this->language,
         ]);
-    } 
- 
-    public function index(Request $request){
+    }
+
+    public function index(Request $request)
+    {
         $this->authorize('modules', 'post.catalogue.index');
         $postCatalogues = $this->postCatalogueService->paginate($request, $this->language);
         $config = [
@@ -70,7 +72,8 @@ class PostCatalogueController extends Controller
         ));
     }
 
-    public function create(){
+    public function create()
+    {
         $this->authorize('modules', 'post.catalogue.create');
         $config = $this->configData();
         $config['seo'] = __('messages.postCatalogue');
@@ -84,14 +87,16 @@ class PostCatalogueController extends Controller
         ));
     }
 
-    public function store(StorePostCatalogueRequest $request){
-        if($this->postCatalogueService->create($request, $this->language)){
-            return redirect()->route('post.catalogue.index')->with('success','Thêm mới bản ghi thành công');
+    public function store(StorePostCatalogueRequest $request)
+    {
+        if ($this->postCatalogueService->create($request, $this->language)) {
+            return redirect()->route('post.catalogue.index')->with('success', 'Thêm mới bản ghi thành công');
         }
-        return redirect()->route('post.catalogue.index')->with('error','Thêm mới bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('post.catalogue.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         $this->authorize('modules', 'post.catalogue.update');
         $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($id, $this->language);
         $config = $this->configData();
@@ -107,14 +112,16 @@ class PostCatalogueController extends Controller
         ));
     }
 
-    public function update($id, UpdatePostCatalogueRequest $request){
-        if($this->postCatalogueService->update($id, $request, $this->language)){
-            return redirect()->route('post.catalogue.index')->with('success','Cập nhật bản ghi thành công');
+    public function update($id, UpdatePostCatalogueRequest $request)
+    {
+        if ($this->postCatalogueService->update($id, $request, $this->language)) {
+            return redirect()->route('post.catalogue.index')->with('success', 'Cập nhật bản ghi thành công');
         }
-        return redirect()->route('post.catalogue.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('post.catalogue.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $this->authorize('modules', 'post.catalogue.destroy');
         $config['seo'] = __('messages.postCatalogue');
         $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($id, $this->language);
@@ -126,14 +133,16 @@ class PostCatalogueController extends Controller
         ));
     }
 
-    public function destroy(DeletePostCatalogueRequest $request, $id){
-        if($this->postCatalogueService->destroy($id, $this->language)){
-            return redirect()->route('post.catalogue.index')->with('success','Xóa bản ghi thành công');
+    public function destroy(DeletePostCatalogueRequest $request, $id)
+    {
+        if ($this->postCatalogueService->destroy($id, $this->language)) {
+            return redirect()->route('post.catalogue.index')->with('success', 'Xóa bản ghi thành công');
         }
-        return redirect()->route('post.catalogue.index')->with('error','Xóa bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('post.catalogue.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
 
-    private function configData(){
+    private function configData()
+    {
         return [
             'js' => [
                 'backend/plugins/ckeditor/ckeditor.js',
@@ -145,8 +154,7 @@ class PostCatalogueController extends Controller
             'css' => [
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
             ]
-          
+
         ];
     }
-
 }

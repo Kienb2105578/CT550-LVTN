@@ -1,4 +1,4 @@
-<?php   
+<?php
 return [
     'review' => [
         'index' => [
@@ -88,6 +88,20 @@ return [
             'title' => 'Danh sách Menu'
         ],
     ],
+    'stock' => [
+        'report' => [
+            'title' => 'Báo cáo tồn kho',
+            'table' => 'Danh sách Sản phẩm cần nhập'
+        ],
+        'stockTaking' => [
+            'title' => 'Kiểm kê kho',
+            'table' => 'Danh sách kiểm kê kho'
+        ],
+        'inventory' => [
+            'title' => 'Quản lý tồn kho',
+            'table' => 'Danh sách lô hàng'
+        ],
+    ],
     'system' => [
         'index' => [
             'title' => 'Cấu hình hệ thống',
@@ -155,7 +169,7 @@ return [
         'delete' => [
             'title' => 'Xóa thuộc tính'
         ],
-    
+
     ],
     'product' => [
         'index' => [
@@ -175,6 +189,7 @@ return [
         'code' => 'Mã sản phẩm',
         'made_in' => 'Xuất xứ',
         'price' => 'Giá bán sản phẩm',
+        'quantity' => 'Số lượng sản phẩm'
     ],
     'postCatalogue' => [
         'index' => [
@@ -223,7 +238,7 @@ return [
         'permission' => [
             'title' => 'Cập nhật quyền'
         ],
-        
+
     ],
     'customerCatalogue' => [
         'index' => [
@@ -255,6 +270,36 @@ return [
             'title' => 'Xóa nhóm khách hàng'
         ],
     ],
+    'supplier' => [
+        'index' => [
+            'title' => 'Quản lý nhà cung cấp',
+            'table' => 'Danh sách nhà cung cấp'
+        ],
+        'create' => [
+            'title' => 'Thêm mới nhà cung cấp'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật nhà cung cấp'
+        ],
+        'delete' => [
+            'title' => 'Xóa nhà cung cấp'
+        ],
+    ],
+    'purchase-order' => [
+        'index' => [
+            'title' => 'Quản lý nhập hàng',
+            'table' => 'Danh sách nhập hàng'
+        ],
+        'create' => [
+            'title' => 'Thêm mới nhập hàng'
+        ],
+        'edit' => [
+            'title' => 'Cập nhật nhập hàng'
+        ],
+        'delete' => [
+            'title' => 'Xóa nhà nhập hàng'
+        ],
+    ],
     'permission' => [
         'index' => [
             'title' => 'Quản lý Quyền',
@@ -269,7 +314,7 @@ return [
         'delete' => [
             'title' => 'Xóa Quyền'
         ],
-        
+
     ],
     'language' => [
         'index' => [
@@ -284,21 +329,6 @@ return [
         ],
         'delete' => [
             'title' => 'Xóa Ngôn ngữ'
-        ],
-    ],
-    'agency' => [
-        'index' => [
-            'title' => 'Quản lý đại lý',
-            'table' => 'Danh sách đại lý',
-        ],
-        'create' => [
-            'title' => 'Thêm mới đại lý'
-        ],
-        'edit' => [
-            'title' => 'Cập nhật thông tin đại lý'
-        ],
-        'delete' => [
-            'title' => 'Xóa thông tin đại lý'
         ],
     ],
     'construct' => [
@@ -352,8 +382,8 @@ return [
     'save' => 'Lưu lại',
     'publish' => [
         '0' => 'Chọn tình trạng',
-        '1' => 'Đã xác nhận',
-        '2' => 'Chờ xác nhận',
+        '2' => 'Xác nhận',
+        '1' => 'Chờ xác nhận',
     ],
     'confirm' => [
         '0' => 'Chọn tình trạng',
@@ -363,7 +393,7 @@ return [
     'follow' => [
         '1' => 'Follow',
         '2' => 'Nofollow',
-        
+
     ],
     'album' => [
         'heading' => 'Album Ảnh',
@@ -373,5 +403,5 @@ return [
     'generalTitle' => 'Thông tin chung',
     'generalDescription' => 'Bạn đang muốn xóa ngôn ngữ có tên là:
     Lưu ý: Không thể khôi phục dữ liệu sau khi xóa. Hãy chắc chắn bạn muốn thực hiện chức năng này',
-   
+
 ];

@@ -28,7 +28,7 @@ class CustomerController extends Controller
         CustomerRepository $customerRepository,
         CustomerCatalogueRepository $customerCatalogueRepository,
         SourceRepository $sourceRepository,
-    ){
+    ) {
         $this->customerService = $customerService;
         $this->provinceRepository = $provinceRepository;
         $this->customerRepository = $customerRepository;
@@ -36,10 +36,11 @@ class CustomerController extends Controller
         $this->sourceRepository = $sourceRepository;
     }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $this->authorize('modules', 'customer.index');
         $customers = $this->customerService->paginate($request);
-        
+
 
         $customerCatalogues = $this->customerCatalogueRepository->all();
         $config = [
@@ -63,7 +64,8 @@ class CustomerController extends Controller
         ));
     }
 
-    public function create(){
+    public function create()
+    {
         $this->authorize('modules', 'customer.create');
         $provinces = $this->provinceRepository->all();
         $customerCatalogues = $this->customerCatalogueRepository->all();
@@ -81,14 +83,16 @@ class CustomerController extends Controller
         ));
     }
 
-    public function store(StoreCustomerRequest $request){
-        if($this->customerService->create($request)){
-            return redirect()->route('customer.index')->with('success','Thêm mới bản ghi thành công');
+    public function store(StoreCustomerRequest $request)
+    {
+        if ($this->customerService->create($request)) {
+            return redirect()->route('customer.index')->with('success', 'Thêm mới bản ghi thành công');
         }
-        return redirect()->route('customer.index')->with('error','Thêm mới bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('customer.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         $this->authorize('modules', 'customer.update');
         $customer = $this->customerRepository->findById($id);
         $provinces = $this->provinceRepository->all();
@@ -108,14 +112,16 @@ class CustomerController extends Controller
         ));
     }
 
-    public function update($id, UpdateCustomerRequest $request){
-        if($this->customerService->update($id, $request)){
-            return redirect()->route('customer.index')->with('success','Cập nhật bản ghi thành công');
+    public function update($id, UpdateCustomerRequest $request)
+    {
+        if ($this->customerService->update($id, $request)) {
+            return redirect()->route('customer.index')->with('success', 'Cập nhật bản ghi thành công');
         }
-        return redirect()->route('customer.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('customer.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $this->authorize('modules', 'customer.destroy');
         $config['seo'] = __('messages.customer');
         $customer = $this->customerRepository->findById($id);
@@ -127,14 +133,16 @@ class CustomerController extends Controller
         ));
     }
 
-    public function destroy($id){
-        if($this->customerService->destroy($id)){
-            return redirect()->route('customer.index')->with('success','Xóa bản ghi thành công');
+    public function destroy($id)
+    {
+        if ($this->customerService->destroy($id)) {
+            return redirect()->route('customer.index')->with('success', 'Xóa bản ghi thành công');
         }
-        return redirect()->route('customer.index')->with('error','Xóa bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('customer.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
 
-    private function config(){
+    private function config()
+    {
         return [
             'css' => [
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
@@ -144,9 +152,8 @@ class CustomerController extends Controller
                 'backend/library/location.js',
                 'backend/plugins/ckfinder_2/ckfinder.js',
                 'backend/library/finder.js',
-                
+
             ]
         ];
     }
-
 }

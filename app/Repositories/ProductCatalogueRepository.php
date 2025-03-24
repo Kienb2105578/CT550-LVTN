@@ -16,13 +16,57 @@ class ProductCatalogueRepository extends BaseRepository implements ProductCatalo
 
     public function __construct(
         ProductCatalogue $model
-    ){
+    ) {
         $this->model = $model;
     }
 
-    
-    public function getProductCatalogueById(int $id = 0, $language_id = 0){
-        return $this->model->select([
+
+    public function all(array $relation = [], string $selectRaw = '')
+    {
+        $query = $this->model->newQuery();
+
+        if (!empty($selectRaw)) {
+            $query->selectRaw($selectRaw);
+        } else {
+            $query->select('*');
+        }
+
+        return $query->get();
+    }
+    public function breadcrumb($model, $language)
+    {
+        return $this->findByCondition([
+            ['lft', '<=', $model->lft],
+            ['rgt', '>=', $model->rgt],
+            config('apps.general.defaultPublish')
+        ], false, [], ['lft', 'asc']);
+    }
+    public function findByCondition(
+        $condition = [],
+        $flag = false,
+        $relation = [],
+        array $orderBy = ['id', 'desc'],
+        array $param = [],
+        array $withCount = [],
+    ) {
+
+        $query = $this->model->newQuery();
+        foreach ($condition as $key => $val) {
+            $query->where($val[0], $val[1], $val[2]);
+        }
+        if (isset($param['whereIn'])) {
+            $query->whereIn($param['whereInField'], $param['whereIn']);
+        }
+
+        $query->withCount($withCount);
+        $query->orderBy($orderBy[0], $orderBy[1]);
+        return ($flag == false) ? $query->first() : $query->get();
+    }
+
+    public function getProductCatalogueById(int $id = 0)
+    {
+        return $this->model->select(
+            [
                 'product_catalogues.id',
                 'product_catalogues.parent_id',
                 'product_catalogues.lft',
@@ -33,22 +77,20 @@ class ProductCatalogueRepository extends BaseRepository implements ProductCatalo
                 'product_catalogues.publish',
                 'product_catalogues.follow',
                 'product_catalogues.attribute',
-                'tb2.name',
-                'tb2.description',
-                'tb2.content',
-                'tb2.meta_title',
-                'tb2.meta_keyword',
-                'tb2.meta_description',
-                'tb2.canonical',
+                'product_catalogues.name',
+                'product_catalogues.description',
+                'product_catalogues.content',
+                'product_catalogues.meta_title',
+                'product_catalogues.meta_keyword',
+                'product_catalogues.meta_description',
+                'product_catalogues.canonical',
             ]
-        )
-        ->join('product_catalogue_language as tb2', 'tb2.product_catalogue_id', '=','product_catalogues.id')
-        ->where('tb2.language_id', '=', $language_id)
-        ->find($id);
+        )->find($id);
     }
-
-    public function getChildren($productCatalogue){
-        return $this->model->select([
+    public function getChildren($productCatalogue)
+    {
+        return $this->model->select(
+            [
                 'product_catalogues.id',
                 'product_catalogues.parent_id',
                 'product_catalogues.lft',
@@ -59,16 +101,22 @@ class ProductCatalogueRepository extends BaseRepository implements ProductCatalo
                 'product_catalogues.publish',
                 'product_catalogues.follow',
                 'product_catalogues.attribute',
+                'product_catalogues.name',
+                'product_catalogues.description',
+                'product_catalogues.content',
+                'product_catalogues.meta_title',
+                'product_catalogues.meta_keyword',
+                'product_catalogues.meta_description',
+                'product_catalogues.canonical',
             ]
         )
-        ->join('product_catalogue_language as tb2', 'tb2.product_catalogue_id', '=','product_catalogues.id')
-        ->where('lft' , '>=', $productCatalogue->lft)
-        ->where('rgt', '<=', $productCatalogue->rgt)
-        ->get();
+            ->where('lft', '>=', $productCatalogue->lft)
+            ->where('rgt', '<=', $productCatalogue->rgt)
+            ->get();
     }
 
-    public function getProductCatalogueByPublish($publish) {
+    public function getProductCatalogueByPublish($publish)
+    {
         return $this->model->where('publish', $publish)->get();
     }
-
 }

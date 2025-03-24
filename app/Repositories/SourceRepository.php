@@ -16,9 +16,7 @@ class SourceRepository extends BaseRepository implements SourceRepositoryInterfa
 
     public function __construct(
         Source $model
-    ){
+    ) {
         $this->model = $model;
     }
-
-
 }

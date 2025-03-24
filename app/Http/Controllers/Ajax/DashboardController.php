@@ -6,16 +6,17 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Language;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+
 
 class DashboardController extends Controller
 {
 
     protected $language;
 
-    public function __construct(
-       
-    ){
-        $this->middleware(function($request, $next){
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
             $locale = app()->getLocale(); // vn en cn
             $language = Language::where('canonical', $locale)->first();
             $this->language = $language->id;
@@ -23,7 +24,8 @@ class DashboardController extends Controller
         });
     }
 
-    public function changeStatus(Request $request){
+    public function changeStatus(Request $request)
+    {
         $post = $request->input();
         $serviceInterfaceNamespace = '\App\Services\\' . ucfirst($post['model']) . 'Service';
         if (class_exists($serviceInterfaceNamespace)) {
@@ -31,23 +33,23 @@ class DashboardController extends Controller
         }
         $flag = $serviceInstance->updateStatus($post);
 
-        return response()->json(['flag' => $flag]); 
-        
+        return response()->json(['flag' => $flag]);
     }
-    
 
-    public function changeStatusAll(Request $request){
+
+    public function changeStatusAll(Request $request)
+    {
         $post = $request->input();
         $serviceInterfaceNamespace = '\App\Services\\' . ucfirst($post['model']) . 'Service';
         if (class_exists($serviceInterfaceNamespace)) {
             $serviceInstance = app($serviceInterfaceNamespace);
         }
         $flag = $serviceInstance->updateStatusAll($post);
-        return response()->json(['flag' => $flag]); 
-
+        return response()->json(['flag' => $flag]);
     }
 
-    public function getMenu(Request $request){
+    public function getMenu(Request $request)
+    {
         $model = $request->input('model');
         $page = ($request->input('page')) ?? 1;
         $keyword = ($request->string('keyword')) ?? null;
@@ -56,81 +58,85 @@ class DashboardController extends Controller
         if (class_exists($serviceInterfaceNamespace)) {
             $serviceInstance = app($serviceInterfaceNamespace);
         }
-        
+
         $agruments = $this->paginationAgrument($model, $keyword);
         $object = $serviceInstance->pagination(...array_values($agruments));
-        
-        return response()->json($object); 
+
+        return response()->json($object);
     }
 
-    private function paginationAgrument(string $model = '', string $keyword): array{
+    private function paginationAgrument(string $model = '', string $keyword): array
+    {
         $model = Str::snake($model);
-        $join = [
-            [$model.'_language as tb2', 'tb2.'.$model.'_id', '=', $model.'s.id'],
-        ];
-        if(strpos($model, '_catalogue') === false){
-            $join[] = [''.$model.'_catalogue_'.$model.' as tb3', ''.$model.'s.id', '=', 'tb3.'.$model.'_id'];
+        $join = [];
+        if (strpos($model, '_catalogue') === false) {
+            $join[] = [$model . '_catalogue_' . $model . ' as tb3', $model . 's.id', '=', 'tb3.' . $model . '_id'];
         }
 
-        $condition = [
-            'where' => [
-                ['tb2.language_id', '=', $this->language],
-            ],
-        ];
-        if(!is_null($keyword)){
+        $condition = [];
+        if (!is_null($keyword)) {
             $condition['keyword'] = addslashes($keyword);
         }
+
         return [
-            'column' => ['id','name','canonical'],
+            'column' => ['id', 'name', 'canonical'],
             'condition' => $condition,
             'perpage' => 20,
             'extend' => [
-                'path' => $model.'.index', 
-                'groupBy' => ['id','name']
+                'path' => $model . '.index',
+                'groupBy' => ['id', 'name']
             ],
-            'orderBy' => [$model.'s.id', 'DESC'],
+            'orderBy' => [$model . 's.id', 'DESC'],
             'join' => $join,
             'relations' => [],
         ];
     }
 
-    
-
-    public function findModelObject(Request $request){
+    public function findModelObject(Request $request)
+    {
         $get = $request->input();
-        $alias = Str::snake($get['model']).'_language';
-        $class = loadClass($get['model']);
+
+        $alias = Str::snake($get['model'] ?? '') . 's';
+        $class = loadClass($get['model'] ?? '');
+        $keyword = $get['keyword'] ?? '';
+
         $object = $class->findWidgetItem([
-            ['name','LIKE', '%'.$get['keyword'].'%'],
-        ], $this->language, $alias);
-        return response()->json($object); 
+            ['name', 'LIKE', '%' . $keyword . '%'],
+        ], 1, $alias);
+
+        return response()->json($object);
     }
 
-    public function findPromotionObject(Request $request){
+    public function findPromotionObject(Request $request)
+    {
         $get = $request->input();
-        $model = $get['option']['model'];
-        $keyword = $get['search'];
-        $alias = Str::snake($model).'_language';
+
+        $model = $get['option']['model'] ?? '';
+        $keyword = $get['search'] ?? '';
+        $alias = Str::snake($model) . 's';
         $class = loadClass($model);
+
+
         $object = $class->findWidgetItem([
-            ['name','LIKE', '%'.$keyword.'%'],
-        ], $this->language, $alias);
+            ['name', 'LIKE', '%' . $keyword . '%'],
+        ], 1, $alias);
 
-        $temp = [];
-        if(count($object)){
-            foreach($object as $key => $val){
-                $temp[] = [
-                    'id' => $val->id,
-                    'text' => $val->languages->first()->pivot->name,
-                ];
-            }
-        }
 
-        return response()->json(array('items' => $temp)); 
+        $temp = array_map(function ($val) {
+            return [
+                'id' => $val->id,
+                'text' => $val->name,
+            ];
+        }, $object->toArray());
+
+        return response()->json(['items' => $temp]);
     }
 
 
-    public function getPromotionConditionValue(Request $request){
+
+
+    public function getPromotionConditionValue(Request $request)
+    {
         try {
             $get = $request->input();
             switch ($get['value']) {
@@ -150,8 +156,8 @@ class DashboardController extends Controller
                     break;
             }
             $temp = [];
-            if(!is_null($object) && count($object)){
-                foreach($object as $key => $val){
+            if (!is_null($object) && count($object)) {
+                foreach ($object as $key => $val) {
                     $temp[] = [
                         'id' => $val['id'],
                         'text' => $val['name'],
@@ -162,15 +168,12 @@ class DashboardController extends Controller
                 'data' => $temp,
                 'error' => false,
             ]);
-
-        }catch(\Exception $e ){
-            Log::error($e->getMessage());
+        } catch (\Exception $e) {
             return response()->json([
                 'error' => true,
                 'messages' =>  $e->getMessage(),
             ]);
         }
-        
     }
 
     public function findInformationObject(Request $request)
@@ -182,8 +185,7 @@ class DashboardController extends Controller
             ['phone', 'LIKE', '%' . $get['keyword'] . '%', 'orWhere'],
             ['code', 'LIKE', '%' . $get['keyword'] . '%', 'orWhere'],
         ]);
-    
-        return response()->json($object); 
-    }
 
+        return response()->json($object);
+    }
 }

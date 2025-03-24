@@ -6,12 +6,12 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="form-row">
-                    <span class="text-danger notice" >*{{ __('messages.parentNotice') }}</span>
+                    <span class="text-danger notice">*{{ __('messages.parentNotice') }}</span>
                     <select name="parent_id" class="form-control setupSelect2" id="">
-                        @foreach($dropdown as $key => $val)
-                        <option {{ 
-                            $key == old('parent_id', (isset($attributeCatalogue->parent_id)) ? $attributeCatalogue->parent_id : '') ? 'selected' : '' 
-                            }} value="{{ $key }}">{{ $val }}</option>
+                        @foreach ($dropdown as $key => $val)
+                            <option
+                                {{ $key == old('parent_id', isset($attributeCatalogue->parent_id) ? $attributeCatalogue->parent_id : '') ? 'selected' : '' }}
+                                value="{{ $key }}">{{ $val }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -19,4 +19,4 @@
         </div>
     </div>
 </div>
-@include('backend.dashboard.component.publish', ['model' => ($attributeCatalogue) ?? null])
+{{-- @include('backend.dashboard.component.publish', ['model' => ($attributeCatalogue) ?? null]) --}}

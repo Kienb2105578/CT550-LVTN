@@ -22,8 +22,8 @@ class PostController extends Controller
     public function __construct(
         PostService $postService,
         PostRepository $postRepository,
-    ){
-        $this->middleware(function($request, $next){
+    ) {
+        $this->middleware(function ($request, $next) {
             $locale = app()->getLocale(); // vn en cn
             $language = Language::where('canonical', $locale)->first();
             $this->language = $language->id;
@@ -34,20 +34,21 @@ class PostController extends Controller
         $this->postService = $postService;
         $this->postRepository = $postRepository;
         $this->initialize();
-        
     }
 
-    private function initialize(){
+    private function initialize()
+    {
         $this->nestedset = new Nestedsetbie([
             'table' => 'post_catalogues',
             'foreignkey' => 'post_catalogue_id',
-            'language_id' =>  $this->language,
         ]);
-    } 
+    }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $this->authorize('modules', 'post.index');
         $posts = $this->postService->paginate($request, $this->language);
+        $posts = $this->postRepository->addPostCatalogueNamesToPosts($posts);
         $config = [
             'js' => [
                 'backend/js/plugins/switchery/switchery.js',
@@ -70,7 +71,8 @@ class PostController extends Controller
         ));
     }
 
-    public function create(){
+    public function create()
+    {
         $this->authorize('modules', 'post.create');
         $config = $this->configData();
         $config['seo'] = __('messages.post');
@@ -84,14 +86,16 @@ class PostController extends Controller
         ));
     }
 
-    public function store(StorePostRequest $request){
-        if($this->postService->create($request, $this->language)){
-            return redirect()->route('post.index')->with('success','Thêm mới bản ghi thành công');
+    public function store(StorePostRequest $request)
+    {
+        if ($this->postService->create($request, $this->language)) {
+            return redirect()->route('post.index')->with('success', 'Thêm mới bản ghi thành công');
         }
-        return redirect()->route('post.index')->with('error','Thêm mới bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('post.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         $this->authorize('modules', 'post.update');
         $post = $this->postRepository->getPostById($id, $this->language);
         $config = $this->configData();
@@ -109,14 +113,16 @@ class PostController extends Controller
         ));
     }
 
-    public function update($id, UpdatePostRequest $request){
-        if($this->postService->update($id, $request, $this->language)){
-            return redirect()->route('post.index')->with('success','Cập nhật bản ghi thành công');
+    public function update($id, UpdatePostRequest $request)
+    {
+        if ($this->postService->update($id, $request, $this->language)) {
+            return redirect()->route('post.index')->with('success', 'Cập nhật bản ghi thành công');
         }
-        return redirect()->route('post.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('post.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $this->authorize('modules', 'post.destroy');
         $config['seo'] = __('messages.post');
         $post = $this->postRepository->getPostById($id, $this->language);
@@ -128,14 +134,16 @@ class PostController extends Controller
         ));
     }
 
-    public function destroy($id){
-        if($this->postService->destroy($id)){
-            return redirect()->route('post.index')->with('success','Xóa bản ghi thành công');
+    public function destroy($id)
+    {
+        if ($this->postService->destroy($id)) {
+            return redirect()->route('post.index')->with('success', 'Xóa bản ghi thành công');
         }
-        return redirect()->route('post.index')->with('error','Xóa bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('post.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
 
-    private function configData(){
+    private function configData()
+    {
         return [
             'js' => [
                 'backend/plugins/ckeditor/ckeditor.js',
@@ -147,10 +155,7 @@ class PostController extends Controller
             'css' => [
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
             ]
-          
+
         ];
     }
-
-   
-
 }

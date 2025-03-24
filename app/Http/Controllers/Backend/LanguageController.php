@@ -19,12 +19,13 @@ class LanguageController extends Controller
     public function __construct(
         LanguageService $languageService,
         LanguageRepository $languageRepository
-    ){
+    ) {
         $this->languageService = $languageService;
         $this->languageRepository = $languageRepository;
     }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $this->authorize('modules', 'language.index');
         $langs = $this->languageService->paginate($request);
 
@@ -48,7 +49,8 @@ class LanguageController extends Controller
         ));
     }
 
-    public function create(){
+    public function create()
+    {
         $this->authorize('modules', 'language.create');
         $config = $this->configData();
         $config['seo'] = __('messages.language');
@@ -61,14 +63,16 @@ class LanguageController extends Controller
         ));
     }
 
-    public function store(StoreLanguageRequest $request){
-        if($this->languageService->create($request)){
-            return redirect()->route('language.index')->with('success','Thêm mới bản ghi thành công');
+    public function store(StoreLanguageRequest $request)
+    {
+        if ($this->languageService->create($request)) {
+            return redirect()->route('language.index')->with('success', 'Thêm mới bản ghi thành công');
         }
-        return redirect()->route('language.index')->with('error','Thêm mới bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('language.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         $this->authorize('modules', 'language.update');
         $language = $this->languageRepository->findById($id);
         $config = $this->configData();
@@ -83,14 +87,16 @@ class LanguageController extends Controller
         ));
     }
 
-    public function update($id, UpdateLanguageRequest $request){
-        if($this->languageService->update($id, $request)){
-            return redirect()->route('language.index')->with('success','Cập nhật bản ghi thành công');
+    public function update($id, UpdateLanguageRequest $request)
+    {
+        if ($this->languageService->update($id, $request)) {
+            return redirect()->route('language.index')->with('success', 'Cập nhật bản ghi thành công');
         }
-        return redirect()->route('language.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('language.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $this->authorize('modules', 'language.destroy');
         $config['seo'] = __('messages.language');
         $language = $this->languageRepository->findById($id);
@@ -102,40 +108,49 @@ class LanguageController extends Controller
         ));
     }
 
-    public function destroy($id){
-        if($this->languageService->destroy($id)){
-            return redirect()->route('language.index')->with('success','Xóa bản ghi thành công');
+    public function destroy($id)
+    {
+        if ($this->languageService->destroy($id)) {
+            return redirect()->route('language.index')->with('success', 'Xóa bản ghi thành công');
         }
-        return redirect()->route('language.index')->with('error','Xóa bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('language.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
 
-    private function configData(){
+    private function configData()
+    {
         return [
             'js' => [
                 'backend/plugins/ckfinder_2/ckfinder.js',
                 'backend/library/finder.js',
             ],
-          
+
         ];
     }
 
-    public function swicthBackendLanguage($id){
+    public function swicthBackendLanguage($id)
+    {
         $language = $this->languageRepository->findById($id);
-        if($this->languageService->switch($id)){
+        if ($this->languageService->switch($id)) {
             session(['app_locale' => $language->canonical]);
             \App::setLocale($language->canonical);
         }
         return redirect()->back();
     }
 
-    public function translate($id = 0, $languageId = 0, $model = ''){
+    public function translate($id = 0, $languageId = 0, $model = '')
+    {
         $repositoryInstance = $this->respositoryInstance($model);
+
+        if ($repositoryInstance === null) {
+            return redirect()->back()->with('error', 'Repository không tồn tại');
+        }
+
         $languageInstance = $this->respositoryInstance('Language');
         $currentLanguage = $languageInstance->findByCondition([
-            ['canonical' , '=', session('app_locale')]
+            ['canonical', '=', session('app_locale')]
         ]);
-        $method = 'get'.$model.'ById';
-        
+        $method = 'get' . $model . 'ById';
+
         $object = $repositoryInstance->{$method}($id, $currentLanguage->id);
         $objectTransate = $repositoryInstance->{$method}($id, $languageId);
 
@@ -168,20 +183,21 @@ class LanguageController extends Controller
         ));
     }
 
-    public function storeTranslate(TranslateRequest $request){
+    public function storeTranslate(TranslateRequest $request)
+    {
         $option = $request->input('option');
-        if($this->languageService->saveTranslate($option, $request)){
+        if ($this->languageService->saveTranslate($option, $request)) {
             return redirect()->back()->with('success', 'Cập nhật bản ghi thành công');
         }
-        return redirect()->back()->with('error','Có vấn đề xảy ra, Hãy Thử lại');
+        return redirect()->back()->with('error', 'Có vấn đề xảy ra, Hãy Thử lại');
     }
 
-    private function respositoryInstance($model){
+    private function respositoryInstance($model)
+    {
         $repositoryNamespace = '\App\Repositories\\' . ucfirst($model) . 'Repository';
         if (class_exists($repositoryNamespace)) {
             $repositoryInstance = app($repositoryNamespace);
         }
         return $repositoryInstance ?? null;
     }
-
 }

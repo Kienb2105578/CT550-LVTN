@@ -17,33 +17,38 @@ use Illuminate\Support\Facades\Auth;
 class ReviewService extends BaseService implements ReviewServiceInterface
 {
     protected $reviewRepository;
-    
+
     public function __construct(
         ReviewRepository $reviewRepository,
-    ){
+    ) {
         $this->reviewRepository = $reviewRepository;
     }
 
 
-    public function paginate($request){
+    public function paginate($request)
+    {
         $condition['keyword'] = addslashes($request->input('keyword'));
 
         $perPage = $request->integer('perpage');
         $reviews = $this->reviewRepository->pagination(
-            $this->paginateSelect(), 
-            $condition, 
+            $this->paginateSelect(),
+            $condition,
             $perPage,
-            ['path' => 'review/index'], 
+            ['path' => 'review/index'],
         );
 
         return $reviews;
     }
 
-    public function create($request){
+    public function create($request)
+    {
         DB::beginTransaction();
-        try{
+        try {
             $payload = $request->except('_token');
-            // dd($payload);
+            $payload['product_id'] = $payload['reviewable_id'];
+            $user = Auth::guard('customer')->user();
+            $payload['customer_id'] = $user->id;
+            Log::info($payload);
             $review = $this->reviewRepository->create($payload);
             $this->reviewNestedset = new ReviewNested([
                 'table' => 'reviews',
@@ -57,10 +62,11 @@ class ReviewService extends BaseService implements ReviewServiceInterface
                 'code' => 10,
                 'message' => 'Đánh giá sản phẩm thành công'
             ];
-        }catch(\Exception $e ){
+        } catch (\Exception $e) {
             DB::rollBack();
             // Log::error($e->getMessage());
-            echo $e->getMessage();die();
+            echo $e->getMessage();
+            die();
             return [
                 'code' => 11,
                 'message' => 'Có vấn đề xảy ra! Hãy thử lại'
@@ -68,12 +74,15 @@ class ReviewService extends BaseService implements ReviewServiceInterface
         }
     }
 
-    private function paginateSelect(){
+    private function paginateSelect()
+    {
         return [
-            'id', 
-            'reviewable_id', 
+            'id',
+            'reviewable_id',
+            'customer_id',
+            'product_id',
             'reviewable_type',
-            'email', 
+            'email',
             'phone',
             'fullname',
             'gender',
@@ -81,7 +90,5 @@ class ReviewService extends BaseService implements ReviewServiceInterface
             'description',
             'created_at',
         ];
-
     }
-
 }

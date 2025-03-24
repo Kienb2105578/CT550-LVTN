@@ -9,6 +9,8 @@ use App\Services\Interfaces\OrderServiceInterface  as OrderService;
 use App\Repositories\Interfaces\OrderRepositoryInterface as OrderRepository;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
 
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
+
 
 class OrderController extends Controller
 {
@@ -19,13 +21,14 @@ class OrderController extends Controller
         OrderService $orderService,
         OrderRepository $orderRepository,
         ProvinceRepository $provinceRepository,
-    ){
+    ) {
         $this->orderService = $orderService;
         $this->orderRepository = $orderRepository;
         $this->provinceRepository = $provinceRepository;
     }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
 
         $this->authorize('modules', 'order.index');
         $orders = $this->orderService->paginate($request);
@@ -53,10 +56,10 @@ class OrderController extends Controller
         ));
     }
 
-    public function detail(Request $request, $id){
+    public function detail(Request $request, $id)
+    {
         $order = $this->orderRepository->getOrderById($id, ['products']);
         $order = $this->orderService->getOrderItemImage($order);
-
         $provinces = $this->provinceRepository->all();
         $config = [
             'css' => [
@@ -67,7 +70,7 @@ class OrderController extends Controller
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
             ],
         ];
-        
+
         $config['seo'] = __('messages.order');
         $template = 'backend.order.detail';
         return view('backend.dashboard.layout', compact(
@@ -78,4 +81,46 @@ class OrderController extends Controller
         ));
     }
 
+    public function exportPdf($id)
+    {
+        $order = $this->orderRepository->getOrderById($id, ['products']);
+        $order = $this->orderService->getOrderItemImage($order);
+        $provinces = $this->provinceRepository->all();
+
+        $config['seo'] = __('messages.order');
+        $template = 'backend.orders.invoice';
+
+        $pdf = PDF::loadView('backend.order.invoice', compact(
+            'order',
+            'provinces',
+            'template',
+            'config'
+        ));
+
+        // return $pdf->download("invoice_{$id}.pdf");
+        return $pdf->stream("invoice_{$id}.pdf");
+    }
+
+    public function exportMultiplePdf(Request $request)
+    {
+        $orderIds = $request->input('order_ids');
+        $orders = $this->orderRepository->getOrdersByIds($orderIds, ['products']);
+
+        foreach ($orders as $order) {
+            $order = $this->orderService->getOrderItemImage($order);
+        }
+
+        $provinces = $this->provinceRepository->all();
+        $config['seo'] = __('messages.orders');
+        $template = 'backend.orders.multiple_invoices';
+
+        $pdf = PDF::loadView('backend.order.multiple_invoices', compact(
+            'orders',
+            'provinces',
+            'template',
+            'config'
+        ));
+
+        return $pdf->download('multiple_invoices.pdf');
+    }
 }

@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\Promotion\OrderAmountRangeRule;
 use App\Rules\Promotion\ProductAndQuantityRule;
 use App\Enums\PromotionEnum;
+
 class StorePromotionRequest extends FormRequest
 {
     /**
@@ -30,13 +31,13 @@ class StorePromotionRequest extends FormRequest
             'startDate' => 'required|custom_date_format',
         ];
         $date = $this->only('startDate', 'endDate');
-        if(!$this->input('neverEndDate')){
+        if (!$this->input('neverEndDate')) {
             $rules['endDate'] = 'required|custom_date_format|custom_after:startDate';
         }
         $method = $this->input('method');
         switch ($method) {
             case PromotionEnum::ORDER_AMOUNT_RANGE:
-                $rules['method'] = [new OrderAmountRangeRule($this->input('promotion_order_amount_range'))];
+                $rules['method'] = [new OrderAmountRangeRule($this->input('order_amount_range'))];
                 break;
             case PromotionEnum::PRODUCT_AND_QUANTITY:
                 $rules['method'] = [new ProductAndQuantityRule($this->only('product_and_quantity', 'object'))];
@@ -63,11 +64,11 @@ class StorePromotionRequest extends FormRequest
         ];
 
         $method = $this->input('method');
-        if($method === 'none'){
+        if ($method === 'none') {
             $messages['method.not_in'] = 'Bạn chưa chọn hình thức khuyến mại';
         }
-       
-        if(!$this->input('neverEndDate')){
+
+        if (!$this->input('neverEndDate')) {
             $messages['endDate.required'] = 'Bạn chưa chọn ngày kết thúc của khuyến mại';
             $messages['endDate.custom_after'] = 'Ngày kết thúc khuyến mại phải lớn hơn ngày bắt đầu khuyến mại';
         }

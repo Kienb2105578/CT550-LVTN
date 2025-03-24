@@ -23,9 +23,12 @@ class StoreCartRequest extends FormRequest
     {
         return [
             'fullname' => 'required',
-            'email' => 'required',
+            'email' => 'required|email',
             'phone' => 'required',
             'address' => 'required',
+            'province_id' => 'required|gt:0',  // Thành phố phải lớn hơn 0
+            'district_id' => 'required|gt:0',  // Quận/Huyện phải lớn hơn 0
+            'ward_id' => 'required|gt:0',      // Phường/Xã phải lớn hơn 0
         ];
     }
 
@@ -34,8 +37,15 @@ class StoreCartRequest extends FormRequest
         return [
             'fullname.required' => 'Bạn chưa nhập Họ Tên.',
             'email.required' => 'Bạn chưa nhập Email.',
+            'email.email' => 'Email không hợp lệ.',
             'phone.required' => 'Bạn chưa nhập Số điện thoại.',
             'address.required' => 'Bạn chưa nhập địa chỉ.',
+            'province_id.required' => 'Bạn chưa chọn Thành Phố.',
+            'province_id.gt' => 'Vui lòng chọn Thành Phố.',
+            'district_id.required' => 'Bạn chưa chọn Quận Huyện.',
+            'district_id.gt' => 'Vui lòng chọn Quận Huyện.',
+            'ward_id.required' => 'Bạn chưa chọn Phường Xã.',
+            'ward_id.gt' => 'Vui lòng chọn Phường Xã.',
         ];
     }
 }

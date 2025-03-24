@@ -18,15 +18,15 @@ class PermissionController extends Controller
     public function __construct(
         PermissionService $permissionService,
         PermissionRepository $permissionRepository
-    ){
+    ) {
         $this->permissionService = $permissionService;
         $this->permissionRepository = $permissionRepository;
     }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $this->authorize('modules', 'permission.index');
         $permissions  = $this->permissionService->paginate($request);
-
         $config = [
             'js' => [
                 'backend/js/plugins/switchery/switchery.js',
@@ -47,7 +47,8 @@ class PermissionController extends Controller
         ));
     }
 
-    public function create(){
+    public function create()
+    {
         $this->authorize('modules', 'permission.create');
         $config = $this->configData();
         $config['seo'] = __('messages.permission');
@@ -60,14 +61,16 @@ class PermissionController extends Controller
         ));
     }
 
-    public function store(StorePermissionRequest $request){
-        if($this->permissionService->create($request)){
-            return redirect()->route('permission.create')->with('success','Thêm mới bản ghi thành công');
+    public function store(StorePermissionRequest $request)
+    {
+        if ($this->permissionService->create($request)) {
+            return redirect()->route('permission.create')->with('success', 'Thêm mới bản ghi thành công');
         }
-        return redirect()->route('permission.index')->with('error','Thêm mới bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('permission.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         $this->authorize('modules', 'permission.update');
         $permission = $this->permissionRepository->findById($id);
         $config = $this->configData();
@@ -82,14 +85,16 @@ class PermissionController extends Controller
         ));
     }
 
-    public function update($id, UpdatePermissionRequest $request){
-        if($this->permissionService->update($id, $request)){
-            return redirect()->route('permission.index')->with('success','Cập nhật bản ghi thành công');
+    public function update($id, UpdatePermissionRequest $request)
+    {
+        if ($this->permissionService->update($id, $request)) {
+            return redirect()->route('permission.index')->with('success', 'Cập nhật bản ghi thành công');
         }
-        return redirect()->route('permission.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('permission.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $this->authorize('modules', 'permission.destroy');
         $config['seo'] = __('messages.permission');
         $permission = $this->permissionRepository->findById($id);
@@ -101,20 +106,16 @@ class PermissionController extends Controller
         ));
     }
 
-    public function destroy($id){
-        if($this->permissionService->destroy($id)){
-            return redirect()->route('permission.index')->with('success','Xóa bản ghi thành công');
+    public function destroy($id)
+    {
+        if ($this->permissionService->destroy($id)) {
+            return redirect()->route('permission.index')->with('success', 'Xóa bản ghi thành công');
         }
-        return redirect()->route('permission.index')->with('error','Xóa bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('permission.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
 
-    private function configData(){
-        return [
-           
-          
-        ];
+    private function configData()
+    {
+        return [];
     }
-
-   
-
 }

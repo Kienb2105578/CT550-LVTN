@@ -14,8 +14,8 @@ interface BaseRepositoryInterface
     public function update(int $id = 0, array $payload = []);
     public function delete(int $id = 0);
     public function pagination(
-        array $column = ['*'], 
-        array $condition = [], 
+        array $column = ['*'],
+        array $condition = [],
         int $perPage = 1,
         array $extend = [],
         array $orderBy = ['id', 'DESC'],
@@ -29,6 +29,6 @@ interface BaseRepositoryInterface
     public function forceDeleteByCondition(array $condition = []);
     public function createBatch(array $payload = []);
     public function updateOrInsert(array $payload = [], array $condition = []);
-    public function findByCondition($condition = [] , $flag = false, $relation = [], array $orderBy = ['id', 'desc'], array $withCount = []);
+    public function findByCondition($condition = [], $flag = false, $relation = [], array $orderBy = ['id', 'desc'], array $withCount = []);
     // public function findByWhereHas(array $condition = [], string $relation = '', string $alias = '');
 }

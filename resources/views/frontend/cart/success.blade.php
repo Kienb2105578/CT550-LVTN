@@ -2,20 +2,53 @@
 @section('content')
     <div class="cart-success">
         <div class="panel-head">
-            <h2 class="cart-heading"><span>Đặt hàng thành công</span></h2>
-            <div class="discover-text"><a href="{{ write_url('san-pham') }}">Khám phá thêm các sản phẩm khác tại đây</a></div>
         </div>
         <div class="panel-body">
-            <h2 class="cart-heading"><span>Thông tin đơn hàng</span></h2>
             <div class="checkout-box">
-                <div class="checkout-box-head">
+                <div class="checkout-box-head" style=" border-bottom: 1px solid #ccc;">
+                    <h2 class="cart-heading"><span>Đặt hàng thành công</span></h2>
                     <div class="uk-grid uk-grid-medium uk-flex uk-flex-middle">
-                        <div class="uk-width-large-1-3"></div>
-                        <div class="uk-width-large-1-3">
-                            <div class="order-title uk-text-center">ĐƠN HÀNG #{{ $order->code }}</div>
-                        </div>
-                        <div class="uk-width-large-1-3">
-                            <div class="order-date">{{ convertDateTime($order->created_at) }}</div>
+                        <style>
+                            .detail-order {
+                                font-size: 16px;
+                                padding: 10px;
+                                border-radius: 8px;
+                                font-weight: 300;
+                                margin-left: 10px;
+                            }
+
+                            .detail-order div {
+                                margin-bottom: 5px;
+                                padding: 5px;
+                            }
+                        </style>
+                        <div class="detail-order">
+                            <div><strong>Mã đơn hàng:</strong> #{{ $order->code }}</div>
+                            <div><strong>Ngày đặt hàng:</strong> {{ convertDateTime($order->created_at) }}</div>
+                            <div><strong>Tên người nhận:</strong> {{ $order->fullname }}<span></span></div>
+                            @php
+                                $province = $order->provinces->first()->name;
+                                $district = $order->provinces
+                                    ->first()
+                                    ->districts->where('code', $order->district_id)
+                                    ->first()->name;
+                                $ward = $order->provinces
+                                    ->first()
+                                    ->districts->where('code', $order->district_id)
+                                    ->first()
+                                    ->wards->where('code', $order->ward_id)
+                                    ->first()->name;
+                            @endphp
+                            <div><strong>Địa chỉ: </strong> {{ $order->address }}, {{ $ward }}, {{ $district }},
+                                {{ $province }}<span></span></div>
+                            <div><strong>Số điện thoại: </strong> {{ $order->phone }}<span></span></div>
+                            <div><strong>Hình thức thanh toán: </strong>
+                                {{ array_column(__('payment.method'), 'title', 'name')[$order->method] ?? '-' }}<span></span>
+                            </div>
+
+                            @if (isset($template))
+                                @include($template)
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -64,10 +97,10 @@
                                 <td colspan="4">Tổng giá trị khuyến mãi</td>
                                 <td><strong>{{ convert_price($order->promotion['discount'], true) }}đ</strong></td>
                             </tr>
-                            <tr>
+                            {{-- <tr>
                                 <td colspan="4">Phí giao hàng</td>
                                 <td><strong>0đ</strong></td>
-                            </tr>
+                            </tr> --}}
                             <tr class="total_payment">
                                 <td colspan="4"><span>Tổng thanh toán</span></td>
                                 <td>{{ convert_price($order->cart['cartTotal'] - $order->promotion['discount'], true) }}
@@ -78,38 +111,8 @@
                 </div>
             </div>
         </div>
-        <div class="panel-foot">
-            <h2 class="cart-heading"><span>Thông tin nhận hàng</span></h2>
-            <div class="checkout-box">
-                <div>Tên người nhận: {{ $order->fullname }}<span></span></div>
-                <!-- <div>Email: {{ $order->email }}<span></span></div> -->
-                <div>Địa chỉ: {{ $order->address }}<span></span></div>
-                @php
-                    $province = $order->provinces->first()->name;
-                    $district = $order->provinces
-                        ->first()
-                        ->districts->where('code', $order->district_id)
-                        ->first()->name;
-                    $ward = $order->provinces
-                        ->first()
-                        ->districts->where('code', $order->district_id)
-                        ->first()
-                        ->wards->where('code', $order->ward_id)
-                        ->first()->name;
-                @endphp
-                <div>Phường/Xã: <span>{{ $ward }}</span>
-                </div>
-                <div>Quận/Huyện: <span>{{ $district }}</span></div>
-                <div>Tỉnh/Thành phố: <span>{{ $province }}</span></div>
-                <div>Số điện thoại: {{ $order->phone }}<span></span></div>
-                <div>Hình thức thanh toán:
-                    {{ array_column(__('payment.method'), 'title', 'name')[$order->method] ?? '-' }}<span></span></div>
-
-                @if (isset($template))
-                    @include($template)
-                @endif
-
-            </div>
-        </div>
     </div>
 @endsection
+<input type="hidden" id="province_id" name="province_id" value="{{ $order->province_id }}">
+<input type="hidden" id="district_id" name="district_id" value="{{ $order->district_id }}">
+<input type="hidden" id="ward_id" name="ward_id" value="{{ $order->ward_id }}">
