@@ -143,6 +143,13 @@ class StockController extends Controller
         $startDate = $request->input('startDate');
         $endDate = $request->input('endDate');
 
+
+        if (empty($catalogue_id) || empty($startDate) || empty($endDate)) {
+            toastr()->error('Dữ liệu không đầy đủ để xuất báo cáo!', 'Lỗi')->timeout(3000);
+            return redirect()->back();
+        }
+
+
         Log::info('Xuất file báo cáo kho:', [
             'catalogue_id' => $catalogue_id,
             'startDate' => $startDate,
@@ -154,7 +161,6 @@ class StockController extends Controller
         $config['seo'] = __('messages.stock');
         $template = 'backend.stock.report.exportFile';
 
-        // Load dữ liệu vào template PDF
         $pdf = PDF::loadView('backend.stock.report.exportFile', compact(
             'products',
             'template',

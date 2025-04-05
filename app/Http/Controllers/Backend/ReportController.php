@@ -81,6 +81,13 @@ class ReportController extends Controller
     public function exportFileProduct(Request $request)
     {
         $reports = [];
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
+
+        if (empty($startDate) || empty($endDate)) {
+            toastr()->error('Dữ liệu không đầy đủ để xuất báo cáo!', 'Lỗi');
+            return redirect()->back();
+        }
         if ($request->input('startDate')) {
             $startDate = $request->input('startDate');
             $endDate = $request->input('endDate');
@@ -107,6 +114,14 @@ class ReportController extends Controller
     public function exportFileTime(Request $request)
     {
         $reports = [];
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
+
+        if (empty($startDate) || empty($endDate)) {
+            toastr()->error('Dữ liệu không đầy đủ để xuất báo cáo!', 'Lỗi');
+            return redirect()->back();
+        }
+
         if ($request->input('startDate')) {
             $startDate = $request->input('startDate');
             $endDate = $request->input('endDate');

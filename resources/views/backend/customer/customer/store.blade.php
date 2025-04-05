@@ -50,7 +50,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb15">
+                        {{-- <div class="row mb15">
                             <div class="col-lg-6">
                                 <div class="form-row customerWrapper">
                                     <label for="" class="control-label text-left">Nhóm khách hàng <span
@@ -80,7 +80,7 @@
                                 </div>
                             </div>
 
-                        </div>
+                        </div> --}}
                         @if ($config['method'] == 'create')
                             <div class="row mb15">
                                 <div class="col-lg-6">

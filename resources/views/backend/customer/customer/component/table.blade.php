@@ -9,8 +9,6 @@
                 <th>Email</th>
                 <th>Số điện thoại</th>
                 <th>Địa chỉ</th>
-                <th class="text-center">Nhóm khách hàng</th>
-                <th class="text-center">Nguồn</th>
                 <th class="text-center">Tình Trạng</th>
                 <th class="text-center">Thao tác</th>
             </tr>
@@ -32,13 +30,7 @@
                             {{ $customer->phone }}
                         </td>
                         <td>
-                            {{ $customer->address }}
-                        </td>
-                        <td class="text-center">
-                            {{ $customer->customer_catalogues->name }}
-                        </td>
-                        <td class="text-center">
-                            {{ $customer->sources->name }}
+                            {{ $customer->address }},{{ $customer->ward_id }}
                         </td>
                         <td class="text-center js-switch-{{ $customer->id }}">
                             <input type="checkbox" value="{{ $customer->publish }}" class="js-switch status "

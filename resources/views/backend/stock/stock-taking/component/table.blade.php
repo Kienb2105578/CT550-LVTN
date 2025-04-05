@@ -11,7 +11,7 @@
                 <th class="text-center" style="width:10%;">Vai trò</th>
                 <th class="text-center" style="width:10%;">Loại giao dịch</th>
                 <th class="text-center" style="width:7%;">Số lượng</th>
-                <th class="text-center" style="width:10%;">Thao tác</th>
+                {{-- <th class="text-center" style="width:10%;">Thao tác</th> --}}
             </tr>
         </thead>
         <tbody>

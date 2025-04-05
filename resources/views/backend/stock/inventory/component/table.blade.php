@@ -2,7 +2,7 @@
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
-                <th>
+                <th class="text-center">
                     <input type="checkbox" value="" id="checkAll" class="input-checkbox">
                 </th>
                 <th class="text-center">Mã Lô Hàng</th>
@@ -37,7 +37,7 @@
                 @endforeach
             @else
                 <tr>
-                    <td colspan="5" class="text-center">Không có dữ liệu</td>
+                    <td colspan="7" class="text-center">Không có dữ liệu</td>
                 </tr>
             @endif
         </tbody>

@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Services\Interfaces\SupplierServiceInterface  as SupplierService;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface  as ProvinceRepository;
 use App\Repositories\Interfaces\SupplierRepositoryInterface as SupplierRepository;
-use App\Repositories\Interfaces\SourceRepositoryInterface as SourceRepository;
 
 use App\Http\Requests\Supplier\StoreSupplierRequest;
 use App\Http\Requests\Supplier\UpdateSupplierRequest;
@@ -19,29 +18,21 @@ class SupplierController extends Controller
     protected $provinceRepository;
     protected $supplierRepository;
     protected $supplierCatalogueRepository;
-    protected $sourceRepository;
 
     public function __construct(
         SupplierService $supplierService,
         ProvinceRepository $provinceRepository,
         SupplierRepository $supplierRepository,
-        SourceRepository $sourceRepository,
     ) {
         $this->supplierService = $supplierService;
         $this->provinceRepository = $provinceRepository;
         $this->supplierRepository = $supplierRepository;
-        $this->sourceRepository = $sourceRepository;
     }
 
     public function index(Request $request)
     {
         $this->authorize('modules', 'supplier.index');
         $suppliers = $this->supplierService->paginate($request);
-        // $suppliers = $this->supplierRepository->mapSuppliersWithLocation($suppliers);
-        // $suppliers = collect($suppliers->map(function ($supplier) {
-        //     return collect($supplier);
-        // }));
-
 
         $config = [
             'js' => [

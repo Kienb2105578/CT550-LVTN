@@ -6,25 +6,27 @@
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
-                <th style="width:50px;"><input type="checkbox" id="checkAll" class="input-checkbox"></th>
-                <th style="width:100px;">Mã đơn</th>
-                <th style="width:300px;">Nhà cung cấp</th>
-                <th style="width:150px;">Tổng tiền</th>
-                <th style="width:100px;">Trạng thái</th>
-                <th style="width:200px;">Ghi chú</th>
-                <th class="text-center" style="width:100px;">{{ __('messages.tableAction') }}</th>
+                <th class="text-center" style="width:4%;"><input type="checkbox" id="checkAll" class="input-checkbox"></th>
+                <th class="text-center" style="width:10%;">Mã đơn</th>
+                <th>Nhà cung cấp</th>
+                <th class="text-center" style="width:11%">Tổng tiền</th>
+                <th class="text-center" style="width:10%">Trạng thái</th>
+                <th>Ghi chú</th>
+                <th class="text-center" style="width:14%;">{{ __('messages.tableAction') }}</th>
             </tr>
         </thead>
         <tbody>
             @if (isset($purchaseOrders) && $purchaseOrders->count())
                 @foreach ($purchaseOrders as $purchaseOrder)
                     <tr id="{{ $purchaseOrder->id }}">
-                        <td><input type="checkbox" value="{{ $purchaseOrder->id }}" class="input-checkbox checkBoxItem">
+                        <td class="text-center"><input type="checkbox" value="{{ $purchaseOrder->id }}"
+                                class="input-checkbox checkBoxItem">
                         </td>
-                        <td>{{ $purchaseOrder->code }}</td> <!-- Mã đơn -->
+                        <td class="text-center">{{ $purchaseOrder->code }}</td> <!-- Mã đơn -->
                         <td>{{ $purchaseOrder->supplier_name }}</td> <!-- Nhà cung cấp -->
-                        <td style="color: red;">{{ number_format($purchaseOrder->total, 0, ',', '.') }} đ</td>
-                        <td>
+                        <td class="text-center" style="color: red;">
+                            {{ number_format($purchaseOrder->total, 0, ',', '.') }} đ</td>
+                        <td class="text-center">
                             @if ($purchaseOrder->status == 'pending')
                                 <span class="badge badge-warning">Chờ kiểm định</span>
                             @elseif($purchaseOrder->status == 'approved')
@@ -33,7 +35,7 @@
                                 <span class="badge badge-danger">Đã hoàn trả</span>
                             @endif
                         </td>
-                        <td>{{ $purchaseOrder->note ?? 'Không có ghi chú' }}</td> <!-- Ghi chú -->
+                        <td>{{ $purchaseOrder->note ?? 'Không có ghi chú' }}</td>
                         <td class="text-center">
                             <a href="{{ route('purchase-order.edit', $purchaseOrder->id) }}" class="btn btn-success">
                                 <i class="fa fa-edit"></i>
@@ -41,7 +43,7 @@
                             <a href="{{ route('purchase-order.delete', $purchaseOrder->id) }}" class="btn btn-danger">
                                 <i class="fa fa-trash"></i>
                             </a>
-                        </td> <!-- Hành động -->
+                        </td>
                     </tr>
                 @endforeach
             @else

@@ -36,7 +36,7 @@ class PurchaseOrderRepository extends BaseRepository implements PurchaseOrderRep
         array $condition = [],
         int $perPage = 1,
         array $extend = [],
-        array $purchaseOrderBy = ['id', 'DESC'],
+        array $purchaseOrderBy = ['created_at', 'DESC'],
         array $join = [],
         array $relations = [],
         array $rawQuery = [],
@@ -56,6 +56,7 @@ class PurchaseOrderRepository extends BaseRepository implements PurchaseOrderRep
             ->customJoin($join ?? null)
             ->customGroupBy($extend['groupBy'] ?? null)
             ->customerCreatedAt($condition['created_at'] ?? null)
+            ->orderBy($purchaseOrderBy[0], $purchaseOrderBy[1])
             ->paginate($perPage)
             ->withQueryString()->withPath(env('APP_URL') . $extend['path']);
     }

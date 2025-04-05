@@ -20,20 +20,18 @@ class CustomerController extends Controller
     protected $provinceRepository;
     protected $customerRepository;
     protected $customerCatalogueRepository;
-    protected $sourceRepository;
+
 
     public function __construct(
         CustomerService $customerService,
         ProvinceRepository $provinceRepository,
         CustomerRepository $customerRepository,
         CustomerCatalogueRepository $customerCatalogueRepository,
-        SourceRepository $sourceRepository,
     ) {
         $this->customerService = $customerService;
         $this->provinceRepository = $provinceRepository;
         $this->customerRepository = $customerRepository;
         $this->customerCatalogueRepository = $customerCatalogueRepository;
-        $this->sourceRepository = $sourceRepository;
     }
 
     public function index(Request $request)
@@ -69,7 +67,6 @@ class CustomerController extends Controller
         $this->authorize('modules', 'customer.create');
         $provinces = $this->provinceRepository->all();
         $customerCatalogues = $this->customerCatalogueRepository->all();
-        $sources = $this->sourceRepository->all();
         $config = $this->config();
         $config['seo'] = __('messages.customer');
         $config['method'] = 'create';
@@ -79,7 +76,6 @@ class CustomerController extends Controller
             'config',
             'provinces',
             'customerCatalogues',
-            'sources',
         ));
     }
 
@@ -97,7 +93,6 @@ class CustomerController extends Controller
         $customer = $this->customerRepository->findById($id);
         $provinces = $this->provinceRepository->all();
         $customerCatalogues = $this->customerCatalogueRepository->all();
-        $sources = $this->sourceRepository->all();
         $config = $this->config();
         $config['seo'] = __('messages.customer');
         $config['method'] = 'edit';
@@ -108,7 +103,6 @@ class CustomerController extends Controller
             'provinces',
             'customer',
             'customerCatalogues',
-            'sources',
         ));
     }
 

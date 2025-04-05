@@ -77,7 +77,7 @@
                             </thead>
                             <tbody id="inventoryTable">
                                 <tr>
-                                    <td colspan="5" class="text-center">Chưa có dữ liệu</td>
+                                    <td colspan="" class="text-center">Chưa có dữ liệu</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -87,7 +87,7 @@
                     <div id="movementModal" class="modal fade" tabindex="-1">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                <div class="modal-header">
+                                <div class=" ibox-title">
                                     <h5 class="modal-title">Chi tiết nhập/xuất kho</h5>
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                 </div>
@@ -95,9 +95,9 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>Thời gian</th>
-                                                <th>Loại</th>
-                                                <th>Số lượng</th>
+                                                <th class="text-center">Thời gian</th>
+                                                <th class="text-center">Loại</th>
+                                                <th class="text-center">Số lượng</th>
                                             </tr>
                                         </thead>
                                         <tbody id="movementDetails"></tbody>
@@ -187,9 +187,9 @@
                 movements.forEach(function(move) {
                     detailContent += `
                 <tr>
-                    <td>${move.created_at}</td>
-                    <td>${move.type === 'import' ? 'Nhập' : move.type === 'export' ? 'Xuất' : 'Trả hàng'}</td>
-                    <td>${move.quantity}</td>
+                    <td class="text-center">${move.created_at}</td>
+                    <td class="text-center">${move.type === 'import' ? 'Nhập' : move.type === 'export' ? 'Xuất' : 'Trả hàng'}</td>
+                    <td class="text-center">${move.quantity}</td>
                 </tr>`;
                 });
             }

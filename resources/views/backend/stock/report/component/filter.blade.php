@@ -73,7 +73,7 @@
                             </thead>
                             <tbody id="inventoryTable">
                                 <tr>
-                                    <td colspan="5" class="text-center">Chưa có dữ liệu</td>
+                                    <td colspan="7" class="text-center">Chưa có dữ liệu</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -83,7 +83,7 @@
                     <div id="batchModal" class="modal fade" tabindex="-1">
                         <div class="modal-dialog">
                             <div class="modal-content">
-                                <div class="modal-header">
+                                <div class="ibox-title">
                                     <h5 class="modal-title">Chi tiết lô hàng</h5>
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                 </div>

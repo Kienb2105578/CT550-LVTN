@@ -55,3 +55,18 @@
         </div>
     </div>
 </div>
+<div class="ibox w">
+    <div class="ibox-title">
+        <h5>GHI CHÚ</h5>
+    </div>
+    <div class="ibox-content">
+        <div class="row mb15">
+            <div class="col-lg-12 mt-3">
+                <div class="form-row">
+                    <input type="text" name="note" value="{{ old('note', $purchaseOrder->note ?? '') }}"
+                        class="form-control" placeholder="" autocomplete="off">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

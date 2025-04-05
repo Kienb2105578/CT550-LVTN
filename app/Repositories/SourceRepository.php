@@ -12,11 +12,11 @@ use App\Repositories\BaseRepository;
  */
 class SourceRepository extends BaseRepository implements SourceRepositoryInterface
 {
-    protected $model;
+    // protected $model;
 
-    public function __construct(
-        Source $model
-    ) {
-        $this->model = $model;
-    }
+    // public function __construct(
+    //     Source $model
+    // ) {
+    //     $this->model = $model;
+    // }
 }

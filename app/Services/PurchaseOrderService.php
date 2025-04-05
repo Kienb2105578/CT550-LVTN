@@ -47,18 +47,15 @@ class PurchaseOrderService extends BaseService implements PurchaseOrderServiceIn
 
         $perPage = $request->integer('perpage');
         $purchaseOrders = $this->purchaseOrderRepository->pagination(
-            ['purchase_orders.*', 'suppliers.name as supplier_name'], // Chọn thêm cột supplier_name
+            ['purchase_orders.*', 'suppliers.name as supplier_name'],
             $condition,
             $perPage,
             ['path' => 'purchase-order/index'],
-            ['id', 'desc'],
+            ['created_at', 'desc'],
             [
-                ['suppliers', 'suppliers.id', '=', 'purchase_orders.supplier_id'] // ✅ Truyền array thay vì Closure
+                ['suppliers', 'suppliers.id', '=', 'purchase_orders.supplier_id']
             ]
         );
-
-
-
         return $purchaseOrders;
     }
 

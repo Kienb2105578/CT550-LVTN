@@ -47,6 +47,7 @@ h5 {
     color: #4682b4;
     text-transform: uppercase;
     font-weight: 500;
+    top: 6px;
 }
 
 .nav > li.active > a {
@@ -3743,6 +3744,17 @@ video {
     padding: 30px 15px;
     text-align: center;
 }
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-header .left,
+.modal-header .right {
+    flex: 0 0 auto;
+}
+
 .animated.modal.fade .modal-dialog {
     -webkit-transform: none;
     -ms-transform: none;

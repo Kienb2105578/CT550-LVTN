@@ -68,10 +68,10 @@ class Customer extends Authenticatable
         return $this->belongsTo(CustomerCatalogue::class, 'customer_catalogue_id', 'id');
     }
 
-    public function sources()
-    {
-        return $this->belongsTo(Source::class, 'source_id', 'id');
-    }
+    // public function sources()
+    // {
+    //     return $this->belongsTo(Source::class, 'source_id', 'id');
+    // }
     public function reviews()
     {
         return $this->hasMany(Review::class, 'customer_id');

@@ -73,8 +73,6 @@ use App\Http\Controllers\Frontend\MyOrder\MyOrderController;
 
 Route::group(['middleware' => 'license'], function () {
 
-
-
    /* FRONTEND ROUTES  */
    Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
@@ -113,13 +111,6 @@ Route::group(['middleware' => 'license'], function () {
       Route::get('customer/warranty/check' . config('apps.general.suffix'), [FeCustomerController::class, 'warranty'])->name('customer.check.warranty');
       Route::post('customer/warranty/active', [FeCustomerController::class, 'active'])->name('customer.active.warranty');
    });
-
-
-
-   /* AGENCY  */
-
-
-
 
    Route::get('danh-sach-yeu-thich' . config('apps.general.suffix'), [FeProductCatalogueController::class, 'wishlist'])->name('product.catalogue.wishlist');
    Route::get('thanh-toan' . config('apps.general.suffix'), [CartController::class, 'checkout'])->name('cart.checkout');
