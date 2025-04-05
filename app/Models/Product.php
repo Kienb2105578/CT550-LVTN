@@ -16,7 +16,6 @@ class Product extends Model
         'image',
         'album',
         'publish',
-        'follow',
         'order',
         'user_id',
         'product_catalogue_id',
@@ -28,14 +27,9 @@ class Product extends Model
         'attribute',
         'variant',
         'qrcode',
-        'warranty',
-        'check',
         'name',
         'description',
         'content',
-        'meta_title',
-        'meta_keyword',
-        'meta_description',
         'canonical'
     ];
 

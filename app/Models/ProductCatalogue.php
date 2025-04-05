@@ -18,20 +18,12 @@ class ProductCatalogue extends Model
         'rgt',
         'level',
         'image',
-        'icon',
-        'album',
         'publish',
-        'follow',
         'order',
         'user_id',
         'attribute',
-        'check',
         'name',
         'description',
-        'content',
-        'meta_title',
-        'meta_keyword',
-        'meta_description',
         'canonical'
     ];
 
@@ -61,6 +53,4 @@ class ProductCatalogue extends Model
 
         return true;
     }
-
-    public function getNameByLanguage($id, $language) {}
 }

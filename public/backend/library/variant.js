@@ -209,10 +209,7 @@
                 .addClass("image img-cover")
                 .append(
                     $("<img>")
-                        .attr(
-                            "src",
-                            "https://daks2k3a4ib2z.cloudfront.net/6343da4ea0e69336d8375527/6343da5f04a965c89988b149_1665391198377-image16-p-500.jpg"
-                        )
+                        .attr("src", "backend/img/not-found.jpg")
                         .addClass("imageSrc")
                 )
         );
@@ -577,7 +574,7 @@
         html =
             html +
             '<input type="checkbox" class="js-switch" ' +
-            (variantData.variant_quantity !== "" ? "checked" : "") +
+            (variantData.variant_price ? "checked" : "") +
             ' data-target="variantQuantity">';
         html = html + "</div>";
         html = html + '<div class="col-lg-10">';
@@ -594,7 +591,7 @@
         //     (variantData.variant_quantity == "" ? "disabled" : "") +
         //     ' int">';
         // html = html + "</div>";
-        html = html + '<div class="col-lg-3">';
+        html = html + '<div class="col-lg-4">';
         html = html + '<label for="" class="control-label">SKU</label>';
         html =
             html +
@@ -602,7 +599,7 @@
             variantData.variant_sku +
             '" class="form-control text-right">';
         html = html + "</div>";
-        html = html + '<div class="col-lg-3">';
+        html = html + '<div class="col-lg-4">';
         html = html + '<label for="" class="control-label">Giá</label>';
         html =
             html +
@@ -610,57 +607,57 @@
             HT.addCommas(variantData.variant_price) +
             '" class="form-control int">';
         html = html + "</div>";
-        html = html + '<div class="col-lg-3">';
-        html = html + '<label for="" class="control-label">Barcode</label>';
-        html =
-            html +
-            '<input type="text" name="variant_barcode" value="' +
-            variantData.variant_barcode +
-            '" class="form-control text-right">';
+        // html = html + '<div class="col-lg-3">';
+        // html = html + '<label for="" class="control-label">Barcode</label>';
+        // html =
+        //     html +
+        //     '<input type="text" name="variant_barcode" value="' +
+        //     variantData.variant_barcode +
+        //     '" class="form-control text-right">';
+        // html = html + "</div>";
         html = html + "</div>";
         html = html + "</div>";
         html = html + "</div>";
-        html = html + "</div>";
-        html = html + '<div class="row mt20 uk-flex uk-flex-middle">';
-        html = html + '<div class="col-lg-2 uk-flex uk-flex-middle">';
-        html = html + '<label for="" class="mr10">QL File</label>';
-        html =
-            html +
-            '<input type="checkbox" class="js-switch" data-target="disabled" ' +
-            (variantData.variant_filename !== "" ? "checked" : "") +
-            ">";
-        html = html + "</div>";
-        html = html + '<div class="col-lg-10">';
-        html = html + '<div class="row">';
-        html = html + '<div class="col-lg-6">';
-        html = html + '<label for="" class="control-label">Tên File</label>';
-        html =
-            html +
-            '<input type="text" ' +
-            (variantData.variant_filename == "" ? "disabled" : "") +
-            ' name="variant_file_name" value="' +
-            variantData.variant_filename +
-            '" class="form-control ' +
-            (variantData.variant_filename == "" ? "disabled" : "") +
-            '">';
-        html = html + "</div>";
-        html = html + '<div class="col-lg-6">';
-        html = html + '<label for="" class="control-label">Đường dẫn</label>';
-        html =
-            html +
-            '<input type="text" ' +
-            (variantData.variant_filename == "" ? "disabled" : "") +
-            ' name="variant_file_url" value="' +
-            variantData.variant_fileurl +
-            '" class="form-control ' +
-            (variantData.variant_filename == "" ? "disabled" : "") +
-            '">';
-        html = html + "</div>";
-        html = html + " </div>";
-        html = html + "</div>";
-        html = html + "</div>";
-        html = html + "</div>";
-        html = html + "</div>";
+        // html = html + '<div class="row mt20 uk-flex uk-flex-middle">';
+        // html = html + '<div class="col-lg-2 uk-flex uk-flex-middle">';
+        // html = html + '<label for="" class="mr10">QL File</label>';
+        // html =
+        //     html +
+        //     '<input type="checkbox" class="js-switch" data-target="disabled" ' +
+        //     (variantData.variant_filename !== "" ? "checked" : "") +
+        //     ">";
+        // html = html + "</div>";
+        // html = html + '<div class="col-lg-10">';
+        // html = html + '<div class="row">';
+        // html = html + '<div class="col-lg-6">';
+        // html = html + '<label for="" class="control-label">Tên File</label>';
+        // html =
+        //     html +
+        //     '<input type="text" ' +
+        //     (variantData.variant_filename == "" ? "disabled" : "") +
+        //     ' name="variant_file_name" value="' +
+        //     variantData.variant_filename +
+        //     '" class="form-control ' +
+        //     (variantData.variant_filename == "" ? "disabled" : "") +
+        //     '">';
+        // html = html + "</div>";
+        // html = html + '<div class="col-lg-6">';
+        // html = html + '<label for="" class="control-label">Đường dẫn</label>';
+        // html =
+        //     html +
+        //     '<input type="text" ' +
+        //     (variantData.variant_filename == "" ? "disabled" : "") +
+        //     ' name="variant_file_url" value="' +
+        //     variantData.variant_fileurl +
+        //     '" class="form-control ' +
+        //     (variantData.variant_filename == "" ? "disabled" : "") +
+        //     '">';
+        // html = html + "</div>";
+        // html = html + " </div>";
+        // html = html + "</div>";
+        // html = html + "</div>";
+        // html = html + "</div>";
+        // html = html + "</div>";
         html = html + "</td>";
         html = html + "</tr>";
 

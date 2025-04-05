@@ -1,7 +1,7 @@
 @include('backend.dashboard.component.breadcrumb', ['title' => $config['seo']['create']['title']])
 @include('backend.dashboard.component.formError')
 @php
-    $url = ($config['method'] == 'create') ? route('source.store') : route('source.update', $source->id);
+    $url = $config['method'] == 'create' ? route('source.store') : route('source.update', $source->id);
 @endphp
 <form action="{{ $url }}" method="post" class="box">
     @csrf
@@ -13,15 +13,19 @@
                         <h5>Thông tin nguồn khách</h5>
                     </div>
                     <div class="ibox-content sourceContent">
-                        @include('backend.dashboard.component.content', ['offTitle' => true, 'offContent' => true, 'model' => ($source) ?? null])
+                        @include('backend.dashboard.component.content', [
+                            'offTitle' => true,
+                            'offContent' => true,
+                            'model' => $source ?? null,
+                        ])
                     </div>
                 </div>
             </div>
             <div class="col-lg-3">
-               @include('backend.source.component.aside')
+                @include('backend.source.component.aside')
             </div>
         </div>
-        
+
         <div class="text-right mb15">
             <button class="btn btn-primary" type="submit" name="send" value="send">Lưu lại</button>
         </div>

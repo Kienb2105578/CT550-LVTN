@@ -6,12 +6,10 @@
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
-                <th style="width:50px;">
+                <th style="width:50px;" class="text-center">
                     <input type="checkbox" value="" id="checkAll" class="input-checkbox">
                 </th>
-                <th style="width:700px;">{{ __('messages.tableName') }}</th>
-                @include('backend.dashboard.component.languageTh')
-                <th style="width:80px;" class="text-center">{{ __('messages.tableOrder') }}</th>
+                <th style="width:780px;">{{ __('messages.tableName') }}</th>
                 <th class="text-center" style="width:100px;">{{ __('messages.tableStatus') }}</th>
                 <th class="text-center" style="width:100px;">{{ __('messages.tableAction') }}</th>
             </tr>
@@ -20,7 +18,7 @@
             @if (isset($products) && is_object($products))
                 @foreach ($products as $product)
                     <tr id="{{ $product->id }}">
-                        <td>
+                        <td class="text-center">
                             <input type="checkbox" value="{{ $product->id }}" class="input-checkbox checkBoxItem">
                         </td>
                         <td>
@@ -46,11 +44,7 @@
                             'model' => $product,
                             'modeling' => 'Product',
                         ])
-                        <td>
-                            <input type="text" name="order" value="{{ $product->order }}"
-                                class="form-control sort-order text-right" data-id="{{ $product->id }}"
-                                data-model="{{ $config['model'] }}">
-                        </td>
+
                         <td class="text-center js-switch-{{ $product->id }}">
                             <input type="checkbox" value="{{ $product->publish }}" class="js-switch status "
                                 data-field="publish" data-model="{{ $config['model'] }}"

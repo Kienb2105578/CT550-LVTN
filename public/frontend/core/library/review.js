@@ -9,6 +9,7 @@
         let selectedScore = 0;
         $(document).on("click", ".rate input", function () {
             selectedScore = $(this).val();
+            console.log("Đánh giá chọn: " + selectedScore);
         });
 
         $(document).on("click", ".btn-send-review", function () {
@@ -26,15 +27,13 @@
                 parent_id: $(".review_parent_id").val(),
             };
 
-            // Kiểm tra nếu chưa chọn điểm đánh giá
             if (!score) {
                 $(".rate-text")
                     .html("* Bạn chưa chọn điểm đánh giá")
-                    .removeClass("uk-hidden"); // Hiển thị dấu * và thông báo
-                return false; // Dừng hành động gửi review
+                    .removeClass("uk-hidden");
+                return false;
             }
 
-            // Ẩn dấu * nếu đã chọn điểm đánh giá
             $(".rate-text").addClass("uk-hidden");
 
             $.ajax({

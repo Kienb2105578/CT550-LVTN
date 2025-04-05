@@ -10,7 +10,7 @@
     @csrf
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
-            <div class="col-lg-9">
+            <div class="col-lg-6">
                 <div class="ibox">
                     <div class="ibox-title">
                         <h5>{{ __('messages.tableHeading') }}</h5>
@@ -44,7 +44,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="ibox">
+
+            </div>
+            <div class="col-lg-6">
+                <div class="ibox w">
                     <div class="ibox-title">
                         <h5>{{ __('messages.seo') }}</h5>
                     </div>
@@ -70,9 +73,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-3">
-                @include('backend.attribute.catalogue.component.aside')
             </div>
         </div>
         @include('backend.dashboard.component.button')

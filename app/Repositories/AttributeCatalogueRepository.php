@@ -26,18 +26,10 @@ class AttributeCatalogueRepository extends BaseRepository implements AttributeCa
     {
         return $this->model->select([
             'attribute_catalogues.id',
-            'attribute_catalogues.parent_id',
             'attribute_catalogues.image',
-            'attribute_catalogues.icon',
-            'attribute_catalogues.album',
             'attribute_catalogues.publish',
-            'attribute_catalogues.follow',
             'attribute_catalogues.name',
             'attribute_catalogues.description',
-            'attribute_catalogues.content',
-            'attribute_catalogues.meta_title',
-            'attribute_catalogues.meta_keyword',
-            'attribute_catalogues.meta_description',
             'attribute_catalogues.canonical',
         ])
             ->find($id);

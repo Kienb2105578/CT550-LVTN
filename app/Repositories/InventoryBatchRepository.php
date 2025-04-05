@@ -267,6 +267,7 @@ class InventoryBatchRepository extends BaseRepository implements InventoryBatchR
 
         // Lấy dữ liệu sản phẩm
         $products = DB::table('products')
+            ->where('product_catalogue_id', $catalogue_id)
             ->whereNull('deleted_at')
             ->get(['id', 'name', 'price']);
 
@@ -301,7 +302,13 @@ class InventoryBatchRepository extends BaseRepository implements InventoryBatchR
                 }
             }
 
-            // Tổng vốn (giá * số lượng tồn kho hiện tại)
+            $stock_quantity = DB::table('inventory_batches')
+                ->where('product_id', $product->id)
+                ->when($variant->id, function ($query) use ($variant) {
+                    return $query->where('variant_id', $variant->id);
+                })
+                ->sum('quantity');
+
             $total_capital = $latestBatch ? $purchase_price * $latestBatch->quantity : 0;
 
             // Số lượng tồn kho (lấy từ inventory_batches)

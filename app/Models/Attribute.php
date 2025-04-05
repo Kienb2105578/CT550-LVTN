@@ -14,19 +14,12 @@ class Attribute extends Model
 
     protected $fillable = [
         'image',
-        'album',
         'publish',
-        'follow',
-        'order',
         'user_id',
         'attribute_catalogue_id',
         'name',
         'canonical',
-        'meta_title',
-        'meta_keyword',
-        'meta_description',
         'description',
-        'content'
     ];
 
     protected $table = 'attributes';

@@ -50,8 +50,6 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
             $condition,
             $perPage,
             ['path' => 'attribute.catalogue.index'],
-            ['attribute_catalogues.lft', 'ASC'],
-
         );
 
         return $attributeCatalogues;
@@ -63,14 +61,7 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
         try {
             $attributeCatalogue = $this->createCatalogue($request);
             if ($attributeCatalogue->id > 0) {
-                //$this->updateLanguageForCatalogue($attributeCatalogue, $request, $languageId);
                 $this->createRouter($attributeCatalogue, $request, $this->controllerName, $languageId);
-                $this->nestedset = new Nestedsetbie([
-                    'table' => 'attribute_catalogues',
-                    'foreignkey' => 'attribute_catalogue_id',
-                    'language_id' =>  $languageId,
-                ]);
-                $this->nestedset();
             }
             DB::commit();
             return true;
@@ -97,12 +88,6 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
                     $this->controllerName,
                     $languageId
                 );
-                $this->nestedset = new Nestedsetbie([
-                    'table' => 'attribute_catalogues',
-                    'foreignkey' => 'attribute_catalogue_id',
-                    'language_id' =>  $languageId,
-                ]);
-                $this->nestedset();
             }
             DB::commit();
             return true;
@@ -120,12 +105,6 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
         DB::beginTransaction();
         try {
             $attributeCatalogue = $this->attributeCatalogueRepository->delete($id);
-            $this->nestedset = new Nestedsetbie([
-                'table' => 'attribute_catalogues',
-                'foreignkey' => 'attribute_catalogue_id',
-                'language_id' =>  $languageId,
-            ]);
-            $this->nestedset();
             DB::commit();
             return true;
         } catch (\Exception $e) {
@@ -160,14 +139,8 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
             'attribute_catalogues.id',
             'attribute_catalogues.publish',
             'attribute_catalogues.image',
-            'attribute_catalogues.level',
-            'attribute_catalogues.order',
             'attribute_catalogues.name',
             'attribute_catalogues.description',
-            'attribute_catalogues.content',
-            'attribute_catalogues.meta_title',
-            'attribute_catalogues.meta_keyword',
-            'attribute_catalogues.meta_description',
             'attribute_catalogues.canonical'
         ];
     }

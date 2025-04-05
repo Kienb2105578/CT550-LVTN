@@ -7,42 +7,33 @@ use Illuminate\Http\Request;
 
 use App\Services\Interfaces\AttributeServiceInterface  as AttributeService;
 use App\Repositories\Interfaces\AttributeRepositoryInterface  as AttributeRepository;
+use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface  as AttributeCatalogueRepository;
 use App\Http\Requests\Attribute\StoreAttributeRequest;
 use App\Http\Requests\Attribute\UpdateAttributeRequest;
 use App\Classes\Nestedsetbie;
 use App\Models\Language;
+use Attribute;
 
 class AttributeController extends Controller
 {
     protected $attributeService;
     protected $attributeRepository;
-    protected $languageRepository;
+    protected $attributeCatalogueRepository;
     protected $language;
 
     public function __construct(
         AttributeService $attributeService,
         AttributeRepository $attributeRepository,
+        AttributeCatalogueRepository $attributeCatalogueRepository,
     ) {
         $this->middleware(function ($request, $next) {
-            $locale = app()->getLocale(); // vn en cn
-            $language = Language::where('canonical', $locale)->first();
-            $this->language = $language->id;
-            $this->initialize();
+            $locale = app()->getLocale();
+            $this->language = 1;
             return $next($request);
         });
-
+        $this->attributeCatalogueRepository = $attributeCatalogueRepository;
         $this->attributeService = $attributeService;
         $this->attributeRepository = $attributeRepository;
-        $this->initialize();
-    }
-
-    private function initialize()
-    {
-        $this->nestedset = new Nestedsetbie([
-            'table' => 'attribute_catalogues',
-            'foreignkey' => 'attribute_catalogue_id',
-            'language_id' =>  $this->language,
-        ]);
     }
 
     public function index(Request $request)
@@ -63,7 +54,7 @@ class AttributeController extends Controller
         ];
         $config['seo'] = __('messages.attribute');
         $template = 'backend.attribute.attribute.index';
-        $dropdown  = $this->nestedset->Dropdown();
+        $dropdown  = $this->attributeCatalogueRepository->getAll();
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
@@ -78,7 +69,7 @@ class AttributeController extends Controller
         $config = $this->configData();
         $config['seo'] = __('messages.attribute');
         $config['method'] = 'create';
-        $dropdown  = $this->nestedset->Dropdown();
+        $dropdown  = $this->attributeCatalogueRepository->getAll();
         $template = 'backend.attribute.attribute.store';
         return view('backend.dashboard.layout', compact(
             'template',
@@ -103,7 +94,7 @@ class AttributeController extends Controller
         $config = $this->configData();
         $config['seo'] = __('messages.attribute');
         $config['method'] = 'edit';
-        $dropdown  = $this->nestedset->Dropdown();
+        $dropdown  = $this->attributeCatalogueRepository->getAll();
         $album = json_decode($attribute->album);
         $template = 'backend.attribute.attribute.store';
         return view('backend.dashboard.layout', compact(

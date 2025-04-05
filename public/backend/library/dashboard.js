@@ -15,9 +15,9 @@
             datasets: [
                 {
                     label: "Doanh thu",
-                    backgroundColor: "rgba(26,179,148,0.5)",
-                    borderColor: "rgba(26,179,148,0.7)",
-                    pointBackgroundColor: "rgba(26,179,148,1)",
+                    backgroundColor: "rgba(1, 85, 176, 0.5)",
+                    borderColor: "rgba(21, 155, 233, 0.7)",
+                    pointBackgroundColor: "rgb(109, 187, 255)",
                     pointBorderColor: "#fff",
                     data: data,
                 },

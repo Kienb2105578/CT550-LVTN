@@ -300,10 +300,6 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             'product_catalogues.order',
             'product_catalogues.name',
             'product_catalogues.description',
-            'product_catalogues.content',
-            'product_catalogues.meta_title',
-            'product_catalogues.meta_keyword',
-            'product_catalogues.meta_description',
             'product_catalogues.canonical'
         ];
     }

@@ -355,9 +355,6 @@
                                 cart.price * cart.qty
                             )}đ</span>
                         </div>
-                        <div class="cart-item-remove" data-row-id="${
-                            cart.rowId
-                        }">✕</div>
                     </div>
                 </div>
             `;

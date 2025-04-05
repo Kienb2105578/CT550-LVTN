@@ -193,24 +193,23 @@
             HT.handleAttribute();
         }
     };
-
     HT.chooseReviewStar = () => {
-        $(document).on(
-            "click",
-            ".popup-rating input[type='radio']",
-            function () {
-                let _this = $(this);
-                let starCount = parseInt(_this.val()); // Lấy giá trị sao (1, 2, 3, 4, 5)
-
-                // Cập nhật màu sắc của sao đã chọn
-                $(".rate + label").css("color", "#ccc"); // Đặt lại màu mặc định cho tất cả các sao
-                _this.siblings("label").css("color", "gold"); // Đặt màu vàng cho sao đã chọn
-
-                // Hiển thị title vào rate-text
-                let title = _this.siblings("label").attr("title"); // Lấy title của label
-                $(".rate-text").removeClass("uk-hidden").html(title);
+        $(document).on("click", ".popup-rating label", function () {
+            let _this = $(this);
+            let starCount = parseInt(_this.attr("for").replace("star", "")); // Lấy số sao từ label
+            let title = _this.attr("title");
+            $("#star" + starCount)
+                .prop("checked", true)
+                .trigger("change");
+            $(".rate-text").removeClass("uk-hidden").html(title);
+            $(".popup-rating .rate label").css("color", "#ccc");
+            for (let i = 1; i <= starCount; i++) {
+                $(".popup-rating label[for='star" + i + "']").css(
+                    "color",
+                    "gold"
+                );
             }
-        );
+        });
     };
 
     HT.changeQuantityInput = () => {

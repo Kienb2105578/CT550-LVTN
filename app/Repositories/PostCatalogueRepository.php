@@ -23,6 +23,7 @@ class PostCatalogueRepository extends BaseRepository implements PostCatalogueRep
 
 
 
+
     public function getPostCatalogueById(int $id = 0)
     {
         return $this->model->select(

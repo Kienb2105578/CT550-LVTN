@@ -6,6 +6,7 @@
                 <h5>{{ $config['seo']['index']['table'] }} </h5>
                 @include('backend.dashboard.component.toolbox', ['model' => 'productCatalogue'])
             </div>
+
             <div class="ibox-content">
                 @include('backend.product.product.component.filter')
                 @include('backend.product.product.component.table')

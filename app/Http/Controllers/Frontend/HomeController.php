@@ -10,6 +10,7 @@ use App\Services\Interfaces\WidgetServiceInterface  as WidgetService;
 use App\Services\Interfaces\SlideServiceInterface  as SlideService;
 use App\Services\Interfaces\ProductServiceInterface  as ProductService;
 use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
+use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
 use App\Enums\SlideEnum;
 use App\Events\TestEvent;
 use Illuminate\Support\Facades\Redis;
@@ -29,6 +30,7 @@ class HomeController extends FrontendController
     protected $productService;
     protected $system;
     protected $productRepository;
+    protected $promotionRepository;
 
     public function __construct(
         SlideRepository $slideRepository,
@@ -37,6 +39,7 @@ class HomeController extends FrontendController
         SystemRepository $systemRepository,
         ProductRepository $productRepository,
         ProductService $productService,
+        PromotionRepository $promotionRepository,
     ) {
         $this->slideRepository = $slideRepository;
         $this->widgetService = $widgetService;
@@ -44,6 +47,7 @@ class HomeController extends FrontendController
         $this->systemRepository = $systemRepository;
         $this->productRepository = $productRepository;
         $this->productService = $productService;
+        $this->promotionRepository = $promotionRepository;
         parent::__construct(
             $systemRepository,
         );
@@ -64,7 +68,7 @@ class HomeController extends FrontendController
             $id = Auth::guard('customer')->check() ? Auth::guard('customer')->user()->id : null;
             $apiUrl = 'http://127.0.0.1:5555/api/customer-recommendations';
 
-            $response = Http::timeout(3)->get($apiUrl, $id ? ['customer_id' => $id] : []);
+            $response = Http::timeout(5)->get($apiUrl, $id ? ['customer_id' => $id] : []);
 
             if ($response->successful()) {
                 $relatedProducts = $response->json('related_products') ?? $response->json('popular_products');
@@ -76,17 +80,18 @@ class HomeController extends FrontendController
             $relatedProducts = []; // Nếu lỗi thì gán rỗng
         }
 
-        // Nếu không có sản phẩm đề xuất từ API, thì lấy sản phẩm phổ biến
+
         if (empty($relatedProducts)) {
             $relatedProducts = $this->productRepository->getPopularProducts(1)->pluck('id')->toArray();
         }
-
         // Lấy thông tin chi tiết sản phẩm
         $product_recommend = [];
         foreach ($relatedProducts as $id) {
-            $product_recommend[] = $this->productRepository->getProductById($id, 1);
+            $product = $this->productRepository->getProductById($id, 1);
+            if ($product !== null) {
+                $product_recommend[] = $product;
+            }
         }
-
         // Nếu vẫn không có sản phẩm thì lấy danh sách sản phẩm phổ biến làm mặc định
         if (empty($product_recommend)) {
             $product_recommend = $this->productRepository->getPopularProducts(1);
@@ -110,8 +115,30 @@ class HomeController extends FrontendController
         }
         $product_new = $this->productRepository->updateProductTotalQuantity($product_new);
         $product_recommend = $this->productRepository->updateProductTotalQuantity($product_recommend);
-
         $slides = $this->slideService->getSlide([SlideEnum::BANNER, SlideEnum::MAIN, 'banner'], $this->language);
+
+
+        /*
+         * Lấy khuyến mãi hot
+         */
+
+        $promotion = $this->promotionRepository->getActivePromotionProducts();
+        $product_promotion = [];
+        foreach ($promotion  as $id) {
+            $product = $this->productRepository->getProductById($id, 1);
+            if ($product !== null) {
+                $product_promotion[] = $product;
+            }
+        }
+        $productId = $promotion->toArray();
+
+        if (count($productId) && !is_null($productId)) {
+            $product_promotion = $this->productService->combineProductAndPromotion($productId, $product_promotion);
+        }
+        $product_promotion = $this->productRepository->updateProductTotalQuantity($product_promotion);
+        $promotion_new = $this->promotionRepository->getLatestActivePromotion();
+
+
         $system = $this->system;
         $seo = [
             'meta_title' => $this->system['seo_meta_title'],
@@ -127,7 +154,9 @@ class HomeController extends FrontendController
             'seo',
             'system',
             'product_recommend',
-            'product_new'
+            'product_new',
+            'product_promotion',
+            'promotion_new',
         ));
     }
 

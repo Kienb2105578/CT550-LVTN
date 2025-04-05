@@ -57,10 +57,8 @@
             @if (!is_null($product->reviews))
                 @foreach ($product->reviews as $review)
                     @php
-                        $avatar = getReviewName($review->fullname);
+                        $avatar = $review->customer->image;
                         $name = $review->fullname;
-                        $email = $review->email;
-                        $phone = $review->phone;
                         $description = $review->description;
                         $rating = generateStar($review->score);
                         $created_at = convertDateTime($review->created_at);
@@ -68,7 +66,8 @@
                     <div class="review-block-item ">
                         <div class="review-general uk-clearfix">
                             <div class="review-avatar">
-                                <span class="shae">{{ $avatar }}</span>
+                                <img id="image_review"
+                                    src="{{ $avatar ? asset($avatar) : 'frontend/resources/img/no_image.png' }}">
                             </div>
                             <div class="review-content-block">
                                 <div class="review-content">

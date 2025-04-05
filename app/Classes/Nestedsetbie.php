@@ -28,7 +28,7 @@ class Nestedsetbie
 
 		// 🚀 Loại bỏ `language_id` khỏi truy vấn
 		$result = DB::table($this->params['table'] . ' as tb1')
-			->select('tb1.id', 'tb1.name', 'tb1.parent_id', 'tb1.lft', 'tb1.rgt', 'tb1.level', 'tb1.order')
+			->select('tb1.id', 'tb1.name', 'tb1.parent_id', 'tb1.lft', 'tb1.rgt', 'tb1.level', 'tb1.order', 'tb1.canonical')
 			->whereNull('tb1.deleted_at')
 			->orderBy('tb1.lft', 'asc')
 			->get()
@@ -102,6 +102,18 @@ class Nestedsetbie
 				$temp[$val->id] = str_repeat('|-----', (($val->level > 0) ? ($val->level - 1) : 0)) . $val->name;
 			}
 			return $temp;
+		}
+		return [];
+	}
+	public function getCategoryTree()
+	{
+		$this->Get();
+		if (!empty($this->data)) {
+			$tree = [];
+			foreach ($this->data as $category) {
+				$tree[$category->parent_id][] = $category;
+			}
+			return $tree;
 		}
 		return [];
 	}

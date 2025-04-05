@@ -7,9 +7,9 @@
 <link href="backend/font-awesome/css/font-awesome.css" rel="stylesheet">
 <link href="backend/css/animate.css" rel="stylesheet">
 <link href="backend/plugins/jquery-ui.css" rel="stylesheet">
-@if(isset($config['css']) && is_array($config['css']))
-    @foreach($config['css'] as $key => $val)
-        {!! '<link rel="stylesheet" href="'.$val.'"></script>' !!}
+@if (isset($config['css']) && is_array($config['css']))
+    @foreach ($config['css'] as $key => $val)
+        {!! '<link rel="stylesheet" href="' . $val . '">' !!}
     @endforeach
 @endif
 
@@ -18,6 +18,6 @@
 <link href="backend/css/customize.css" rel="stylesheet">
 <script src="backend/js/jquery-3.1.1.min.js"></script>
 <script>
-    var BASE_URL = '{{ config('app.url')  }}'
-    var SUFFIX = '{{ config('apps.general.suffix')  }}'
+    var BASE_URL = '{{ config('app.url') }}'
+    var SUFFIX = '{{ config('apps.general.suffix') }}'
 </script>

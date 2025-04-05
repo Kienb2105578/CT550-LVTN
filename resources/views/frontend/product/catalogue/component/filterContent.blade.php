@@ -161,4 +161,4 @@
     </div>
 </div>
 
-<input type="hidden" class="product_catalogue_id" value="{{ $productCatalogue->id }}">
+<input type="hidden" class="product_catalogue_id" value="{{ $productCatalogue->id ?? '' }}">

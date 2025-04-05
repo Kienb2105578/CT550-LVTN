@@ -11,7 +11,7 @@
 @php
     $url = $config['method'] == 'create' ? route('user.store') : route('user.update', $user->id);
 @endphp
-<form action="{{ $url }}" method="post" class="box">
+<form action="{{ $url }}" method="post" class="box" enctype="multipart/form-data">
     @csrf
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
@@ -95,12 +95,35 @@
                         <div class="row mb15">
                             <div class="col-lg-12">
                                 <div class="form-row">
-                                    <label for="" class="control-label text-left">Ảnh đại diện </label>
-                                    <input type="text" name="image" value="{{ old('image', $user->image ?? '') }}"
-                                        class="form-control upload-image" placeholder="" autocomplete="off"
-                                        data-upload="Images">
+                                    <label for="" class="control-label text-left">Ảnh đại diện</label>
+                                    <div class="d-flex align-items-center">
+                                        <img id="image_preview"
+                                            src="{{ old('image', $user->image ?? 'frontend/resources/img/no_image.png') }}"
+                                            style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 1px solid #ccc; margin-right: 10px;">
+                                        <input type="file" name="image" id="image_input"
+                                            style="opacity: 0; position: absolute; z-index: -1;" accept="image/*">
+                                        <button type="button" class="btn btn-primary"
+                                            onclick="document.getElementById('image_input').click()">
+                                            Chọn ảnh
+                                        </button>
+                                    </div>
+                                    <input type="hidden" name="image_old" value="{{ $user->image ?? '' }}">
                                 </div>
                             </div>
+
+                            <script>
+                                document.getElementById('image_input').addEventListener('change', function(event) {
+                                    let file = event.target.files[0];
+                                    if (file) {
+                                        let reader = new FileReader();
+                                        reader.onload = function(e) {
+                                            document.getElementById('image_preview').src = e.target.result;
+                                        };
+                                        reader.readAsDataURL(file);
+                                    }
+                                });
+                            </script>
+
                         </div>
                     </div>
                 </div>

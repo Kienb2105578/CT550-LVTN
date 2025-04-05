@@ -71,8 +71,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
 
-        $locale = app()->getLocale(); // vn en cn
-        $language = Language::where('canonical', $locale)->first();
+        $locale = app()->getLocale();
+        $language = 1; // vn en cn
+        $language = 'vn';
 
         Validator::extend('custom_date_format', function ($attribute, $value, $parameters, $validator) {
             return Datetime::createFromFormat('d/m/Y H:i', $value) !== false;
@@ -99,13 +100,10 @@ class AppServiceProvider extends ServiceProvider
             ];
 
             foreach ($composerClasses as $key => $val) {
-                $composer = app()->make($val, ['language' => $language->id]);
+                $composer = app()->make($val, ['language' => 1]);
                 $composer->compose($view);
             }
         });
-
-
-
 
 
         Schema::defaultStringLength(191);

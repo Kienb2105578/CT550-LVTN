@@ -10,9 +10,7 @@ use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface  as Attrib
 use App\Http\Requests\Attribute\StoreAttributeCatalogueRequest;
 use App\Http\Requests\Attribute\UpdateAttributeCatalogueRequest;
 use App\Http\Requests\Attribute\DeleteAttributeCatalogueRequest;
-use App\Classes\Nestedsetbie;
 use Auth;
-use App\Models\Language;
 use Illuminate\Support\Facades\App;
 
 class AttributeCatalogueController extends Controller
@@ -29,24 +27,13 @@ class AttributeCatalogueController extends Controller
     ) {
         $this->middleware(function ($request, $next) {
             $locale = app()->getLocale();
-            $language = Language::where('canonical', $locale)->first();
-            $this->language = $language->id;
-            $this->initialize();
+            $this->language = 1;
             return $next($request);
         });
 
 
         $this->attributeCatalogueService = $attributeCatalogueService;
         $this->attributeCatalogueRepository = $attributeCatalogueRepository;
-    }
-
-    private function initialize()
-    {
-        $this->nestedset = new Nestedsetbie([
-            'table' => 'attribute_catalogues',
-            'foreignkey' => 'attribute_catalogue_id',
-            'language_id' =>  $this->language,
-        ]);
     }
 
     public function index(Request $request)
@@ -79,11 +66,9 @@ class AttributeCatalogueController extends Controller
         $config = $this->configData();
         $config['seo'] = __('messages.attributeCatalogue');
         $config['method'] = 'create';
-        $dropdown  = $this->nestedset->Dropdown();
         $template = 'backend.attribute.catalogue.store';
         return view('backend.dashboard.layout', compact(
             'template',
-            'dropdown',
             'config',
         ));
     }
@@ -104,12 +89,10 @@ class AttributeCatalogueController extends Controller
         $config = $this->configData();
         $config['seo'] = __('messages.attributeCatalogue');
         $config['method'] = 'edit';
-        $dropdown  = $this->nestedset->Dropdown();
         $template = 'backend.attribute.catalogue.store';
         return view('backend.dashboard.layout', compact(
             'template',
             'config',
-            'dropdown',
             'attributeCatalogue',
             'queryUrl'
         ));

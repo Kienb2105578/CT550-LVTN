@@ -21,9 +21,4 @@ class Language extends Model
     ];
 
     protected $table = 'languages';
-
-    public function systems()
-    {
-        return  $this->hasMany(System::class, 'language_id', 'id');
-    }
 }

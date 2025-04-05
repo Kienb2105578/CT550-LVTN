@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\Interfaces\OrderServiceInterface as OrderService;
 use App\Services\Interfaces\CustomerServiceInterface as CustomerService;
 use App\Repositories\Interfaces\OrderRepositoryInterface as OrderRepository;
-
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use Illuminate\Support\Facades\Log;
 
 class ReportController extends Controller
 {
@@ -40,6 +41,7 @@ class ReportController extends Controller
             $endDate = date("Y-m-d H:i:s", strtotime(str_replace('/', '-', $endDate)));
             $reports = $this->orderRepository->getReportTime($startDate, $endDate);
         }
+
         $config = $this->config();
         $template = 'backend.report.time';
         return view('backend.dashboard.layout', compact(
@@ -75,6 +77,57 @@ class ReportController extends Controller
             'user',
             'reports'
         ));
+    }
+    public function exportFileProduct(Request $request)
+    {
+        $reports = [];
+        if ($request->input('startDate')) {
+            $startDate = $request->input('startDate');
+            $endDate = $request->input('endDate');
+            $startDate = date("Y-m-d H:i:s", strtotime(str_replace('/', '-', $startDate)));
+            $endDate = date("Y-m-d H:i:s", strtotime(str_replace('/', '-', $endDate)));
+            $reports = $this->orderRepository->getProductReportTime($startDate, $endDate);
+        }
+        Log::info('Xuất file báo cáo kho:', [
+            'startDate' => $startDate,
+            'endDate' => $endDate
+        ]);
+
+        $config = $this->config();
+        $template = 'backend.report.exportFileProduct';
+        $pdf = PDF::loadView('backend.report.exportFileProduct', compact(
+            'reports',
+            'template',
+            'config'
+        ));
+
+        return $pdf->download('Bao_cao_' . now()->format('YmdHis') . '.pdf');
+    }
+
+    public function exportFileTime(Request $request)
+    {
+        $reports = [];
+        if ($request->input('startDate')) {
+            $startDate = $request->input('startDate');
+            $endDate = $request->input('endDate');
+            $startDate = date("Y-m-d H:i:s", strtotime(str_replace('/', '-', $startDate)));
+            $endDate = date("Y-m-d H:i:s", strtotime(str_replace('/', '-', $endDate)));
+            $reports = $this->orderRepository->getReportTime($startDate, $endDate);
+        }
+        Log::info('Xuất file báo cáo kho:', [
+            'startDate' => $startDate,
+            'endDate' => $endDate
+        ]);
+
+        $config = $this->config();
+        $template = 'backend.report.exportFileTime';
+        $pdf = PDF::loadView('backend.report.exportFileTime', compact(
+            'reports',
+            'template',
+            'config'
+        ));
+
+        return $pdf->download('Bao_cao_' . now()->format('YmdHis') . '.pdf');
     }
 
     public function customer(Request $request)
@@ -112,12 +165,13 @@ class ReportController extends Controller
         return [
             'js' => [
                 'backend/js/plugins/chartJs/Chart.min.js',
-                'backend/library/dashboard.js',
+                // 'backend/library/dashboard.js',
                 'backend/library/report.js',
                 'backend/plugins/datetimepicker-master/build/jquery.datetimepicker.full.js',
             ],
             'css' => [
                 'backend/plugins/datetimepicker-master/build/jquery.datetimepicker.min.css',
+                'backend/css/plugins/c3/c3.min.css',
             ]
         ];
     }

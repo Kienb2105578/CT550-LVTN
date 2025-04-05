@@ -31,16 +31,9 @@ class AttributeRepository extends BaseRepository implements AttributeRepositoryI
                 'attributes.id',
                 'attributes.attribute_catalogue_id',
                 'attributes.image',
-                'attributes.icon',
-                'attributes.album',
                 'attributes.publish',
-                'attributes.follow',
                 'attributes.name',
                 'attributes.description',
-                'attributes.content',
-                'attributes.meta_title',
-                'attributes.meta_keyword',
-                'attributes.meta_description',
                 'attributes.canonical',
             ]
         )

@@ -44,9 +44,7 @@ class AttributeService extends BaseService implements AttributeServiceInterface
         ];
         $orderBy = ['attributes.id', 'DESC'];
         $relations = ['attribute_catalogues'];
-        $rawQuery = $this->whereRaw($request, $languageId);
-        // dd($rawQuery);
-
+        $rawQuery = $this->whereRaw($request);
         $attributes = $this->attributeRepository->pagination(
             $this->paginateSelect(),
             $condition,
@@ -58,6 +56,24 @@ class AttributeService extends BaseService implements AttributeServiceInterface
             $rawQuery
         );
         return $attributes;
+    }
+
+    private function whereRaw($request)
+    {
+        $rawCondition = [];
+        if ($request->integer('attribute_catalogue_id') > 0) {
+            $rawCondition['whereRaw'] = [
+                [
+                    'attributes.attribute_catalogue_id IN (
+                    SELECT id
+                    FROM attribute_catalogues
+                    WHERE id = ?
+                )',
+                    [$request->integer('attribute_catalogue_id')]
+                ]
+            ];
+        }
+        return $rawCondition;
     }
 
     public function create($request, $languageId)
@@ -155,39 +171,14 @@ class AttributeService extends BaseService implements AttributeServiceInterface
 
 
 
-    private function whereRaw($request)
-    {
-        $rawCondition = [];
-        if ($request->integer('attribute_catalogue_id') > 0) {
-            $rawCondition['whereRaw'] = [
-                [
-                    'tb3.attribute_catalogue_id IN (
-                    SELECT id
-                    FROM attribute_catalogues
-                    WHERE lft >= (SELECT lft FROM attribute_catalogues as pc WHERE pc.id = ?)
-                    AND rgt <= (SELECT rgt FROM attribute_catalogues as pc WHERE pc.id = ?)
-                )',
-                    [$request->integer('attribute_catalogue_id'), $request->integer('attribute_catalogue_id')]
-                ]
-            ];
-        }
-        return $rawCondition;
-    }
-
-
     private function paginateSelect()
     {
         return [
             'attributes.id',
             'attributes.publish',
             'attributes.image',
-            'attributes.order',
             'attributes.name',
             'attributes.description',
-            'attributes.content',
-            'attributes.meta_title',
-            'attributes.meta_keyword',
-            'attributes.meta_description',
             'attributes.canonical'
         ];
     }

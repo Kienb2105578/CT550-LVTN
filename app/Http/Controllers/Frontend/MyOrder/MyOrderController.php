@@ -93,6 +93,7 @@ class MyOrderController extends FrontendController
             'config',
             'order',
             'provinces',
+            'customer'
         ));
     }
     public function cancel($id)

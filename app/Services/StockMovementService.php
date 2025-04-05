@@ -67,4 +67,21 @@ class StockMovementService extends BaseService implements StockMovementServiceIn
         $query = $this->stockMovementRepository->pagination(...$queryConditions);
         return $query;
     }
+
+    public function create($request)
+    {
+        DB::beginTransaction();
+        try {
+
+            $payload = $request->only(['_token', 'name', 'keyword', 'setting', 'short_code']);
+
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            echo $e->getMessage();
+            die();
+            return false;
+        }
+    }
 }

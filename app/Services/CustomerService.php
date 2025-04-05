@@ -49,6 +49,14 @@ class CustomerService extends BaseService implements CustomerServiceInterface
                 $payload['birthday'] = $this->convertBirthdayDate($payload['birthday']);
             }
             $payload['password'] = Hash::make($payload['password']);
+
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('avatar'), $fileName);
+                $payload['image'] = 'avatar/' . $fileName;
+            }
+
             $customer = $this->customerRepository->create($payload);
             DB::commit();
             return true;
@@ -69,6 +77,22 @@ class CustomerService extends BaseService implements CustomerServiceInterface
             if (isset($payload['birthday']) && $payload['birthday'] != null) {
                 $payload['birthday'] = $this->convertBirthdayDate($payload['birthday']);
             }
+
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+
+                $customer = $this->customerRepository->find($id);
+
+                if (!empty($customer->image) && file_exists(public_path($customer->image)) && $customer->image !== 'avatar/default-avatar.png') {
+                    unlink(public_path($customer->image));
+                }
+
+                $file->move(public_path('avatar'), $fileName);
+                $payload['image'] = 'avatar/' . $fileName;
+            }
+
+
             $customer = $this->customerRepository->update($id, $payload);
             DB::commit();
             return true;

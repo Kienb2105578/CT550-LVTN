@@ -7,13 +7,13 @@
             <div class="fix-label" for="">Chọn hình thức khuyến mãi</div>
             <select name="method" class="setupSelect2 promotionMethod" id="">
                 <option value="none">Chọn hình thức</option>
-                @foreach(__('module.promotion') as $key => $val)
+                @foreach (__('module.promotion') as $key => $val)
                     <option value="{{ $key }}"> {{ $val }} </option>
                 @endforeach
             </select>
         </div>
         <div class="promotion-container">
-            
+
         </div>
     </div>
 </div>

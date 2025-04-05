@@ -30,36 +30,29 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'products.id',
                 'products.product_catalogue_id',
                 'products.image',
-                'products.icon',
                 'products.album',
                 'products.publish',
-                'products.follow',
                 'products.quantity',
                 'products.price',
                 'products.code',
                 'products.made_in',
                 'products.attributeCatalogue',
                 'products.attribute',
-                'products.variant',
-                'products.warranty',
-                'products.name', // Name field will now come directly from 'products' table
-                'products.description', // Description field from 'products'
-                'products.content', // Content field from 'products'
-                'products.meta_title',
-                'products.meta_keyword',
-                'products.meta_description',
+                'products.name',
+                'products.description',
+                'products.content',
                 'products.canonical',
             ]
         )
             ->with([
                 'product_catalogues',
                 'product_variants' => function ($query) use ($language_id) {
-                    $query->with(['attributes']); // Keep attributes without language-specific filtering
+                    $query->with(['attributes']);
                 },
                 'reviews'
             ])
-            ->where('products.publish', '=', 2) // Filter for only published products
-            ->where('products.name', 'LIKE', '%' . $keyword . '%') // Search by product name
+            ->where('products.publish', '=', 2)
+            ->where('products.name', 'LIKE', '%' . $keyword . '%')
             ->get();
     }
 
@@ -121,10 +114,8 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'products.id',
                 'products.product_catalogue_id',
                 'products.image',
-                'products.icon',
                 'products.album',
                 'products.publish',
-                'products.follow',
                 'products.quantity',
                 'products.price',
                 'products.code',
@@ -135,9 +126,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'products.name',
                 'products.description',
                 'products.content',
-                'products.meta_title',
-                'products.meta_keyword',
-                'products.meta_description',
                 'products.canonical',
             ]
         )
@@ -156,32 +144,29 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
     public function getProductById(int $id = 0, $language_id = 0, $condition = [])
     {
-        return $this->model->select(
-            [
-                'products.id',
-                'products.product_catalogue_id',
-                'products.image',
-                'products.album',
-                'products.publish',
-                'products.quantity',
-                'products.price',
-                'products.code',
-                'products.made_in',
-                'products.attributeCatalogue',
-                'products.attribute',
-                'products.variant',
-                'products.qrcode',
-                'products.name',
-                'products.description',
-                'products.content',
-                'products.meta_title',
-                'products.meta_keyword',
-                'products.meta_description',
-                'products.canonical',
-                'product_catalogues.name as product_catalogue_name' // Thêm tên catalog
-            ]
-        )
-            ->join('product_catalogues', 'product_catalogues.id', '=', 'products.product_catalogue_id') // Thực hiện join với bảng product_catalogues
+        return $this->model->select([
+            'products.id',
+            'products.product_catalogue_id',
+            'products.image',
+            'products.album',
+            'products.publish',
+            'products.quantity',
+            'products.price',
+            'products.code',
+            'products.made_in',
+            'products.attributeCatalogue',
+            'products.attribute',
+            'products.variant',
+            'products.qrcode',
+            'products.name',
+            'products.description',
+            'products.content',
+            'products.canonical',
+            'product_catalogues.name as product_catalogue_name'
+        ])
+            ->join('product_catalogues', 'product_catalogues.id', '=', 'products.product_catalogue_id')
+            ->where('products.publish', '=', 2)
+            ->whereNull('products.deleted_at')
             ->with([
                 'product_variants' => function ($query) use ($language_id) {
                     $query->with(['attributes']);
@@ -190,6 +175,9 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             ])
             ->find($id);
     }
+
+
+
     public function getProductName($productId)
     {
         $product = $this->getProductById($productId);
@@ -205,10 +193,8 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'products.id',
                 'products.product_catalogue_id',
                 'products.image',
-                'products.icon',
                 'products.album',
                 'products.publish',
-                'products.follow',
                 'products.quantity',
                 'products.price',
                 'products.code',
@@ -217,14 +203,9 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'products.attribute',
                 'products.variant',
                 'products.qrcode',
-                'products.warranty',
-                'products.iframe',
                 'products.name',
                 'products.description',
                 'products.content',
-                'products.meta_title',
-                'products.meta_keyword',
-                'products.meta_description',
                 'products.canonical',
                 DB::raw('AVG(reviews.score) as avg_rating') // Tính điểm đánh giá trung bình
             ]
@@ -243,16 +224,11 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'products.name',
                 'products.description',
                 'products.content',
-                'products.meta_title',
-                'products.meta_keyword',
-                'products.meta_description',
                 'products.canonical',
                 'products.product_catalogue_id',
                 'products.image',
-                'products.icon',
                 'products.album',
                 'products.publish',
-                'products.follow',
                 'products.quantity',
                 'products.price',
                 'products.code',
@@ -261,8 +237,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 'products.attribute',
                 'products.variant',
                 'products.qrcode',
-                'products.warranty',
-                'products.iframe'
             )
             ->orderByRaw('SUM(products.quantity) DESC, avg_rating DESC')
             ->limit(5)
@@ -275,10 +249,8 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'products.id',
             'products.product_catalogue_id',
             'products.image',
-            'products.icon',
             'products.album',
             'products.publish',
-            'products.follow',
             'products.quantity',
             'products.price',
             'products.code',
@@ -287,14 +259,9 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'products.attribute',
             'products.variant',
             'products.qrcode',
-            'products.warranty',
-            'products.iframe',
             'products.name',
             'products.description',
             'products.content',
-            'products.meta_title',
-            'products.meta_keyword',
-            'products.meta_description',
             'products.canonical',
             'products.created_at'
         ])
@@ -434,6 +401,8 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         $query->groupBy($orderBy);
         $query->with(['reviews', 'product_catalogues']);
 
+        Log::info($query->toSql(), $query->getBindings());
+
         return $query->paginate($perpage);
     }
 
@@ -456,9 +425,14 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             ->groupBy('product_id')
             ->pluck('sum_quantity', 'product_id');
 
-        foreach ($products as $product) {
-            $product->total_quantity = isset($productQuantities[$product->id]) ? $productQuantities[$product->id] : 0;
+        foreach ($products as &$product) {
+            if (is_array($product)) {
+                $product['total_quantity'] = isset($productQuantities[$product['id']]) ? $productQuantities[$product['id']] : 0;
+            } elseif (is_object($product)) {
+                $product->total_quantity = isset($productQuantities[$product->id]) ? $productQuantities[$product->id] : 0;
+            }
         }
+        unset($product);
         return $products;
     }
 

@@ -48,15 +48,7 @@ class ReviewService extends BaseService implements ReviewServiceInterface
             $payload['product_id'] = $payload['reviewable_id'];
             $user = Auth::guard('customer')->user();
             $payload['customer_id'] = $user->id;
-            Log::info($payload);
             $review = $this->reviewRepository->create($payload);
-            $this->reviewNestedset = new ReviewNested([
-                'table' => 'reviews',
-                'reviewable_type' => $payload['reviewable_type']
-            ]);
-            $this->reviewNestedset->Get('level ASC, order ASC');
-            $this->reviewNestedset->Recursive(0, $this->reviewNestedset->Set());
-            $this->reviewNestedset->Action();
             DB::commit();
             return [
                 'code' => 10,
@@ -67,10 +59,6 @@ class ReviewService extends BaseService implements ReviewServiceInterface
             // Log::error($e->getMessage());
             echo $e->getMessage();
             die();
-            return [
-                'code' => 11,
-                'message' => 'Có vấn đề xảy ra! Hãy thử lại'
-            ];
         }
     }
 

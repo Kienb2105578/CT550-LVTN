@@ -11,8 +11,8 @@
                     <input type="checkbox" value="" id="checkAll" class="input-checkbox">
                 </th>
                 <th>{{ __('messages.tableName') }}</th>
-                @include('backend.dashboard.component.languageTh')
-                <th style="width:80px;" class="text-center">{{ __('messages.tableOrder') }}</th>
+                {{-- @include('backend.dashboard.component.languageTh') --}}
+                {{-- <th style="width:80px;" class="text-center">{{ __('messages.tableOrder') }}</th> --}}
                 <th class="text-center" style="width:200px;">{{ __('messages.tableAction') }}</th>
             </tr>
         </thead>
@@ -43,21 +43,21 @@
                             'model' => $attribute,
                             'modeling' => 'Attribute',
                         ])
-                        <td>
+                        {{-- <td>
                             <input type="text" name="order" value="{{ $attribute->order }}"
                                 class="form-control sort-order text-right" data-id="{{ $attribute->id }}"
                                 data-model="{{ $config['model'] }}">
-                        </td>
+                        </td> --}}
                         <td class="text-center">
                             <div class="btn-group">
                                 <a href="{{ route('attribute.edit', [$attribute->id, $queryUrl ?? '']) }}"
                                     class="btn btn-success btn-sm">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                <a href="{{ route('attribute.delete', $attribute->id) }}"
+                                {{-- <a href="{{ route('attribute.delete', $attribute->id) }}"
                                     class="btn btn-danger btn-sm">
                                     <i class="fa fa-trash"></i>
-                                </a>
+                                </a> --}}
                             </div>
                         </td>
                     </tr>

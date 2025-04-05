@@ -32,7 +32,6 @@ class BaseRepository implements BaseRepositoryInterface
         array $join = [],
         array $relations = [],
         array $rawQuery = [],
-        // int $currentPage = 1,
 
     ) {
         $query = $this->model->select($column);

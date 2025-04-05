@@ -1,4 +1,4 @@
-<div id="header" class="pc-header uk-visible-large">
+<div id="header" class="pc-header uk-visible-large" data-uk-sticky style="background: #fff">
     <div class="upper">
         <div class="uk-container uk-container-center ">
             <div class="uk-flex uk-flex-between uk-flex-middle">
@@ -67,7 +67,7 @@
                     <form action="{{ write_url('tim-kiem') }}" class="uk-form form" style="margin-bottom: 0;">
                         <input type="text" name="keyword" placeholder="Nhập từ khóa" value=""
                             class="input-text">
-                        <i id="voice-search" aria-hidden="true" class="fa fa-microphone voice-icon"></i>
+                        {{-- <i id="voice-search" aria-hidden="true" class="fa fa-microphone voice-icon"></i> --}}
                         <button type="submit" value="" name="">
                             Tìm kiếm <i class="fa fa-search"></i>
                         </button>
@@ -312,44 +312,15 @@
             </div>
         </div>
     </div>
-    <div class="lower" data-uk-sticky>
+    <div class="lower">
         <div class="uk-container uk-container-center">
-            <div class="uk-grid uk-grid-medium uk-flex uk-flex-middle">
-                <div class="uk-width-large-1-5">
-                    @if (count($categories))
-                        <div class="logoScroll">
-                            <a href="" class="image img-cover">
-                                <img src="{{ $system['homepage_logo'] }}" alt="">
-                            </a>
-                        </div>
-                        <div class="categories">
-                            <div class="category-heading">Danh mục sản phẩm</div>
-                            <div class="category-dropdown">
-                                <ul class="uk-list uk-clearfix">
-                                    @foreach ($categories as $key => $val)
-                                        @if ($val->publish == 2)
-                                            @php
-                                                $name = $val->name ?? 'Tên danh mục không xác định';
-                                                $canonical = write_url($val->canonical ?? '#');
-                                            @endphp
-                                            <li><a href="{{ $canonical }}"
-                                                    title="{{ $name }}">{{ $name }}</a></li>
-                                        @endif
-                                    @endforeach
-
-                                </ul>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-                <div class="uk-width-large-4-5">
+            <div class="uk-grid uk-grid-medium uk-flex uk-flex-center uk-flex-middle">
+                <div class=" uk-text-center">
                     @include('frontend.component.navigation')
                 </div>
             </div>
         </div>
     </div>
-
-
 
 
 </div>

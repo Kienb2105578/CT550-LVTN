@@ -4,10 +4,10 @@
     <div class="upper">
         <div class="uk-container uk-container-center">
             <div class="footer-information">
-                <div class="footer-logo" style="margin-top: 20px; margin-bottom: 20px;"><img
-                        src="{{ $system['homepage_logo'] }}" alt=""></div>
+                {{-- <div class="footer-logo" style="margin-top: 20px; margin-bottom: 20px;"><img
+                        src="{{ $system['homepage_logo'] }}" alt=""></div> --}}
                 <div class="uk-grid uk-grid-medium">
-                    <div class="uk-width-large-1-3 move-up">
+                    <div class="uk-width-large-1-4 move-up">
                         <div class="footer-contact">
                             <div class="ft-heading">GIỚI THIỆU</div>
                             <p style="text-align: justify;">
@@ -26,7 +26,7 @@
                             @php
                                 $name = $val['item']->name;
                             @endphp
-                            <div class="uk-width-large-1-3">
+                            <div class="uk-width-large-1-4">
                                 <div class="footer-menu">
                                     <div class="ft-heading move-up">{{ $name }}</div>
                                     @if (count($val['children']))
@@ -45,17 +45,26 @@
                             </div>
                         @endforeach
                     @endif
+                    <div class="uk-width-large-1-4 move-up">
+                        <div class="footer-contact">
+                            <div class="ft-heading">HỖ TRỢ THANH TOÁN</div>
+                            <div class="payment-methods">
+                                <div><img src="frontend/resources/core/image/vnpay.jpg" alt="VNPay"></div>
+                                <div><img src="frontend/resources/core/image/momo.png" alt="MoMo"></div>
+                                <div><img src="frontend/resources/core/image/paypal.jpg" alt="Paypal"></div>
+                            </div>
+                            <div class="ft-heading" style="margin-top: 20px;">CHỨNG NHẬN</div>
+                            <div class="logo-bct" style="margin-top: 10px;">
+                                <a href="http://online.gov.vn/Home/WebDetails/75902" rel="nofollow" target="_blank">
+                                    <img alt='Đăng ký Bộ Công Thương'
+                                        src="https://file.hstatic.net/1000361746/file/thongbaoct_6bf20cdb8562478598625259a9c91707.png"
+                                        width="150" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-            </div>
-            <div class="footter-end">
-                <div class="logo-bct" style="margin-top: 10px;">
-                    <a href="http://online.gov.vn/Home/WebDetails/75902" rel="nofollow" target="_blank">
-                        <img alt='Đăng ký Bộ Công Thương'
-                            src="https://file.hstatic.net/1000361746/file/thongbaoct_6bf20cdb8562478598625259a9c91707.png"
-                            width="150" />
-                    </a>
-                </div>
             </div>
         </div>
     </div>
@@ -86,6 +95,17 @@
         <div class="animated infinite pulse kenit-alo-circle-fill" style="background-color:#d92329"></div>
     </a>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll(".footer-menu ul li > *").forEach(function(el) {
+            let text = el.innerText.trim();
+            if (text.length > 0) {
+                el.innerText = text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+            }
+        });
+    });
+</script>
 
 {{-- <div class="noti" id="noti" style="bottom:-80px;">
    

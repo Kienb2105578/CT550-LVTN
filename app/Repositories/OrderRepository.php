@@ -28,19 +28,24 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
     }
 
     public function pagination(
-        array $column = ['*'],
+        array $column = ['orders.*'],
         array $condition = [],
         int $perPage = 1,
         array $extend = [],
-        array $orderBy = ['id', 'DESC'],
+        array $orderBy = ['orders.id', 'DESC'],
         array $join = [],
         array $relations = [],
-        array $rawQuery = [],
-        // int $currentPage = 1,
+        array $rawQuery = []
     ) {
         $query = $this->model->select($column);
-        return $query
-            ->keyword($condition['keyword'] ?? null, ['fullname', 'phone', 'email', 'address', 'code'], ['field' => 'products.name', 'relation' => 'products'])  // Đảm bảo trường 'name' là của bảng 'products'
+
+        // Lấy danh sách provinces, districts, wards
+        $provinces = DB::table('provinces')->pluck('name', 'code')->toArray();
+        $districts = DB::table('districts')->pluck('name', 'code')->toArray();
+        $wards = DB::table('wards')->pluck('name', 'code')->toArray();
+
+        $data = $query
+            ->keyword($condition['keyword'] ?? null, ['fullname', 'phone', 'email', 'address', 'code'], ['field' => 'products.name', 'relation' => 'products'])
             ->publish($condition['publish'] ?? null)
             ->customDropdownFilter($condition['dropdown'] ?? null)
             ->relationCount($relations ?? null)
@@ -51,7 +56,17 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             ->customOrderBy($orderBy ?? null)
             ->customerCreatedAt($condition['created_at'] ?? null)
             ->paginate($perPage)
-            ->withQueryString()->withPath(env('APP_URL') . $extend['path']);
+            ->withQueryString()
+            ->withPath(env('APP_URL') . ($extend['path'] ?? ''));
+
+        $data->getCollection()->transform(function ($order) use ($provinces, $districts, $wards) {
+            $order->province_name = $provinces[$order->province_id] ?? null;
+            $order->district_name = $districts[$order->district_id] ?? null;
+            $order->ward_name = $wards[$order->ward_id] ?? null;
+            return $order;
+        });
+
+        return $data;
     }
 
 
@@ -642,13 +657,13 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
     public function getProductReportTime($startDate, $endDate)
     {
-        return $this->model->select(
+        $result = $this->model->select(
             DB::raw("IFNULL(product_variants.sku, products.code) as sku"),
             DB::raw("products.name as product_name"),
             DB::raw("COUNT(DISTINCT orders.customer_id) as count_customer"),
             DB::raw("COUNT(orders.id) as count_order"),
             DB::raw("SUM(order_product.price * order_product.qty) as sum_revenue"),
-            DB::raw("(SELECT SUM(JSON_UNQUOTE(JSON_EXTRACT(promotion, '$.discount'))) FROM orders WHERE DATE(created_at) = DATE(orders.created_at)) as sum_discount")
+            DB::raw("SUM(JSON_UNQUOTE(JSON_EXTRACT(orders.promotion, '$.discount'))) as sum_discount")
         )
             ->join('order_product', 'order_product.order_id', '=', 'orders.id')
             ->leftJoin('product_variants', 'product_variants.uuid', '=', 'order_product.uuid')
@@ -656,9 +671,13 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             ->whereDate('orders.created_at', '>=', $startDate)
             ->whereDate('orders.created_at', '<=', $endDate)
             ->where('orders.payment', '=', 'paid')
-            ->groupBy('order_product.product_id')
-            ->get()->toArray();
+            ->groupBy('order_product.product_id', 'order_product.uuid')
+            ->get()
+            ->toArray();
+        return $result;
     }
+
+
 
     public function getCustomerReportTime($startDate, $endDate)
     {

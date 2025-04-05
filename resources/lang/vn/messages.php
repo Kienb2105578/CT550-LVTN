@@ -27,6 +27,9 @@ return [
         'detail' => [
             'title' => 'Quản lý thông tin chi tiết đơn hàng',
         ],
+        'create' => [
+            'title' => 'Thêm mới đơn hàng',
+        ]
     ],
     'distribution' => [
         'index' => [
@@ -95,7 +98,8 @@ return [
         ],
         'stockTaking' => [
             'title' => 'Kiểm kê kho',
-            'table' => 'Danh sách kiểm kê kho'
+            'table' => 'Danh sách kiểm kê kho',
+            'create' => 'Thêm mới phiếu xuất hàng'
         ],
         'inventory' => [
             'title' => 'Quản lý tồn kho',

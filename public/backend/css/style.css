@@ -44,8 +44,11 @@ h5 {
     padding: 14px 20px 14px 25px;
 }
 .nav.navbar-right > li > a {
-    color: #f00;
+    color: #4682b4;
+    text-transform: uppercase;
+    font-weight: 500;
 }
+
 .nav > li.active > a {
     color: #ffffff;
 }
@@ -168,9 +171,7 @@ h5 {
     font-size: 12px;
 }
 .nav-header {
-    padding: 33px 25px;
-    /* background-color: #2f4050; */
-    /* background-image: url("patterns/header-profile.png"); */
+    padding: 25px 25px;
 }
 .pace-done .nav-header {
     transition: all 0.4s;
@@ -195,8 +196,8 @@ ul.nav-second-level {
     color: #f1f1f1;
 }
 .minimalize-styl-2 {
-    padding: 4px 12px;
-    margin: 14px 5px 5px 20px;
+    padding: 6px 12px;
+    margin: 22px;
     font-size: 14px;
     float: left;
 }
@@ -1694,6 +1695,7 @@ div.dt-button-info {
 /* CIRCLE */
 .img-circle {
     border-radius: 50%;
+    margin: 15px;
 }
 .btn-circle {
     width: 30px;
@@ -4062,15 +4064,19 @@ code {
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
     -moz-border-top-colors: none;
-    background-color: #ffffff;
-    border-color: #e7eaec;
+    background-color: #dfeefa;
+    border-color: #00406a;
     border-image: none;
     border-style: solid solid none;
     border-width: 2px 0 0;
     color: inherit;
     margin-bottom: 0;
-    padding: 15px 15px 7px;
+    padding: 15px 15px 15px;
     min-height: 48px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .ibox-content {
     background-color: #ffffff;
@@ -4237,7 +4243,7 @@ table.table-mail tr td {
     color: #ffffff;
 }
 .progress-bar {
-    background-color: #1ab394;
+    background-color: #0a346a;
 }
 .progress-small,
 .progress-small .progress-bar {
@@ -4268,7 +4274,7 @@ table.table-mail tr td {
     background-color: #ed5565;
 }
 .panel-title {
-    font-size: inherit;
+    text-transform: uppercase;
 }
 .jumbotron {
     border-radius: 6px;
@@ -8785,5 +8791,11 @@ body.md-skin {
     }
     #page-wrapper {
         margin: 0;
+    }
+}
+@media (max-width: 768px) {
+    .navbar-right {
+        float: right;
+        margin-right: 15px;
     }
 }

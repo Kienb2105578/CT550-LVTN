@@ -26,6 +26,7 @@ use App\Http\Controllers\Backend\StockController;
 use App\Http\Controllers\Backend\Promotion\PromotionController;
 use App\Http\Controllers\Backend\ReviewController;
 use App\Http\Controllers\Ajax\LocationController;
+use App\Http\Controllers\Ajax\ChatbotController as AjaxChatbotController;
 use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
 use App\Http\Controllers\Ajax\MenuController as AjaxMenuController;
 use App\Http\Controllers\Ajax\SlideController as AjaxSlideController;
@@ -48,7 +49,6 @@ use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\Payment\VnpayController;
 use App\Http\Controllers\Frontend\Payment\MomoController;
 use App\Http\Controllers\Frontend\Payment\PaypalController;
-use App\Http\Controllers\Frontend\CrawlerController;
 use App\Http\Controllers\Frontend\ContactController as FeContactController;
 use App\Http\Controllers\Frontend\AuthController as FeAuthController;
 use App\Http\Controllers\Frontend\CustomerController as FeCustomerController;
@@ -82,15 +82,11 @@ Route::group(['middleware' => 'license'], function () {
    Route::get('/don-hang-cua-toi/{id}', [MyOrderController::class, 'detail'])->name('my-order.detail')->where(['id' => '[0-9]+']);
    Route::delete('/don-hang-cua-toi/{id}/huy', [MyOrderController::class, 'cancel'])->name('my-order.cancel')->where(['id' => '[0-9]+']);
 
-   Route::get('crawler', [CrawlerController::class, 'index'])->name('crawler.ckfinder');
-   Route::get('crawlerUpdate', [CrawlerController::class, 'crawlerUpdate'])->name('crawler.update');
-   Route::get('crawlerProduct', [CrawlerController::class, 'crawlerProduct'])->name('crawler.product');
-   Route::get('crawlerUpdateProduct', [CrawlerController::class, 'updateProduct'])->name('crawler.product.update');
-
 
    Route::get('tim-kiem' . config('apps.general.suffix'), [FeProductCatalogueController::class, 'search'])->name('product.catalogue.search');
    Route::get('lien-he' . config('apps.general.suffix'), [FeContactController::class, 'index'])->name('fe.contact.index');
    Route::get('bai-viet' . config('apps.general.suffix'), [FePostController::class, 'main'])->name('post.main');
+   Route::get('san-pham' . config('apps.general.suffix'), [FeProductCatalogueController::class, 'main'])->name('product.catalogue.main');
 
 
    /* CUSTOMER  */
@@ -105,7 +101,6 @@ Route::group(['middleware' => 'license'], function () {
 
    Route::get('customer/password/update' . config('apps.general.suffix'), [FeAuthController::class, 'updatePassword'])->name('customer.update.password');
    Route::post('customer/password/change' . config('apps.general.suffix'), [FeAuthController::class, 'changePassword'])->name('customer.password.reset');
-
 
    Route::group(['middleware' => ['customer']], function () {
       Route::get('customer/profile' . config('apps.general.suffix'), [FeCustomerController::class, 'profile'])->name('customer.profile');
@@ -138,6 +133,8 @@ Route::group(['middleware' => 'license'], function () {
 
    Route::get('ajax/post/video', [AjaxPostController::class, 'video'])->name('post.video');
    Route::post('ajax/product/wishlist', [AjaxProductController::class, 'wishlist'])->name('product.wishlist');
+
+   Route::post('ajax/chatbot/create', [AjaxChatbotController::class, 'create'])->name('ajax.chatbot.create');
 
    /* VNPAY */
    Route::get('return/vnpay' . config('apps.general.suffix'), [VnpayController::class, 'vnpay_return'])->name('vnpay.momo_return');
@@ -232,6 +229,8 @@ Route::group(['middleware' => 'license'], function () {
       Route::group(['prefix' => 'stock'], function () {
          Route::get('report/index', [StockController::class, 'report'])->name('stock.report.index');
          Route::get('stock-taking/index', [StockController::class, 'stockTaking'])->name('stock.stock-taking.index');
+         Route::get('create', [StockController::class, 'create'])->name('stock.stock-taking.create');
+         Route::post('store', [StockController::class, 'store'])->name('stock.stock-taking.store');
          Route::get('inventory/index', [StockController::class, 'inventory'])->name('stock.inventory.index');
          Route::get('report/exportFile', [StockController::class, 'exportFile'])->name('stock.report.exportFile');
       });
@@ -407,6 +406,8 @@ Route::group(['middleware' => 'license'], function () {
 
       Route::group(['prefix' => 'order'], function () {
          Route::get('index', [OrderController::class, 'index'])->name('order.index');
+         Route::get('create', [OrderController::class, 'create'])->name('order.create');
+         Route::post('store', [OrderController::class, 'store'])->name('order.store');
          Route::get('{id}/detail', [OrderController::class, 'detail'])->where(['id' => '[0-9]+'])->name('order.detail');
          Route::get('{id}/invoice', [OrderController::class, 'exportPdf'])
             ->where(['id' => '[0-9]+'])
@@ -419,6 +420,8 @@ Route::group(['middleware' => 'license'], function () {
       Route::group(['prefix' => 'report'], function () {
          Route::get('time', [ReportController::class, 'time'])->name('report.time');
          Route::get('product', [ReportController::class, 'product'])->name('report.product');
+         Route::get('exportFileProduct', [ReportController::class, 'exportFileProduct'])->name('report.exportFileProduct');
+         Route::get('exportFileTime', [ReportController::class, 'exportFileTime'])->name('report.exportFileTime');
          Route::get('customer', [ReportController::class, 'customer'])->name('report.customer');
       });
 
@@ -463,6 +466,8 @@ Route::group(['middleware' => 'license'], function () {
       Route::get('ajax/order/chartDoughnutChart', [AjaxOrderController::class, 'chartDoughnutChart'])->name('ajax.order.chartDoughnutChart');
       Route::get('ajax/order/chartPolarChart', [AjaxOrderController::class, 'chartPolarChart'])->name('ajax.order.charPolarChart');
       Route::get('ajax/order/chartRevenueAndCost', [AjaxOrderController::class, 'chartRevenueAndCost'])->name('ajax.order.chartRevenueAndCost');
+      Route::get('ajax/order/getVariantByProduct', [AjaxOrderController::class, 'getVariantByProduct'])->name('ajax.order.getVariantByProduct');
+      Route::get('ajax/order/getProduct', [AjaxOrderController::class, 'getProduct'])->name('ajax.order.getProduct');
 
       Route::post('ajax/construct/createCustomer', [AjaxCustomerController::class, 'createCustomer'])->name('ajax.construct.createCustomer');
 

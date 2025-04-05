@@ -13,23 +13,11 @@ class AttributeCatalogue extends Model
     use HasFactory, SoftDeletes, QueryScopes;
 
     protected $fillable = [
-        'parent_id',
-        'lft',
-        'rgt',
-        'level',
         'image',
-        'icon',
-        'album',
         'publish',
-        'follow',
-        'order',
         'user_id',
         'name',
         'description',
-        'content',
-        'meta_title',
-        'meta_keyword',
-        'meta_description',
         'canonical'
     ];
 

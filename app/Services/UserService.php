@@ -62,6 +62,14 @@ class UserService extends BaseService implements UserServiceInterface
                 $payload['birthday'] = $this->convertBirthdayDate($payload['birthday']);
             }
             $payload['password'] = Hash::make($payload['password']);
+
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $file->move(public_path('avatar'), $fileName);
+                $payload['image'] = 'avatar/' . $fileName;
+            }
+
             $user = $this->userRepository->create($payload);
             DB::commit();
             return true;
@@ -83,6 +91,19 @@ class UserService extends BaseService implements UserServiceInterface
             $payload = $request->except(['_token', 'send']);
             if ($payload['birthday'] != null) {
                 $payload['birthday'] = $this->convertBirthdayDate($payload['birthday']);
+            }
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+
+                $customer = $this->userRepository->find($id);
+
+                if (!empty($customer->image) && file_exists(public_path($customer->image)) && $customer->image !== 'avatar/default-avatar.png') {
+                    unlink(public_path($customer->image));
+                }
+
+                $file->move(public_path('avatar'), $fileName);
+                $payload['image'] = 'avatar/' . $fileName;
             }
             $user = $this->userRepository->update($id, $payload);
             DB::commit();

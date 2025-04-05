@@ -20,7 +20,7 @@
                                 <th>SL nhập</th>
                                 <th>Còn lại</th>
                                 <th>Giá nhập</th>
-                                <th>Trạng thái</th>
+                                <th class="text-center">Trạng thái</th>
                             </tr>
                         </thead>
                         <tbody>`;
@@ -31,9 +31,11 @@
                         <tr>
                             <td><strong>${item.full_product_name}</strong></td>
                             <td>${item.initial_quantity}</td>
-                            <td>${item.remaining_quantity}</td>
+                            <td class="text-danger">${
+                                item.remaining_quantity
+                            }</td>
                             <td>${HT.formatCurrency(item.price)}</td>
-                            <td>
+                            <td class="text-center">
                                 <label class="switch-table">
                                     <input type="checkbox" class="toggle-status" data-id="${
                                         item.id
@@ -131,7 +133,7 @@
                             <th>SL nhập</th>
                             <th>Còn lại</th>
                             <th>Giá nhập</th> 
-                            <th>Trạng thái</th>
+                            <th class="text-center">Trạng thái</th>
                         </tr>
                     </thead>
                     <tbody>`;
@@ -148,7 +150,7 @@
                         <td>${HT.formatCurrency(
                             item.price
                         )}</td> <!-- Hiển thị Giá bán -->
-                        <td>
+                        <td class="text-center">
                             <label class="switch-table">
                                 <input type="checkbox" class="toggle-status" data-id="${
                                     item.id

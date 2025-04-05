@@ -35,7 +35,8 @@
                         <td>
                             <div><b>N:</b> {{ $order->fullname }}</div>
                             <div><b>P:</b> {{ $order->phone }}</div>
-                            <div><b>A:</b> {{ $order->address }}, </div>
+                            <div><b>A:</b> {{ $order->address }},
+                                {{ $order->ward_name }}, {{ $order->district_name }}, {{ $order->province_name }}</div>
                         </td>
 
                         <td class="text-right order-discount">

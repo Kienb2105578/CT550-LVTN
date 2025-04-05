@@ -44,6 +44,8 @@
                         </select>
                     </div>
                     @include('backend.dashboard.component.keyword')
+                    {{-- <a href="{{ route('stock.stock-taking.create') }}" class="btn btn-danger"><i
+                            class="fa fa-plus mr5"></i>Thêm phiếu xuất kho</a> --}}
                 </div>
             </div>
 

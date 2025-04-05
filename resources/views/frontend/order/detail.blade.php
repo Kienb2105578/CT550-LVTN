@@ -2,27 +2,12 @@
 @section('content')
     <div id="customer-container" class="customer-container container p-5">
         <div class="row">
-            <div class="col-12 col-lg-3 mx-auto mt-20">
-                <div class="list-group">
-                    <a href="{{ route('customer.profile') }}" class="list-group-item list-group-item-action"
-                        aria-current="true">
-                        Tài khoản của tôi
-                    </a>
-                    <a href="{{ route('my-order.index') }}" class="list-group-item list-group-item-action active"
-                        aria-current="true">
-                        Đơn hàng đã mua
-                    </a>
-                    <a href="{{ route('customer.password.change') }}" class="list-group-item list-group-item-action">Đổi
-                        mật
-                        khẩu</a>
-                    <a href="{{ route('customer.logout') }}" class="list-group-item list-group-item-action">Đăng
-                        xuất</a>
-                </div>
+            <div class="col-12 col-md-4 col-lg-3 mx-auto side-profile">
+                @include('frontend.auth.customer.components.sidebar')
             </div>
-            <div class="col-12  col-lg-9 mx-auto">
+            <div class="col-12 col-md-8 col-lg-9 mx-auto">
                 @include('backend/dashboard/component/formError')
-
-                <h4 class="text-center mb-3">Chi Tiết Đơn Hàng</h4>
+                <h4 class="text-center mb-3 mt-3 profile-title">Chi Tiết Đơn Hàng</h4>
                 <div class="order-section px-5">
                     <!-- Thông tin người mua -->
                     <div class="order-header row mb-20"

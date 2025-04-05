@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 use App\Services\Interfaces\OrderServiceInterface  as OrderService;
 use App\Repositories\Interfaces\OrderRepositoryInterface as OrderRepository;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface as ProvinceRepository;
-
+use App\Repositories\Interfaces\ProductRepositoryInterface  as ProductRepository;
+use App\Http\Requests\StoreOrderRequest;
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 
@@ -16,15 +17,19 @@ class OrderController extends Controller
 {
     protected $orderService;
     protected $orderRepository;
+    protected $provinceRepository;
+    protected $productRepository;
 
     public function __construct(
         OrderService $orderService,
         OrderRepository $orderRepository,
         ProvinceRepository $provinceRepository,
+        ProductRepository $productRepository,
     ) {
         $this->orderService = $orderService;
         $this->orderRepository = $orderRepository;
         $this->provinceRepository = $provinceRepository;
+        $this->productRepository = $productRepository;
     }
 
     public function index(Request $request)
@@ -81,6 +86,31 @@ class OrderController extends Controller
         ));
     }
 
+    public function create()
+    {
+        $this->authorize('modules', 'order.create');
+        $provinces = $this->provinceRepository->all();
+        $products = $this->productRepository->getAllProducts();
+        $config = $this->config();
+        $config['seo'] = __('messages.order');
+        $config['method'] = 'create';
+        $template = 'backend.order.store';
+        return view('backend.dashboard.layout', compact(
+            'template',
+            'config',
+            'provinces',
+            'products',
+        ));
+    }
+
+    public function store(StoreOrderRequest $request)
+    {
+        if ($this->orderService->create($request, 1)) {
+            return redirect()->route('order.index')->with('success', 'Thêm mới bản ghi thành công');
+        }
+        return redirect()->route('order.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
+    }
+
     public function exportPdf($id)
     {
         $order = $this->orderRepository->getOrderById($id, ['products']);
@@ -96,8 +126,6 @@ class OrderController extends Controller
             'template',
             'config'
         ));
-
-        // return $pdf->download("invoice_{$id}.pdf");
         return $pdf->stream("invoice_{$id}.pdf");
     }
 
@@ -122,5 +150,21 @@ class OrderController extends Controller
         ));
 
         return $pdf->download('multiple_invoices.pdf');
+    }
+
+    private function config()
+    {
+        return [
+            'css' => [
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+            ],
+            'js' => [
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+                'backend/library/location.js',
+                'backend/plugins/ckfinder_2/ckfinder.js',
+                'backend/library/finder.js',
+                'backend/library/order.js',
+            ]
+        ];
     }
 }

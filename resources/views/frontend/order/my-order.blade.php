@@ -2,26 +2,13 @@
 @section('content')
     <div id="customer-container" class=" p-5">
         <div class="row">
-            <div id="sidebar-menu" class="col-12 col-lg-3 mx-auto">
-                <div class="list-group">
-                    <a href="{{ route('customer.profile') }}" class="list-group-item list-group-item-action">
-                        Tài khoản của tôi
-                    </a>
-                    <a href="{{ route('my-order.index') }}" class="list-group-item list-group-item-action active">
-                        Đơn hàng đã mua
-                    </a>
-                    <a href="{{ route('customer.password.change') }}" class="list-group-item list-group-item-action">
-                        Đổi mật khẩu
-                    </a>
-                    <a href="{{ route('customer.logout') }}" class="list-group-item list-group-item-action">
-                        Đăng xuất
-                    </a>
-                </div>
+            <div class="col-12 col-md-4 col-lg-3 mx-auto side-profile">
+                @include('frontend.auth.customer.components.sidebar')
             </div>
-            <div id="order-content" class="col-12 col-lg-9 mx-auto">
+            <div class="col-12 col-md-8 col-lg-9 mx-auto">
                 <form action="{{ route('my-order.index') }}" method="post" class="form-order">
                     @csrf
-                    <h4 class="text-center mb-3">Đơn hàng đã mua</h4>
+                    <h4 class="text-center mb-3 mt-3 profile-title">Đơn hàng đã mua</h4>
                     <div id="order-tabs" class="order-section">
                         <ul class="nav nav-tabs">
                             <li class="nav-item">
@@ -36,7 +23,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-confirm="confirm" data-payment="" data-delivery="">
+                                <a class="nav-link" data-confirm="confirm" data-payment="" data-delivery="pending">
                                     Đã Xác Nhận
                                 </a>
                             </li>

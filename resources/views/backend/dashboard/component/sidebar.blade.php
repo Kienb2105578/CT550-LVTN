@@ -5,22 +5,8 @@
     <div class="sidebar-collapse">
         <ul class="nav metismenu" id="side-menu">
             <li class="nav-header">
-                <div class="dropdown profile-element"> <span>
-                        {{-- <img alt="image" class="img-circle" src="backend/img/profile_small.jpg" />
-                         </span> --}}
-                        <h1 style="color: white; font-weight: bold;">ADMIN</h1>
-
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="clear"> <span class="block m-t-xs"> <strong
-                                        class="font-bold">{{ auth()->user()->name }}</strong>
-                                </span> <span class="text-muted text-xs block">Cài đặt <b class="caret"></b></span>
-                            </span> </a>
-                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                            <li><a href="{{ route('user.edit', auth()->user()->id) }}">Hồ sơ</a></li>
-
-                            <li class="divider"></li>
-                            <li><a href="{{ route('auth.logout') }}">Logout</a></li>
-                        </ul>
+                <div class="dropdown profile-element">
+                    <h2 style="color: white; font-weight: bold;">ADMIN INCOM</h2>
                 </div>
 
             </li>

@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\ProductVariant;
 use App\Services\Interfaces\OrderServiceInterface;
 use App\Repositories\Interfaces\OrderRepositoryInterface as OrderRepository;
 use App\Repositories\Interfaces\ProductVariantRepositoryInterface  as ProductVariantRepository;
 use App\Repositories\Interfaces\ProductRepositoryInterface  as ProductRepository;
+use App\Services\Interfaces\CartServiceInterface as CartService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -20,16 +22,18 @@ class OrderService extends BaseService implements OrderServiceInterface
     protected $orderRepository;
     protected $productVariantRepository;
     protected $productRepository;
-
+    protected $cartService;
 
     public function __construct(
         OrderRepository $orderRepository,
         ProductVariantRepository $productVariantRepository,
         ProductRepository $productRepository,
+        CartService $cartService,
     ) {
         $this->orderRepository = $orderRepository;
         $this->productVariantRepository = $productVariantRepository;
         $this->productRepository = $productRepository;
+        $this->cartService = $cartService;
     }
 
 
@@ -55,6 +59,109 @@ class OrderService extends BaseService implements OrderServiceInterface
 
         return $orders;
     }
+
+    public function create($request, $languageId)
+    {
+        DB::beginTransaction();
+        try {
+            $payload = $this->prepareOrderPayload($request);
+
+            $products = json_decode($payload['products'], true);
+
+            $order = $this->orderRepository->create($payload);
+            $orderId = $order->id;
+
+            if (!is_null($products)) {
+                foreach ($products as $val) {
+                    $qtyRemaining = $val['quantity'];
+
+                    while ($qtyRemaining > 0) {
+                        $batch = $this->cartService->getBatch($val['product_id'], $val['variant_id']);
+                        $batchQty = min($batch->quantity, $qtyRemaining);
+                        $uuid = null;
+                        $option = null;
+                        if (!empty($val['variant_id'])) {
+                            $variant = ProductVariant::find($val['variant_id']);
+
+                            if ($variant) {
+                                $uuid = $variant->uuid;
+                                $priceOriginal = $variant->price;
+
+                                $option = [
+                                    'attribute' => explode(',', $variant->code),
+                                    'variant_id' => $variant->id,
+                                ];
+                            }
+                        }
+                        $temp[] = [
+                            'product_id'    => $val['product_id'],
+                            'uuid'          => $uuid,
+                            'name'          => $val['name'],
+                            'qty'           => $batchQty,
+                            'price'         => $val['price'],
+                            'priceOriginal' => $val['price'],
+                            'option'        => $option ? json_encode($option) : null,
+                            'batch_id'      => $batch->id,
+                            'variant_id'    => $val['variant_id'] ?? null,
+                            'order_id'      => $orderId
+                        ];
+
+                        DB::table('inventory_batches')
+                            ->where('id', $batch->id)
+                            ->decrement('quantity', $batchQty);
+
+                        $qtyRemaining -= $batchQty;
+                    }
+                }
+            }
+
+            if (!empty($temp)) {
+                DB::table('order_product')->insert($temp);
+            }
+
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            echo $e->getMessage();
+            die();
+            return false;
+        }
+    }
+
+    private function prepareOrderPayload($request)
+    {
+        $payload = $request->all();
+        $payload['method'] = $request->input('payment_method');
+        $payload['confirm'] = 'pending';
+        $payload['payment'] = 'unpaid';
+        $payload['delivery'] =  'pending';
+        $payload['shipping'] = 0.00;
+
+        $products = json_decode($payload['products'], true);
+        $cartTotal = 0;
+        $cartTotalItems = 0;
+        foreach ($products as $product) {
+            $cartTotal += $product['quantity'] * $product['price'];
+            $cartTotalItems += $product['quantity'];
+        }
+
+        $payload['cart'] = [
+            'cartTotal' => $cartTotal,
+            'cartTotalItems' => $cartTotalItems
+        ];
+
+        $payload['promotion'] = [
+            'discount' => 0,
+            'name' => '',
+            'code' => '',
+            'startDate' => '',
+            'endDate' => '',
+        ];
+
+        return $payload;
+    }
+
 
     public function update($request)
     {

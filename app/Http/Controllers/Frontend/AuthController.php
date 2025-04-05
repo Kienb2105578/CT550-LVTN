@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\ResetPasswordMail;
 use App\Models\Customer;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
+
 use Gloudemans\Shoppingcart\Facades\Cart;
 
 class AuthController extends FrontendController
@@ -108,7 +112,22 @@ class AuthController extends FrontendController
         $emailReset = $request->input('email');
         $customer = Customer::where('email', $emailReset)->first();
         if (!is_null($customer)) {
-            Mail::to($emailReset)->send(new ResetPasswordMail($emailReset));
+            $token = Str::random(60);
+            DB::table('customer_password_resets')->updateOrInsert(
+                ['email' => $emailReset],
+                [
+                    'token' => $token,
+                    'created_at' => Carbon::now(),
+                    'expires_at' => Carbon::now()->addMinutes(30)
+                ],
+
+            );
+            $data = [
+                'email' => $emailReset,
+                'token' => $token
+            ];
+
+            Mail::to($emailReset)->send(new ResetPasswordMail($data));
             return redirect()->route('fe.auth.login')
                 ->with('success', 'Gửi yêu cầu cập nhật mật khẩu thành công, vui lòng truy cập email của bạn để cập nhật mật khẩu mới');
         }
@@ -118,9 +137,24 @@ class AuthController extends FrontendController
 
     public function updatePassword(Request $request)
     {
-        $email = rtrim(urldecode($request->getQueryString('email')), '=');
+        $email = base64_decode($request->query('email'));
+        $token = $request->query('token');
+
+
+
+
+        $resetRecord = DB::table('customer_password_resets')
+            ->where('email', $email)
+            ->where('token', $token)
+            ->where('expires_at', '>', Carbon::now())
+            ->first();
+
+        if (!$resetRecord) {
+            return redirect()->route('forgot.customer.password')->with('error', 'Token không hợp lệ hoặc đã hết hạn.');
+        }
+
         $seo = [
-            'meta_title' => 'Thông tin kích hoạt bảo hành',
+            'meta_title' => 'Thay đổi mật khẩu',
             'meta_keyword' => '',
             'meta_description' => '',
             'meta_image' => '',

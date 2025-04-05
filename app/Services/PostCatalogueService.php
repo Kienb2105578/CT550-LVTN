@@ -47,9 +47,6 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
     }
 
 
-
-
-
     public function paginate($request, $languageId)
     {
         $perPage = $request->integer('perpage');
@@ -74,46 +71,24 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
     {
         DB::beginTransaction();
         try {
-            Log::info("Bắt đầu tạo postCatalogue...");
-
             $postCatalogue = $this->createCatalogue($request);
-            Log::info("Tạo postCatalogue thành công, ID: " . $postCatalogue->id);
-
             if ($postCatalogue->id > 0) {
                 //$this->updateLanguageForCatalogue($postCatalogue, $request, $languageId);
-                Log::info("Cập nhật ngôn ngữ cho postCatalogue thành công!");
-                Log::info("Dữ liệu postCatalogue trước khi tạo Router", ['postCatalogue' => $postCatalogue]);
-
                 $this->createRouter($postCatalogue, $request, $this->controllerName, $languageId);
-                Log::info("Tạo router thành công!");
-
                 $this->nestedset = new Nestedsetbie([
                     'table' => 'post_catalogues',
                     'foreignkey' => 'post_catalogue_id',
                     'language_id' => $languageId,
                 ]);
-
-                Log::info("Đối tượng Nestedsetbie đã được khởi tạo:", (array) $this->nestedset);
-
                 $this->nestedset->Get();
-                Log::info("Lấy dữ liệu cây phân cấp thành công", ['data' => $this->nestedset->data]);
-
                 $arrSet = $this->nestedset->Set();
-                Log::info("Mảng Set() thu được", ['arrSet' => $arrSet]);
-
                 $this->nestedset->Recursive(0, $arrSet);
-                Log::info("Đã chạy Recursive!");
-
                 $this->nestedset->Action();
-                Log::info("Đã cập nhật Nested Set thành công!");
             }
-
             DB::commit();
-            Log::info("Hoàn thành!");
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error("Lỗi xảy ra: " . $e->getMessage());
             return false;
         }
     }

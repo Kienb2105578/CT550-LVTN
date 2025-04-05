@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Mail;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -12,11 +13,8 @@ class ResetPasswordMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-
     public $data;
-    /**
-     * Create a new message instance.
-     */
+
     public function __construct($data)
     {
         $this->data = $data;
@@ -39,6 +37,7 @@ class ResetPasswordMail extends Mailable
     {
         return new Content(
             view: 'frontend.auth.customer.recover',
+            with: $this->data
         );
     }
 

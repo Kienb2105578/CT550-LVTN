@@ -1,12 +1,46 @@
-<aside class="profile-sidebar">
-    <div class="aside-task aside-panel">
-        <ul class="uk-list uk-clearfix">
-            <li><a href="{{ route('customer.profile') }}"><i class="fa fa-user"></i>Tài khoản của tôi</a></li>
-            <li><a href="{{ route('customer.password.change') }}"><i class="fa fa-key"></i>Đổi mật khẩu</a></li>
-            <li><a href="{{ route('customer.construction') }}"><i class="fa fa-home"></i>Danh sách công trình</a></li>
-            <li><a href="{{ route('customer.check.warranty') }}"><i class="fa fa-barcode"></i>Kiểm tra bảo hành</a></li>
-            {{-- <li><a href=""><i class="fa fa-shopping-cart"></i>Đơn hàng của bạn</a></li> --}}
-            <li><a href="{{ route('customer.logout') }}"><i class="fa fa-sign-out"></i>Đăng xuất</a></li>
-        </ul>
+<div class="row">
+    <div class="col-lg-12 text-center">
+        <img id=""
+            src="{{ $customer->image ? asset($customer->image) : asset('frontend/resources/img/no_image.png') }}"
+            style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 1px solid #ccc; margin-right: 10px;">
+        <input type="file" name="image" id="image_input" class="d-none" accept="image/*">
     </div>
-</aside>
+</div>
+<div class="row">
+    <div class="col-lg-12 text-center">
+        <h2 id="customer-name">{{ $customer->name ?? 'Thêm tên' }} </h2>
+    </div>
+</div>
+<div class="list-group" style=" border: none !important;">
+    <a href="{{ route('customer.profile') }}" class="list-group-item list-group-item-action">
+        <i class="fa icon-profile fa-user"></i> Tài khoản của tôi
+    </a>
+    <a href="{{ route('my-order.index') }}" class="list-group-item list-group-item-action">
+        <i class="fa icon-profile fa-shopping-cart"></i> Đơn hàng đã mua
+    </a>
+    <a href="{{ route('customer.password.change') }}" class="list-group-item list-group-item-action">
+        <i class="fa icon-profile fa-key"></i> Đổi mật khẩu
+    </a>
+    <a href="{{ route('customer.logout') }}" class="list-group-item list-group-item-action">
+        <i class="fa icon-profile fa-sign-out"></i> Đăng xuất
+    </a>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let currentUrl = window.location.pathname;
+        let menuItems = document.querySelectorAll(".list-group-item");
+
+        menuItems.forEach(item => {
+            let menuUrl = new URL(item.href).pathname;
+            if (
+                currentUrl.startsWith(menuUrl) ||
+                (menuUrl === "/don-hang-cua-toi" && currentUrl.startsWith("/don-hang-cua-toi/")) ||
+                (menuUrl === "/my-order" && currentUrl.startsWith("/my-order/"))
+            ) {
+                item.classList.add("active");
+            } else {
+                item.classList.remove("active");
+            }
+        });
+    });
+</script>

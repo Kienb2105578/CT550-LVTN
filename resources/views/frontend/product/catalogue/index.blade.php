@@ -12,12 +12,113 @@
             </div>
         </div>
         <div class="uk-container uk-container-center mt20">
-
             <div class="panel-body">
                 <div class="uk-grid uk-grid-medium">
                     <div class="uk-width-large-1-4 uk-hidden-small">
                         <div class="aside">
                             <div class="aside-category">
+                                @if (!empty($categories[0]))
+                                    <div class="aside-heading">DANH MỤC SẢN PHẨM</div>
+                                    <div class="cate-product">
+                                        <ul class="menu">
+                                            @foreach ($categories[0] as $category)
+                                                <li class="has-submenu">
+                                                    <a href="{{ write_url($category->canonical) }}">{{ $category->name }}
+                                                        <span class="arrow">›</span></a>
+                                                    @if (!empty($categories[$category->id]))
+                                                        <ul class="submenu">
+                                                            @foreach ($categories[$category->id] as $subCategory)
+                                                                <li class="has-submenu">
+                                                                    <a href="{{ write_url($subCategory->canonical) }}">{{ $subCategory->name }}
+                                                                        <span class="arrow">›</span></a>
+                                                                    @if (!empty($categories[$subCategory->id]))
+                                                                        <ul class="submenu">
+                                                                            @foreach ($categories[$subCategory->id] as $childCategory)
+                                                                                <li class="has-submenu">
+                                                                                    <a
+                                                                                        href="{{ write_url($childCategory->canonical) }}">{{ $childCategory->name }}
+                                                                                        <span class="arrow">›</span></a>
+                                                                                    @if (!empty($categories[$childCategory->id]))
+                                                                                        <ul class="submenu">
+                                                                                            @foreach ($categories[$childCategory->id] as $subChildCategory)
+                                                                                                <li><a
+                                                                                                        href="{{ write_url($subChildCategory->canonical) }}">{{ $subChildCategory->name }}</a>
+                                                                                                </li>
+                                                                                            @endforeach
+                                                                                        </ul>
+                                                                                    @endif
+                                                                                </li>
+                                                                            @endforeach
+                                                                        </ul>
+                                                                    @endif
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    @endif
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <style>
+                                .menu {
+                                    list-style: none;
+                                    padding: 0;
+                                    margin: 0;
+                                    position: relative;
+                                }
+
+                                .menu li {
+                                    position: relative;
+                                    padding: 10px;
+                                    cursor: pointer;
+                                    background: #fff;
+                                    /* Nền trắng */
+                                }
+
+                                .menu .submenu {
+                                    display: none;
+                                    position: absolute;
+                                    top: 0;
+                                    left: 100%;
+                                    background: #fff;
+                                    color: #000;
+                                    /* Nền trắng */
+                                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+                                    min-width: 200px;
+                                    list-style: none;
+                                    padding: 0;
+                                    z-index: 9999;
+                                    /* Đặt menu trên tất cả các phần tử khác */
+                                }
+
+                                .menu li:hover>.submenu {
+                                    display: block;
+                                }
+
+                                .menu .submenu li {
+                                    padding: 10px;
+                                    white-space: nowrap;
+                                    /* Ngăn nội dung bị xuống dòng */
+                                }
+
+                                .arrow {
+                                    float: right;
+                                    font-size: 12px;
+                                }
+
+                                /* Đảm bảo ảnh và các phần tử khác không che menu */
+                                img,
+                                .content {
+                                    position: relative;
+                                    z-index: 1;
+                                    /* Các phần tử khác có z-index thấp hơn */
+                                }
+                            </style>
+
+                            <div class="aside-category mt20">
                                 <div class="aside-heading">Bộ lọc thông minh</div>
                                 <div class="aside-body">
                                     <ul class="uk-list uk-clearfix">
@@ -92,5 +193,4 @@
             </div>
         </div>
     </div>
-
 @endsection

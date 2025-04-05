@@ -7,7 +7,7 @@
                 <div class="ibox-title">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div class="ibox-title-left">
-                            <span>Chi tiết đơn hàng #{{ $order->code }}</span>
+                            <h5>Chi tiết đơn hàng #{{ $order->code }}</h5>
                             <span class="badge">
                                 <div class="badge__tip"></div>
                                 <div class="badge-text"> {{ __('cart.delivery')[$order->delivery] }}</div>
@@ -16,9 +16,6 @@
                                 <div class="badge__tip"></div>
                                 <div class="badge-text"> {{ __('cart.payment')[$order->payment] }}</div>
                             </span>
-                        </div>
-                        <div class="ibox-title-right">
-                            Nguồn: Website
                         </div>
                     </div>
                 </div>
@@ -44,7 +41,10 @@
                                     <td style="width:285px;">
                                         <div class="order-item-name" title=""{{ $name }}>
                                             {{ $name }}</div>
-                                        <div class="order-item-voucher">Mã giảm giá: Không có</div>
+                                        <div class="order-item-voucher">
+                                            Mã giảm giá:
+                                            {{ !empty($order->promotion['code']) ? $order->promotion['code'] : 'Không có' }}
+                                        </div>
                                     </td>
                                     <td>
                                         <div class="order-item-price">{{ $price }} ₫</div>
@@ -150,13 +150,13 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <span>Ghi chú</span>
-                        <div class="edit span edit-order" data-target="description">Sửa</div>
+                        <h5>Ghi chú</h5>
                     </div>
+                    <div class="edit span edit-order" data-target="description">Sửa</div>
                 </div>
                 <div class="ibox-content">
                     <div class="description">
-                        {{ $order->description }}
+                        {{ $order->description ?? 'Không có ghi chú' }}
                     </div>
                 </div>
             </div>
@@ -164,8 +164,8 @@
                 <div class="ibox-title">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <h5>Thông tin khách hàng</h5>
-                        <div class="edit span edit-order" data-target="customerInfo">Sửa</div>
                     </div>
+                    <div class="edit span edit-order" data-target="customerInfo">Sửa</div>
                 </div>
                 <div class="ibox-content order-customer-information">
                     <div class="customer-line">

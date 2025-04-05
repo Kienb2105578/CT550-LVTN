@@ -310,7 +310,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         $payload['variant'] = $this->formatJson($request, 'variant');
 
         $payload['qrcode'] = $this->qrCode($request);
-
         $product = $this->productRepository->create($payload);
         return $product;
     }
@@ -356,9 +355,6 @@ class ProductService extends BaseService implements ProductServiceInterface
             'products.name',
             'products.description',
             'products.content',
-            'products.meta_title',
-            'products.meta_keyword',
-            'products.meta_description',
             'products.canonical'
         ];
     }
@@ -457,7 +453,6 @@ class ProductService extends BaseService implements ProductServiceInterface
             $products = $this->combineProductAndPromotion($productId, $products);
         }
 
-        Log::info("jdhuh: ", ['products', $products]);
         return $products;
     }
 
@@ -614,46 +609,39 @@ class ProductService extends BaseService implements ProductServiceInterface
         $price = $request->input('price');
         $priceMin = str_replace('đ', '', convert_price($price['price_min']));
         $priceMax = str_replace('đ', '', convert_price($price['price_max']));
-        $query['select'] = null;
-        $query['join'] = null;
-        $query['having'] = null;
+
+        $query = [
+            'select' => null,
+            'join'   => [],
+            'having' => null,
+        ];
 
         if ($priceMax > $priceMin) {
-            // $query['join'] = [
-            //     ['promotion_product_variant as ppv', 'ppv.product_id', '=', 'products.id'],
-            //     ['promotions', 'ppv.promotion_id', '=', 'promotions.id']
-            // ];
-            $query['join'] = [
-                ['promotion_product_variant as ppv', 'ppv.product_id', '=', 'products.id'],
-                ['promotions', function ($join) {
-                    $join->on('ppv.promotion_id', '=', 'promotions.id')
-                        ->where('promotions.publish', '=', 2);
-                }]
-            ];
+            $query['join'][] = ['promotion_product_variant as ppv', 'ppv.product_id', '=', 'products.id'];
+            $query['join'][] = ['promotions', 'ppv.promotion_id', '=', 'promotions.id'];
+
             $query['select'] = "
-                (products.price - MAX(
-                    IF(promotions.maxDiscountValue != 0,
-                        LEAST(
-                            CASE 
-                                WHEN discountType = 'cash' THEN discountValue
-                                WHEN discountType = 'percent' THEN products.price * discountValue / 100
-                            ELSE 0
-                            END,
-                            promotions.maxDiscountValue 
-                        ),
-                        CASE 
-                                WHEN discountType = 'cash' THEN discountValue
-                                WHEN discountType = 'percent' THEN products.price * discountValue / 100
+            (products.price - COALESCE((
+                SELECT MAX(
+                    CASE 
+                        WHEN promotions.discountType = 'cash' THEN promotions.discountValue
+                        WHEN promotions.discountType = 'percent' THEN products.price * promotions.discountValue / 100
                         ELSE 0
-                        END
-                    )
-                )) as discounted_price
-            ";
+                    END
+                )
+                FROM promotion_product_variant AS ppv
+                LEFT JOIN promotions ON ppv.promotion_id = promotions.id
+                WHERE ppv.product_id = products.id
+                AND promotions.publish = 2
+                AND promotions.endDate >= NOW()
+            ), 0)) AS discounted_price
+        ";
 
             $query['having'] = function ($query) use ($priceMin, $priceMax) {
-                $query->havingRaw('discounted_price >= ? AND discounted_price <= ?', [$priceMin, $priceMax]);
+                $query->havingRaw('discounted_price BETWEEN ? AND ?', [$priceMin, $priceMax]);
             };
         }
+
         return $query;
     }
 }

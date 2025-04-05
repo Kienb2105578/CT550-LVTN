@@ -9,6 +9,7 @@ use App\Services\Interfaces\InventoryBatchServiceInterface  as InventoryBatchSer
 use App\Services\Interfaces\StockMovementServiceInterface  as StockMovementService;
 use App\Repositories\Interfaces\InventoryBatchRepositoryInterface  as InventoryBatchRepository;
 use App\Repositories\Interfaces\ProductRepositoryInterface  as ProductRepository;
+use App\Http\Requests\Stock\StoreStockTakingRequest;
 use CKSource\CKFinder\Command\Proxy;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -98,6 +99,26 @@ class StockController extends Controller
             'stocks'
         ));
     }
+    public function create()
+    {
+        $this->authorize('modules', 'stock.stock-taking.create');
+        $config = $this->config();
+        $config['seo'] = __('messages.stock');
+        $config['method'] = 'create';
+        $template = 'backend.stock.stock-taking.store';
+        return view('backend.dashboard.layout', compact(
+            'template',
+            'config',
+        ));
+    }
+
+    public function store(StoreStockTakingRequest $request)
+    {
+        if ($this->stockMovementService->create($request)) {
+            return redirect()->route('stock.stock-taking.index')->with('success', 'Thêm mới bản ghi thành công');
+        }
+        return redirect()->route('stock.stock-taking.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
+    }
 
     public function inventory(Request $request)
     {
@@ -142,80 +163,20 @@ class StockController extends Controller
 
         return $pdf->download('Bao_cao_kho_' . now()->format('YmdHis') . '.pdf');
     }
-
-
-    //     $this->authorize('modules', 'purchase-order.create');
-
-    //     $config = $this->configData();
-    //     $config['seo'] = __('messages.purchase-order');
-    //     $config['method'] = 'create';
-    //     $template = 'backend.purchase-order.store';
-    //     return view('backend.dashboard.layout', compact(
-    //         'template',
-    //         'config',
-    //         'products',
-    //         'inventoryBatchs',
-    //     ));
-    // }
-
-    // // public function store(StoreStockRequest $request)
-    // // {
-    // //     if ($this->purchaseOrderService->create($request, $this->language)) {
-    // //         return redirect()->route('purchase-order.index')->with('success', 'Thêm mới bản ghi thành công');
-    // //     }
-    // //     return redirect()->route('purchase-order.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
-    // // }
-
-    // public function edit($id, Request $request)
-    // {
-    //     $this->authorize('modules', 'purchase-order.update');
-
-
-    //     $queryUrl = $request->getQueryString();
-    //     $config = $this->configData();
-    //     $config['seo'] = __('messages.purchase-order');
-    //     $config['method'] = 'edit';
-
-    //     $template = 'backend.purchase-order.store';
-    //     return view('backend.dashboard.layout', compact(
-    //         'template',
-    //         'config',
-    //         'purchaseOrder',
-    //         'queryUrl',
-    //         'products',
-    //         'inventoryBatchs'
-    //     ));
-    // }
-
-    // // public function update($id, UpdateStockRequest $request)
-    // // {
-    // //     $queryUrl = base64_decode($request->getQueryString());
-    // //     if ($this->purchaseOrderService->update($id, $request)) {
-    // //         return redirect()->route('purchase-order.index', $queryUrl)->with('success', 'Cập nhật bản ghi thành công');
-    // //     }
-    // //     return redirect()->route('purchase-order.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
-    // // }
-
-    // public function delete($id)
-    // {
-    //     $this->authorize('modules', 'purchase-order.destroy');
-    //     $config['seo'] = __('messages.purchase-order');
-    //     $template = 'backend.purchase-order.delete';
-    //     return view('backend.dashboard.layout', compact(
-    //         'template',
-    //         'purchaseOrder',
-    //         'config',
-    //     ));
-    // }
-
-    // public function destroy($id)
-    // {
-    //     if ($this->purchaseOrderService->destroy($id, $this->language)) {
-    //         return redirect()->route('purchase-order.index')->with('success', 'Xóa bản ghi thành công');
-    //     }
-    //     return redirect()->route('purchase-order.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
-    // }
-
+    private function config()
+    {
+        return [
+            'css' => [
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+            ],
+            'js' => [
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+                'backend/library/location.js',
+                'backend/plugins/ckfinder_2/ckfinder.js',
+                'backend/library/finder.js',
+            ]
+        ];
+    }
     private function configData()
     {
         return [

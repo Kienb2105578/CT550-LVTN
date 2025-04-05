@@ -13,7 +13,7 @@
             </tr>
         </thead>
         <tbody>
-            @if (isset($slides) && is_object($slides))
+            @if (isset($slides) && is_object(value: $slides))
                 @foreach ($slides as $slide)
                     <tr>
                         <td>

@@ -72,7 +72,7 @@ class ProductController extends FrontendController
         // //dd($wishlist);
         try {
             $apiUrl = 'http://127.0.0.1:5555/api/product-recommendations';
-            $response = Http::timeout(2)->get($apiUrl, ['id' => $id]);
+            $response = Http::timeout(5)->get($apiUrl, ['id' => $id]);
 
             if ($response->successful()) {
                 $relatedProducts = $response->json('related_products');

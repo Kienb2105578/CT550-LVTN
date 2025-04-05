@@ -83,12 +83,72 @@ class ProductCatalogueController extends FrontendController
             'widgets',
         ));
     }
+    // public function main(Request $request, $page = 1)
+    // {
+
+    //     $productCatalogues = $this->productCatalogueRepository->all();
+    //     $allFilters = [];
+
+    //     foreach ($productCatalogues as $productCatalogue) {
+    //         $filters = $this->filter($productCatalogue);
+
+    //         if ($filters instanceof \Illuminate\Support\Collection) {
+    //             $filters = $filters->toArray(); // Chuyển Collection thành array
+    //         }
+
+    //         if (!empty($filters)) {
+    //             $allFilters = array_merge($allFilters, $filters);
+    //         }
+    //     }
+
+    //     // Chuyển về mảng và loại bỏ trùng
+    //     $allFilters = array_values(array_unique($allFilters, SORT_REGULAR));
+
+    //     dd(collect($allFilters)); // Nếu muốn giữ Collection, có thể chuyển lại
+
+    //     $products = $this->productService->paginate(
+    //         $request,
+    //         $this->language,
+    //         null,
+    //         $page,
+    //         ['path' => route('product.catalogue.main')],
+    //     );
+
+    //     $productId = $products->pluck('id')->toArray();
+    //     if (count($productId) && !is_null($productId)) {
+    //         $products = $this->productService->combineProductAndPromotion($productId, $products);
+    //     }
+
+    //     $widgets = $this->widgetService->getWidget([
+    //         ['keyword' => 'products-hl', 'promotion' => true],
+    //     ], $this->language);
+
+
+    //     $widgets['products-hl']->object = $this->productRepository->widgetProductTotalQuantity($widgets['products-hl']->object);
+    //     $products = $this->productRepository->updateProductTotalQuantity($products);
+
+    //     $config = $this->config();
+    //     $system = $this->system;
+    //     $seo = [
+    //         'meta_title' => 'Sản phẩm',
+    //         'meta_keyword' => '',
+    //         'meta_description' => '',
+    //         'meta_image' => '',
+    //         'canonical' => route('product.catalogue.main')
+    //     ];
+    //     return view('frontend.product.catalogue.main', compact(
+    //         'config',
+    //         'seo',
+    //         'system',
+    //         'products',
+    //         'widgets',
+    //         'filters'
+    //     ));
+    // }
 
     private function filter($productCatalogue)
     {
         $filters = null;
-
-
         $children = $this->productCatalogueRepository->getChildren($productCatalogue);
         $groupedAttributes = [];
         foreach ($children as $child) {
@@ -108,7 +168,6 @@ class ProductCatalogueController extends FrontendController
         if (isset($groupedAttributes) && !is_null($groupedAttributes) &&  count($groupedAttributes)) {
             $filters = $this->productCatalogueService->getFilterList($groupedAttributes, $this->language);
         }
-
         return $filters;
     }
 
@@ -121,11 +180,12 @@ class ProductCatalogueController extends FrontendController
 
         try {
             $apiUrl = 'http://127.0.0.1:5555/api/search_products';
-            $response = Http::timeout(2)->get($apiUrl, ['keyword' => $keyword]);
+            $response = Http::timeout(5)->get($apiUrl, ['keyword' => $keyword]);
 
             if ($response->successful()) {
                 $products = $response->json('related_products');
             }
+            Log::info("VÔ TÌM KIẾM");
         } catch (\Exception $e) {
             Log::error('Lỗi khi gọi API tìm kiếm: ' . $e->getMessage());
         }

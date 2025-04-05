@@ -24,7 +24,6 @@ class PromotionRepository extends BaseRepository implements PromotionRepositoryI
 
     public function findByProduct(array $productId = [])
     {
-        // Subquery lấy danh sách khuyến mãi
         $subquery = DB::table('promotions')
             ->join('promotion_product_variant as ppv', 'ppv.promotion_id', '=', 'promotions.id')
             ->join('products', 'products.id', '=', 'ppv.product_id')
@@ -79,9 +78,42 @@ class PromotionRepository extends BaseRepository implements PromotionRepositoryI
     }
 
 
+    public function getActivePromotionProducts()
+    {
+        return DB::table('promotion_product_variant as ppv')
+            ->join('promotions as p', 'ppv.promotion_id', '=', 'p.id')
+            ->where('p.method', 'product_and_quantity')
+            ->where('p.publish', 2)
+            ->whereNull('p.deleted_at')
+            ->where(function ($query) {
+                $query->whereNull('p.endDate')
+                    ->orWhere('p.endDate', '>', now());
+            })
+            ->orderBy('p.startDate', 'DESC')
+            ->distinct()
+            ->limit(5)
+            ->pluck('ppv.product_id');
+    }
+
+    public function getLatestActivePromotion()
+    {
+        return DB::table('promotions as p')
+            ->join('promotion_product_variant as ppv', 'p.id', '=', 'ppv.promotion_id')
+            ->where('p.method', 'product_and_quantity')
+            ->where('p.publish', 2)
+            ->whereNull('p.deleted_at')
+            ->where(function ($query) {
+                $query->whereNull('p.endDate')
+                    ->orWhere('p.endDate', '>', now());
+            })
+            ->orderBy('p.startDate', 'DESC')
+            ->select('p.id', 'p.name', 'p.startDate', 'p.endDate')
+            ->first();
+    }
+
+
     public function findPromotionByVariantUuid($uuid = '')
     {
-        // Subquery lấy danh sách khuyến mãi cho biến thể sản phẩm
         $subquery = DB::table('promotions')
             ->join('promotion_product_variant as ppv', 'ppv.promotion_id', '=', 'promotions.id')
             ->join('product_variants as pv', 'pv.uuid', '=', 'ppv.variant_uuid')

@@ -75,15 +75,6 @@
                 </div>
             </div>
         </div>
-        {{-- <div class="row mb15">
-            <div class="col-lg-12">
-                <div class="form-row">
-                    <label for="">{{ __('messages.product.quantity') }}</label>
-                    <input type="number" name="quantity" id="productQuantity"
-                        value="{{ old('quantity', $product->quantity ?? 0) }}" class="form-control" min="0">
-                </div>
-            </div>
-        </div> --}}
 
         <div class="row mb15">
             <div class="col-lg-12">
@@ -95,7 +86,7 @@
                 </div>
             </div>
         </div>
-        <div class="form-row mb20">
+        {{-- <div class="form-row mb20">
             <label for="" class="control-label text-left">Thời gian BH</label>
             <div class="guarantee">
                 <div class="uk-flex uk-flex-middle uk-flex-space-between">
@@ -107,14 +98,55 @@
                     </select>
                 </div>
             </div>
-        </div>
+        </div> --}}
         {{-- <div class="form-row">
             <label for="">Mã Nhúng</label>
             <textarea type="text" name="code" class="form-control" style="height:168px;">{{ old('iframe', $product->iframe ?? '') }}</textarea>
         </div> --}}
     </div>
 </div>
-@include('backend.dashboard.component.publish', ['model' => $product ?? null])
+<div class="ibox w">
+    <div class="ibox-title">
+        <h5>{{ __('messages.image') }}</h5>
+    </div>
+    <div class="ibox-content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-row">
+                    <span class="image img-cover image-target"><img
+                            src="{{ old('image', $product->image ?? '') ? old('image', $product->image ?? '') : asset('backend/img/not-found.jpg') }}"
+                            alt=""></span>
+                    <input type="hidden" name="image" value="{{ old('image', $product->image ?? '') }}">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ibox w">
+    <div class="ibox-title">
+        <h5>{{ __('messages.advange') }}</h5>
+    </div>
+    <div class="ibox-content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-row">
+                    <div class="mb15">
+                        <select name="publish" class="form-control setupSelect2" id="">
+                            @foreach (__('messages.publish') as $key => $val)
+                                <option
+                                    {{ $key == old('publish', isset($product->publish) ? $product->publish : '2') ? 'selected' : '' }}
+                                    value="{{ $key }}">{{ $val }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @if (!empty($product->qrcode))
     <div class="ibox w">

@@ -152,7 +152,6 @@ class CustomerController extends Controller
                 'backend/library/location.js',
                 'backend/plugins/ckfinder_2/ckfinder.js',
                 'backend/library/finder.js',
-
             ]
         ];
     }

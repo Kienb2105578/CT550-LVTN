@@ -8,6 +8,9 @@ use App\Services\Interfaces\OrderServiceInterface  as OrderService;
 use App\Repositories\Interfaces\OrderRepositoryInterface  as OrderRepository;
 use Illuminate\Support\Facades\Log;
 
+use App\Models\ProductVariant;
+use App\Models\Product;
+
 class OrderController extends Controller
 {
     protected $orderService;
@@ -49,18 +52,15 @@ class OrderController extends Controller
     {
         $order = $request->input('order');
         $id = $request->input('order.id');
-        Log::info("UPDATECANCLE order ID: " . $id);
 
         $updateSuccess = $this->orderService->updateCancel($id);
 
         if ($updateSuccess) {
-            Log::info("Update success for order ID: " . $id);
             $response = [
                 'error' => 10,
                 'messages' => 'Cập nhật dữ liệu thành công',
             ];
         } else {
-            Log::error("Update failed for order ID: " . $id);
             $response = [
                 'error' => 11,
                 'messages' => 'Cập nhật dữ liệu không thành công. Hãy thử lại',
@@ -76,13 +76,11 @@ class OrderController extends Controller
         $updateSuccess = $this->orderService->updateReturn($id);
 
         if ($updateSuccess) {
-            Log::info("Update success for order ID: " . $id);
             $response = [
                 'error' => 10,
                 'messages' => 'Cập nhật dữ liệu thành công',
             ];
         } else {
-            Log::error("Update failed for order ID: " . $id);
             $response = [
                 'error' => 11,
                 'messages' => 'Cập nhật dữ liệu không thành công. Hãy thử lại',
@@ -101,14 +99,46 @@ class OrderController extends Controller
         return response()->json($chart);
     }
 
+    public function getVariantByProduct(Request $request)
+    {
+        $productId = $request->input('product_id');
+        $variants = ProductVariant::where('product_id', $productId)
+            ->select('id', 'name', 'price')
+            ->get();
+        return response()->json($variants);
+    }
+
+    public function getProduct(Request $request)
+    {
+        $productId = $request->input('product_id');
+        $variantId = $request->input('variant_id');
+        $product = Product::find($productId);
+        if ($variantId && $variantId !== 'null') {
+            $variant = ProductVariant::find($variantId);
+            if ($variant) {
+                $product->product_name = $product->name . " - " . $variant->name;
+                $product->variant_id = $variant->id;
+                $product->variant_price = $variant->price;
+            }
+        } else {
+            $product->product_name = $product->name;
+            $product->variant_id = null;
+            $product->variant_price = $product->price;
+        }
+        return response()->json([
+            'product_id' => $product->id,
+            'product_name' => $product->product_name,
+            'price' => $product->variant_price,
+            'variant_id' => $product->variant_id
+        ]);
+    }
+
+
     public function getMyOrder(Request $request)
     {
         $confirm = $request->input('confirm', '');
         $payment = $request->input('payment', '');
         $delivery = $request->input('delivery', '');
-        Log::info($confirm);
-        Log::info($payment);
-        Log::info($delivery);
 
         $orders = $this->orderRepository->getOrdersByStatus($confirm, $payment, $delivery);
 

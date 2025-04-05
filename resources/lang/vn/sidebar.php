@@ -2,14 +2,14 @@
 return [
     'module' => [
         [
-            'title' => 'Dashboard',
+            'title' => 'Tổng quan',
             'icon' => 'fa fa-database',
             'name' => ['dashboard'],
             'route' => 'dashboard/index',
             'class' => 'special'
         ],
         [
-            'title' => 'Báo Cáo Doanh Thu',
+            'title' => 'Thống Kê',
             'icon' => 'fa fa-money',
             'name' => ['report'],
             'subModule' => [
@@ -21,10 +21,10 @@ return [
                     'title' => 'Theo Sản Phẩm',
                     'route' => 'report/product'
                 ],
-                [
-                    'title' => 'Theo Nguồn Khách',
-                    'route' => 'report/customer'
-                ],
+                // [
+                //     'title' => 'Theo Nguồn Khách',
+                //     'route' => 'report/customer'
+                // ],
             ]
         ],
         [
@@ -90,32 +90,21 @@ return [
             ]
         ],
         [
-            'title' => 'QL Nhóm Khách Hàng',
-            'icon' => 'fa fa-user',
-            'name' => ['customer'],
-            'subModule' => [
-                [
-                    'title' => 'QL Nhóm Khách hàng',
-                    'route' => asset('customer/catalogue/index')
-                ],
-                [
-                    'title' => 'QL Khách hàng',
-                    'route' => 'customer/index'
-                ],
-            ]
-        ],
-        [
             'title' => 'QL Marketing',
             'icon' => 'fa fa-money',
-            'name' => ['promotion', 'source'],
+            'name' => ['promotion', 'source', 'slide'],
             'subModule' => [
                 [
                     'title' => 'QL Khuyến mại',
                     'route' => 'promotion/index'
                 ],
+                // [
+                //     'title' => 'QL Nguồn Khách',
+                //     'route' => 'source/index'
+                // ],
                 [
-                    'title' => 'QL Nguồn Khách',
-                    'route' => 'source/index'
+                    'title' => 'QL Banner & Slide',
+                    'route' => 'slide/index'
                 ],
             ]
         ],
@@ -146,6 +135,21 @@ return [
             ]
         ],
         [
+            'title' => 'QL Nhóm Khách Hàng',
+            'icon' => 'fa fa-user',
+            'name' => ['customer'],
+            'subModule' => [
+                [
+                    'title' => 'QL Nhóm Khách hàng',
+                    'route' => asset('customer/catalogue/index')
+                ],
+                [
+                    'title' => 'QL Khách hàng',
+                    'route' => 'customer/index'
+                ],
+            ]
+        ],
+        [
             'title' => 'QL Nhóm Thành Viên',
             'icon' => 'fa fa-user',
             'name' => ['user', 'permission'],
@@ -169,18 +173,6 @@ return [
             'icon' => 'fa fa-cogs',
             'name' => ['language', 'generate', 'system', 'widget', 'menu', 'slide'],
             'subModule' => [
-                // [
-                //     'title' => 'QL Ngôn ngữ',
-                //     'route' => 'language/index'
-                // ],
-                // [
-                //     'title' => 'QL Module',
-                //     'route' => 'generate/index'
-                // ],
-                [
-                    'title' => 'Cài đặt Banner & Slide',
-                    'route' => 'slide/index'
-                ],
                 [
                     'title' => 'Cài đặt Menu',
                     'route' => 'menu/index'
@@ -196,34 +188,5 @@ return [
 
             ]
         ],
-        // [
-        //     'title' => 'QL Banner & Slide',
-        //     'icon' => 'fa fa-picture-o',
-        //     'name' => ['slide'],
-        //     'subModule' => [
-        //         [
-        //             'title' => 'Cài đặt Banner & Slide',
-        //             'route' => 'slide/index'
-        //         ],
-        //     ]
-        // ],
-        // [
-        //     'title' => 'QL Menu',
-        //     'icon' => 'fa fa-bars',
-        //     'name' => ['menu'],
-        //     'subModule' => [
-        //         [
-        //             'title' => 'Cài đặt Menu',
-        //             'route' => 'menu/index'
-        //         ],
-        //     ]
-        // ],
-
-        // [
-        //     'title' => 'Hệ thống phân phối',
-        //     'icon' => 'fa fa-truck',
-        //     'name' => ['distribution'],
-        //     'route' => 'distribution/index'
-        // ],
     ],
 ];

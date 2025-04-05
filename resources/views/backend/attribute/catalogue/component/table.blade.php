@@ -10,7 +10,7 @@
                     <input type="checkbox" value="" id="checkAll" class="input-checkbox">
                 </th>
                 <th>{{ __('messages.tableName') }}</th>
-                @include('backend.dashboard.component.languageTh')
+                {{-- @include('backend.dashboard.component.languageTh') --}}
                 {{-- <th class="text-center" style="width:100px;">{{ __('messages.tableStatus') }} </th> --}}
                 <th class="text-center" style="width:200px;">{{ __('messages.tableAction') }} </th>
             </tr>
@@ -40,8 +40,8 @@
                         <td class="text-center">
                             <a href="{{ route('attribute.catalogue.edit', [$attributeCatalogue->id, $queryUrl ?? '']) }}"
                                 class="btn btn-success"><i class="fa fa-edit"></i></a>
-                            <a href="{{ route('attribute.catalogue.delete', $attributeCatalogue->id) }}"
-                                class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                            {{-- <a href="{{ route('attribute.catalogue.delete', $attributeCatalogue->id) }}"
+                                class="btn btn-danger"><i class="fa fa-trash"></i></a> --}}
                         </td>
                     </tr>
                 @endforeach

@@ -2,14 +2,14 @@
 return [
     'module' => [
         [
-            'title' => 'Dashboard',
+            'title' => 'Tổng quan',
             'icon' => 'fa fa-database',
             'name' => ['dashboard'],
             'route' => 'dashboard/index',
             'class' => 'special'
         ],
         [
-            'title' => 'Báo cáo doanh thu',
+            'title' => 'Thống kê',
             'icon' => 'fa fa-money',
             'name' => ['report'],
             'subModule' => [

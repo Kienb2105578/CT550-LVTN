@@ -1,5 +1,5 @@
 (function ($) {
-    "use strict";
+    ("use strict");
     var HT = {};
     var _token = $('meta[name="csrf-token"]').attr("content");
 
@@ -348,44 +348,88 @@
     HT.updateBadge = () => {
         $(document).on("change", ".updateBadge", function () {
             let _this = $(this);
+            let newValue = _this.val();
+            let field = _this.attr("data-field");
+            let oldValue = _this.siblings(".changeOrderStatus").val();
+
+            let confirmStatus = _this.parents("tr").find(".confirm").val();
+            let orderId = _this.parents("tr").find(".checkBoxItem").val();
+            toastr.clear();
+
+            if (confirmStatus === "pending") {
+                toastr.error(
+                    "Bạn phải xác nhận đơn hàng trước khi cập nhật!",
+                    "Thông báo từ hệ thống!"
+                );
+                _this.val(oldValue);
+                return;
+            }
+
+            let validTransitions = {
+                payment: {
+                    unpaid: ["paid", "failed"],
+                    paid: ["refunded"],
+                    failed: ["paid"],
+                    refunded: [],
+                },
+                delivery: {
+                    pending: ["processing"],
+                    processing: ["success"],
+                    success: ["returned"],
+                    returned: [],
+                },
+            };
+
+            // Kiểm tra trạng thái hợp lệ
+            if (
+                validTransitions[field] &&
+                validTransitions[field][oldValue] &&
+                !validTransitions[field][oldValue].includes(newValue)
+            ) {
+                toastr.error(
+                    "Không thể chuyển sang trạng thái này!",
+                    "Thông báo từ hệ thống!"
+                );
+                _this.val(oldValue);
+                return;
+            }
+
             let option = {
                 payload: {
-                    [_this.attr("data-field")]: _this.val(),
+                    [field]: newValue,
                 },
-                id: _this.parents("tr").find(".checkBoxItem").val(),
+                id: orderId,
                 _token: _token,
             };
 
-            let confirmStatus = _this.parents("tr").find(".confirm").val();
-            // console.log(confirmStatus);
-            toastr.clear();
-            if (confirmStatus != "pending") {
-                $.ajax({
-                    url: "ajax/order/update",
-                    type: "POST",
-                    data: option,
-                    dataType: "json",
-                    success: function (res) {
-                        if (res.error === 10) {
-                            toastr.success(
-                                "Cập nhật trạng thái thành công",
-                                "Thông báo từ hệ thống!"
-                            );
-                        } else {
-                            toastr.error(
-                                "Có vấn đề xảy ra! Hãy thử lại",
-                                "Thông báo từ hệ thống!"
-                            );
-                        }
-                    },
-                });
-            } else {
-                // let originalStatus = _this.siblings('.changeOrderStatus').val()
-                toastr.error(
-                    "Bạn Phải xác nhận đơn hàng trước khi thực hiện cập nhật này",
-                    "Thông báo từ hệ thống!"
-                );
-            }
+            $.ajax({
+                url: "ajax/order/update",
+                type: "POST",
+                data: option,
+                dataType: "json",
+                success: function (res) {
+                    if (res.error === 10) {
+                        toastr.success(
+                            "Cập nhật trạng thái thành công",
+                            "Thông báo từ hệ thống!"
+                        );
+                        _this.siblings(".changeOrderStatus").val(newValue);
+                    } else {
+                        toastr.error(
+                            "Có vấn đề xảy ra! Hãy thử lại",
+                            "Thông báo từ hệ thống!"
+                        );
+                        _this.val(oldValue);
+                    }
+                },
+                error: function () {
+                    toastr.error(
+                        "Lỗi hệ thống! Vui lòng thử lại.",
+                        "Thông báo từ hệ thống!"
+                    );
+                    _this.val(oldValue);
+                },
+            });
         });
     };
 
@@ -438,6 +482,253 @@
         });
     };
 
+    HT.loadVariants = () => {
+        let productId = $("#product_select").val();
+        if (!productId) {
+            $("#variants-container").html("<p>Vui lòng chọn sản phẩm</p>");
+            return;
+        }
+
+        $.ajax({
+            url: "ajax/order/getVariantByProduct",
+            type: "GET",
+            data: { product_id: productId },
+            dataType: "json",
+            success: function (res) {
+                let container = $("#variants-container");
+                container.empty();
+
+                if (!Array.isArray(res) || res.length === 0) {
+                    container.append(`
+                    <div>
+                        <input type="checkbox" class="variant-checkbox" value="null" 
+                               data-product="${productId}" data-name="Không có biến thể" data-price="0">
+                        Không có biến thể
+                    </div>
+                `);
+                } else {
+                    res.forEach((variant) => {
+                        container.append(`
+                        <div>
+                            <input type="checkbox" class="variant-checkbox" value="${
+                                variant.id
+                            }" 
+                                   data-product="${productId}" data-name="${
+                            variant.name
+                        }" 
+                                   data-price="${variant.price}">
+                            ${variant.name} - ${new Intl.NumberFormat(
+                            "vi-VN"
+                        ).format(variant.price)} VND
+                        </div>
+                    `);
+                    });
+                }
+
+                // Hiển thị lại các biến thể đã chọn nếu có trong localStorage
+                if (localStorage.selectedVariants) {
+                    let selectedVariants = JSON.parse(
+                        localStorage.selectedVariants
+                    );
+                    selectedVariants.forEach((variantId) => {
+                        $(`.variant-checkbox[value='${variantId}']`).prop(
+                            "checked",
+                            true
+                        );
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Lỗi:", error);
+            },
+        });
+    };
+
+    HT.restoreProductsFromLocalStorage = () => {
+        let selectedProducts =
+            JSON.parse(localStorage.getItem("selectedProducts")) || [];
+        selectedProducts.forEach((item) => {
+            HT.addProductToTable(item.productId, item.variantId, item.quantity);
+        });
+    };
+
+    HT.updateProductList = () => {
+        let selectedProducts = [];
+        $("#selected-products-table tbody tr").each(function () {
+            let productId = $(this).data("product");
+            let variantId = $(this).data("variant");
+            let name = $(this).data("name");
+            let quantity = $(this).find(".quantity").val();
+            selectedProducts.push({ productId, variantId, quantity, name });
+        });
+
+        // Lưu lại thông tin vào localStorage
+        localStorage.setItem(
+            "selectedProducts",
+            JSON.stringify(selectedProducts)
+        );
+    };
+
+    HT.addProductToTable = (productId, variantId, quantity = 1) => {
+        let tableBody = $("#selected-products-table tbody");
+
+        let existingRow = tableBody.find(
+            `tr[data-product="${productId}"][data-variant="${variantId}"]`
+        );
+
+        if (existingRow.length === 0) {
+            $.ajax({
+                url: "ajax/order/getProduct",
+                type: "GET",
+                data: {
+                    product_id: productId,
+                    variant_id: variantId !== null ? variantId : "null",
+                },
+                dataType: "json",
+                success: function (res) {
+                    if (res && res.product_id) {
+                        let name = res.product_name;
+                        let price = parseFloat(res.variant_price || res.price);
+
+                        let row = `
+                                <tr data-product="${productId}" data-variant="${variantId}" data-name="${name}">
+                                <td>${name}</td>
+                                <td><input type="number" class="form-control quantity" value="${quantity}" min="1" data-price="${price}"></td>
+                                <td class="text-center">${new Intl.NumberFormat(
+                                    "vi-VN"
+                                ).format(price)} VND</td>
+                                                </tr>
+                            `;
+                        tableBody.append(row);
+                        HT.updateTotalPrice();
+                        HT.updateProductList();
+                    } else {
+                        console.error("Không lấy được dữ liệu sản phẩm.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Lỗi khi lấy dữ liệu sản phẩm:", error);
+                },
+            });
+        }
+
+        tableBody.on("input", ".quantity", function () {
+            let quantity = $(this).val();
+            let price = $(this).data("price");
+            let totalPrice = quantity * price;
+
+            $(this)
+                .closest("tr")
+                .find("td.text-center")
+                .text(
+                    new Intl.NumberFormat("vi-VN").format(totalPrice) + " VND"
+                );
+
+            HT.updateTotalPrice();
+            HT.updateProductList();
+        });
+    };
+
+    HT.updateTotalPrice = () => {
+        let total = 0;
+        $(".quantity").each(function () {
+            let quantity = $(this).val();
+            let price = $(this).data("price");
+            total += quantity * price;
+        });
+
+        $("#total-price").text(
+            new Intl.NumberFormat("vi-VN").format(total) + " VND"
+        );
+    };
+
+    HT.bindEvents = () => {
+        $("#product_select").change(function () {
+            HT.loadVariants();
+            HT.updateProductList();
+        });
+
+        $(document).on("change", ".variant-checkbox", function () {
+            let productId = $(this).data("product");
+            let variantId = $(this).val();
+
+            if ($(this).is(":checked")) {
+                HT.addProductToTable(productId, variantId);
+            }
+
+            let selectedVariants = [];
+            $(".variant-checkbox:checked").each(function () {
+                selectedVariants.push($(this).val());
+            });
+            localStorage.setItem(
+                "selectedVariants",
+                JSON.stringify(selectedVariants)
+            );
+        });
+
+        $(document).on("input", ".quantity", function () {
+            HT.updateTotalPrice();
+        });
+    };
+
+    HT.getOrderData = () => {
+        let products = [];
+
+        $("#selected-products-table tbody tr").each(function () {
+            let productId = $(this).data("product");
+            let variantId = $(this).data("variant");
+            let name = $(this).data("name");
+            let quantity = $(this).find(".quantity").val();
+            let price = $(this).find(".quantity").data("price");
+            if (productId && quantity && price) {
+                products.push({
+                    product_id: productId,
+                    name: name,
+                    variant_id: variantId !== "null" ? variantId : null,
+                    quantity: parseInt(quantity),
+                    price: parseFloat(price),
+                });
+            }
+        });
+
+        let total_price = products.reduce(
+            (sum, item) => sum + item.quantity * item.price,
+            0
+        );
+
+        return {
+            products: products,
+            total_price: total_price,
+        };
+    };
+
+    HT.OrderForm = () => {
+        $("#order-form").submit(function (e) {
+            e.preventDefault();
+            let orderData = HT.getOrderData();
+            $("<input>")
+                .attr({
+                    type: "hidden",
+                    name: "products",
+                    id: "products-input",
+                    value: JSON.stringify(orderData.products),
+                })
+                .appendTo("#order-form");
+
+            $("<input>")
+                .attr({
+                    type: "hidden",
+                    name: "total_price",
+                    id: "total-price-input",
+                    value: orderData.total_price,
+                })
+                .appendTo("#order-form");
+
+            // Gửi form sau khi đã xử lý
+            this.submit();
+        });
+    };
+
     $(document).ready(function () {
         HT.editOrder();
         HT.updateDescription();
@@ -446,5 +737,8 @@
         HT.saveCustomer();
         HT.updateField();
         HT.updateBadge();
+        HT.bindEvents();
+        HT.OrderForm();
+        HT.restoreProductsFromLocalStorage();
     });
 })(jQuery);

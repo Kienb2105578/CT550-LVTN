@@ -9,6 +9,67 @@
                 </div>
             </div>
         </div>
+
+        @if (isset($product_promotion))
+            <div class="panel-flash-sale">
+                <div class="uk-container uk-container-center ">
+                    <div class="panel-head style-sale ">
+                        <div class="heading-sale">
+                            <span id="">Flash sale:</span>
+                            <span id="countdown" data-end-date="{{ $promotion_new->endDate }}"></span>
+
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    var countdownElement = document.getElementById("countdown");
+                                    var endDate = countdownElement.getAttribute("data-end-date");
+
+                                    if (!endDate) {
+                                        countdownElement.innerHTML = "Không có thời gian khuyến mãi!";
+                                        return;
+                                    }
+
+                                    var countDownDate = new Date(endDate).getTime();
+
+                                    var x = setInterval(function() {
+                                        var now = new Date().getTime();
+                                        var distance = countDownDate - now;
+
+                                        if (distance < 0) {
+                                            clearInterval(x);
+                                            countdownElement.innerHTML = "Hết thời gian!";
+                                            return;
+                                        }
+
+                                        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                                        countdownElement.innerHTML = `${days} ngày ${hours} giờ ${minutes} phút ${seconds} giây`;
+                                    }, 1000);
+                                });
+                            </script>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="uk-grid uk-grid-medium">
+                            @foreach ($product_promotion as $key => $product)
+                                @if ($product->publish == 2 && $product->quantity > 0)
+                                    <div
+                                        class="uk-width-1-2 uk-width-small-1-2 uk-width-medium-1-3 uk-width-large-1-5 mb20">
+                                        @include('frontend.component.product-item', [
+                                            'product' => $product,
+                                        ])
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+
         @if (isset($product_recommend))
             <div class="panel-flash-sale">
                 <div class="uk-container uk-container-center ">

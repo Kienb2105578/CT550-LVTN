@@ -1,4 +1,5 @@
-<?php  
+<?php
+
 namespace App\Http\ViewComposers;
 
 use Illuminate\View\View;
@@ -9,18 +10,11 @@ class CustomerComposer
 {
 
 
-    public function __construct(
-       
-    ){
-       
-    }
+    public function __construct() {}
 
     public function compose(View $view)
     {
         $customer = Auth::guard('customer')->user();
         $view->with('customerAuth', $customer);
     }
-
-   
-
 }

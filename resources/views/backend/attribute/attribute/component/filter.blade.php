@@ -4,14 +4,14 @@
             @include('backend.dashboard.component.perpage')
             <div class="action">
                 <div class="uk-flex uk-flex-middle">
-                    {{-- @include('backend.dashboard.component.filterPublish') --}}
                     @php
                         $attributeCatalogueId = request('attribute_catalogue_id') ?: old('attribute_catalogue_id');
                     @endphp
                     <select name="attribute_catalogue_id" class="form-control setupSelect2 ml10">
                         @foreach ($dropdown as $key => $val)
-                            <option {{ $attributeCatalogueId == $key ? 'selected' : '' }} value="{{ $key }}">
-                                {{ $val }}</option>
+                            <option {{ $attributeCatalogueId == $val->id ? 'selected' : '' }}
+                                value="{{ $val->id }}">
+                                {{ $val->name }}</option>
                         @endforeach
                     </select>
                     @include('backend.dashboard.component.keyword')
