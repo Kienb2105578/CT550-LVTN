@@ -67,7 +67,6 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
             echo $e->getMessage();
             die();
             return false;

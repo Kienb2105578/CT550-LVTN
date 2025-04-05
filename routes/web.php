@@ -334,17 +334,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('saveTranslate', [WidgetController::class, 'saveTranslate'])->name('widget.saveTranslate');
       });
 
-      Route::group(['prefix' => 'source'], function () {
-         Route::get('index', [SourceController::class, 'index'])->name('source.index');
-         Route::get('create', [SourceController::class, 'create'])->name('source.create');
-         Route::post('store', [SourceController::class, 'store'])->name('source.store');
-         Route::get('{id}/edit', [SourceController::class, 'edit'])->where(['id' => '[0-9]+'])->name('source.edit');
-         Route::post('{id}/update', [SourceController::class, 'update'])->where(['id' => '[0-9]+'])->name('source.update');
-         Route::get('{id}/delete', [SourceController::class, 'delete'])->where(['id' => '[0-9]+'])->name('source.delete');
-         Route::delete('{id}/destroy', [SourceController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('source.destroy');
-      });
-
-
 
 
       Route::group(['prefix' => 'promotion'], function () {
@@ -451,7 +440,6 @@ Route::group(['middleware' => 'license'], function () {
 
       Route::get('ajax/stock/getReport', [AjaxStockController::class, 'getReport'])->name('ajax.stock.getReport');
 
-      Route::get('ajax/source/getAllSource', [AjaxSourceController::class, 'getAllSource'])->name('ajax.getAllSource');
       Route::post('ajax/order/update', [AjaxOrderController::class, 'update'])->name('ajax.order.update');
       Route::get('ajax/order/chart', [AjaxOrderController::class, 'chart'])->name('ajax.order.chart');
       Route::get('ajax/order/chartDoughnutChart', [AjaxOrderController::class, 'chartDoughnutChart'])->name('ajax.order.chartDoughnutChart');

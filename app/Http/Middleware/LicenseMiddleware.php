@@ -16,8 +16,6 @@ class LicenseMiddleware
         $licenseKey = env('LICENSE_KEY');
         $expiryDate = env('LICENSE_EXPIRY_DATE');
 
-        $licenseKey = 'sdadasdasdasd';
-        $expiryDate = '2025-12-12';
 
         if (!$licenseKey || Carbon::parse($expiryDate)->isBefore(Carbon::now())) {
             return redirect()->route('license');
