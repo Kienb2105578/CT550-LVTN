@@ -1,18 +1,12 @@
-<div class="mb10">
-    <div class="text-danger" style="font-size:12px;"><i>*Tổng cuối là tổng chưa bao gồm giảm giá</i></div>
-</div>
 <div class="table-responsive">
     <table class="table table-striped table-bordered order-table">
         <thead>
             <tr>
-                <th>
-                    <input type="checkbox" value="" id="checkAll" class="input-checkbox">
-                </th>
-                <th>Mã</th>
-                <th>Ngày tạo</th>
+                <th>Mã đơn hàng</th>
+                <th>Ngày đặt hàng</th>
                 <th>Khách hàng</th>
-                <th class="text-right">Giảm giá (vnđ)</th>
-                <th class="text-right">Tổng cuối (vnđ)</th>
+                <th class="text-right">Giảm khuyến mại</th>
+                <th class="text-right">Doanh thu</th>
                 <th class="text-center">Trạng thái</th>
                 <th>Thanh toán</th>
                 <th>Giao hàng</th>
@@ -23,9 +17,7 @@
             @if (isset($orders) && is_object($orders))
                 @foreach ($orders as $order)
                     <tr>
-                        <td>
-                            <input type="checkbox" value="{{ $order->id }}" class="input-checkbox checkBoxItem">
-                        </td>
+                        <input type="hidden" value="{{ $order->id }}" class=" checkBoxItem">
                         <td>
                             <a href="{{ route('order.detail', $order->id) }}">{{ $order->code }}</a>
                         </td>
@@ -40,10 +32,10 @@
                         </td>
 
                         <td class="text-right order-discount">
-                            {{ convert_price($order->promotion['discount'], true) }}
+                            {{ convert_price($order->promotion['discount'], true) }}đ
                         </td>
                         <td class="text-right order-total">
-                            {{ convert_price($order->cart['cartTotal'], true) }}
+                            {{ convert_price($order->cart['cartTotal'], true) }}đ
                         </td>
                         <td class="text-center">
                             @if ($order->confirm == 'cancle')

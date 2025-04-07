@@ -130,38 +130,6 @@ class PromotionController extends Controller
         return redirect()->route('promotion.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
 
-    public function translate($languageId, $promotionId)
-    {
-        $this->authorize('modules', 'promotion.translate');
-        $promotion = $this->promotionRepository->findById($promotionId);
-        $promotion->jsonDescription = $promotion->description;
-        $promotion->description = $promotion->description[$this->language];
-
-        $promotionTranslate = new \stdClass;
-        $promotionTranslate->description = ($promotion->jsonDescription[$languageId]) ?? '';
-
-
-        $translate = $this->languageRepository->findById($languageId);
-        $config = $this->config();
-        $config['seo'] = __('messages.promotion');
-        $config['method'] = 'create';
-        $template = 'backend.promotion.promotion.translate';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'config',
-            'translate',
-            'promotion',
-            'promotionTranslate',
-        ));
-    }
-
-    public function saveTranslate(Request $request)
-    {
-        if ($this->promotionService->saveTranslate($request, $this->language)) {
-            return redirect()->route('promotion.index')->with('success', 'Tạo bản dịch thành công');
-        }
-        return redirect()->route('promotion.index')->with('error', 'Tạo bản dịch không thành công. Hãy thử lại');
-    }
 
     private function config()
     {

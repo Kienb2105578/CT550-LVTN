@@ -42,7 +42,6 @@
                         ticks: {
                             beginAtZero: true,
                             userCallback: function (value, index, values) {
-                                // Convert the number to a string and splite the string every 3 charaters from the end
                                 value = value.toString();
                                 value = value.split(/(?=(?:...)*$)/);
                                 value = value.join(".");
@@ -93,7 +92,6 @@
 
     $(document).ready(function () {
         HT.createChart(label, data);
-
         HT.changeChart();
     });
 })(jQuery);

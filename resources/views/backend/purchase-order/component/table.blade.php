@@ -3,7 +3,7 @@
         $query = base64_encode(http_build_query(request()->query()));
         $queryUrl = rtrim($query, '=');
     @endphp
-    <table class="table table-striped table-bordered">
+    <table class="table">
         <thead>
             <tr>
                 <th class="text-center" style="width:4%;"><input type="checkbox" id="checkAll" class="input-checkbox"></th>
@@ -37,10 +37,12 @@
                         </td>
                         <td>{{ $purchaseOrder->note ?? 'Không có ghi chú' }}</td>
                         <td class="text-center">
-                            <a href="{{ route('purchase-order.edit', $purchaseOrder->id) }}" class="btn btn-success">
+                            <a href="{{ route('purchase-order.edit', $purchaseOrder->id) }}"
+                                class="btn btn-info btn-outline">
                                 <i class="fa fa-edit"></i>
                             </a>
-                            <a href="{{ route('purchase-order.delete', $purchaseOrder->id) }}" class="btn btn-danger">
+                            <a href="{{ route('purchase-order.delete', $purchaseOrder->id) }}"
+                                class="btn btn-danger btn-outline">
                                 <i class="fa fa-trash"></i>
                             </a>
                         </td>

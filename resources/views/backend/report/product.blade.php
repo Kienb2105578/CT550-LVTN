@@ -34,7 +34,8 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
-                                    <button class="btn btn-success" type="submit" value="name">Gửi báo cáo</button>
+                                    <button class="btn btn-info btn-outline" type="submit" value="name">Gửi báo
+                                        cáo</button>
                                 </div>
                             </div>
                         </div>
@@ -67,7 +68,6 @@
         </div>
         <script src="backend/js/plugins/d3/d3.min.js"></script>
         <script src="backend/js/plugins/c3/c3.min.js"></script>
-
         <script>
             function updateExportUrl() {
                 let startDate = $('input[name="startDate"]').val();
@@ -118,7 +118,7 @@
         <div class="row">
             <div class="ibox-content time">
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered">
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th class="text-right">SKU</th>

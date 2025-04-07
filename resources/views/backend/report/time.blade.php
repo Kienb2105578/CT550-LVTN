@@ -33,7 +33,8 @@
                                 </div>
                             </div>
                             <div class="col-lg-6">
-                                <button class="btn btn-success" type="submit" value="name">Gửi báo cáo</button>
+                                <button class="btn btn-info btn-outline" type="submit" value="name">Gửi báo
+                                    cáo</button>
                             </div>
                         </div>
                     </div>
@@ -65,7 +66,9 @@
         </div>
         <script src="backend/js/plugins/d3/d3.min.js"></script>
         <script src="backend/js/plugins/c3/c3.min.js"></script>
-
+        <script src="{{ asset('backend/js/plugins/icheck/icheck.min.js') }}"></script>
+        <script src="backend/js/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js"></script>
+        <script src="backend/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
         <script>
             function updateExportUrl() {
                 let startDate = $('input[name="startDate"]').val();
@@ -114,7 +117,7 @@
         </script>
         <div class="row">
             <div class="ibox-content time">
-                <table class="table table-striped table-bordered">
+                <table class="table">
                     <thead>
                         <tr>
                             <th class="text-center">Ngày</th>

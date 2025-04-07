@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped table-bordered">
+    <table class="table">
         <thead>
             <tr>
                 <th>
@@ -8,7 +8,6 @@
                 <th>Tên Widget</th>
                 <th>Từ khóa</th>
                 <th>ShortCode</th>
-                @include('backend.dashboard.component.languageTh')
                 <th class="text-center">Tình Trạng</th>
                 <th class="text-center">Thao tác</th>
             </tr>
@@ -47,9 +46,9 @@
                                 {{ $widget->publish == 2 ? 'checked' : '' }} data-modelId="{{ $widget->id }}" />
                         </td>
                         <td class="text-center">
-                            <a href="{{ route('widget.edit', $widget->id) }}" class="btn btn-success"><i
+                            <a href="{{ route('widget.edit', $widget->id) }}" class="btn btn-info btn-outline"><i
                                     class="fa fa-edit"></i></a>
-                            {{-- <a href="{{ route('widget.delete', $widget->id) }}" class="btn btn-danger"><i class="fa fa-trash"></i></a> --}}
+
                         </td>
                     </tr>
                 @endforeach

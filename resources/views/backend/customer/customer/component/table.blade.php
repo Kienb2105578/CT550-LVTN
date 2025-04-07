@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped table-bordered">
+    <table class="table">
         <thead>
             <tr>
                 <th>
@@ -38,10 +38,10 @@
                                 {{ $customer->publish == 2 ? 'checked' : '' }} data-modelId="{{ $customer->id }}" />
                         </td>
                         <td class="text-center">
-                            <a href="{{ route('customer.edit', $customer->id) }}" class="btn btn-success"><i
+                            <a href="{{ route('customer.edit', $customer->id) }}" class="btn btn-info btn-outline"><i
                                     class="fa fa-edit"></i></a>
-                            <a href="{{ route('customer.delete', $customer->id) }}" class="btn btn-danger"><i
-                                    class="fa fa-trash"></i></a>
+                            <a href="{{ route('customer.delete', $customer->id) }}"
+                                class="btn btn-danger btn-outline"><i class="fa fa-trash"></i></a>
                         </td>
                     </tr>
                 @endforeach

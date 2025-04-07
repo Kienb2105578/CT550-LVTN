@@ -137,67 +137,67 @@ class LanguageController extends Controller
         return redirect()->back();
     }
 
-    public function translate($id = 0, $languageId = 0, $model = '')
-    {
-        $repositoryInstance = $this->respositoryInstance($model);
+    // public function translate($id = 0, $languageId = 0, $model = '')
+    // {
+    //     $repositoryInstance = $this->respositoryInstance($model);
 
-        if ($repositoryInstance === null) {
-            return redirect()->back()->with('error', 'Repository không tồn tại');
-        }
+    //     if ($repositoryInstance === null) {
+    //         return redirect()->back()->with('error', 'Repository không tồn tại');
+    //     }
 
-        $languageInstance = $this->respositoryInstance('Language');
-        $currentLanguage = $languageInstance->findByCondition([
-            ['canonical', '=', session('app_locale')]
-        ]);
-        $method = 'get' . $model . 'ById';
+    //     $languageInstance = $this->respositoryInstance('Language');
+    //     $currentLanguage = $languageInstance->findByCondition([
+    //         ['canonical', '=', session('app_locale')]
+    //     ]);
+    //     $method = 'get' . $model . 'ById';
 
-        $object = $repositoryInstance->{$method}($id, $currentLanguage->id);
-        $objectTransate = $repositoryInstance->{$method}($id, $languageId);
+    //     $object = $repositoryInstance->{$method}($id, $currentLanguage->id);
+    //     $objectTransate = $repositoryInstance->{$method}($id, $languageId);
 
-        $this->authorize('modules', 'language.translate');
-        $config = [
-            'js' => [
-                'backend/plugins/ckeditor/ckeditor.js',
-                'backend/plugins/ckfinder_2/ckfinder.js',
-                'backend/library/finder.js',
-                'backend/library/seo.js',
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
-            ],
-            'css' => [
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
-            ]
-        ];
-        $option = [
-            'id' => $id,
-            'languageId' => $languageId,
-            'model' => $model,
-        ];
-        $config['seo'] = __('messages.language');
-        $template = 'backend.language.translate';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'config',
-            'object',
-            'objectTransate',
-            'option',
-        ));
-    }
+    //     $this->authorize('modules', 'language.translate');
+    //     $config = [
+    //         'js' => [
+    //             'backend/plugins/ckeditor/ckeditor.js',
+    //             'backend/plugins/ckfinder_2/ckfinder.js',
+    //             'backend/library/finder.js',
+    //             'backend/library/seo.js',
+    //             'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
+    //         ],
+    //         'css' => [
+    //             'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+    //         ]
+    //     ];
+    //     $option = [
+    //         'id' => $id,
+    //         'languageId' => $languageId,
+    //         'model' => $model,
+    //     ];
+    //     $config['seo'] = __('messages.language');
+    //     $template = 'backend.language.translate';
+    //     return view('backend.dashboard.layout', compact(
+    //         'template',
+    //         'config',
+    //         'object',
+    //         'objectTransate',
+    //         'option',
+    //     ));
+    // }
 
-    public function storeTranslate(TranslateRequest $request)
-    {
-        $option = $request->input('option');
-        if ($this->languageService->saveTranslate($option, $request)) {
-            return redirect()->back()->with('success', 'Cập nhật bản ghi thành công');
-        }
-        return redirect()->back()->with('error', 'Có vấn đề xảy ra, Hãy Thử lại');
-    }
+    // public function storeTranslate(TranslateRequest $request)
+    // {
+    //     $option = $request->input('option');
+    //     if ($this->languageService->saveTranslate($option, $request)) {
+    //         return redirect()->back()->with('success', 'Cập nhật bản ghi thành công');
+    //     }
+    //     return redirect()->back()->with('error', 'Có vấn đề xảy ra, Hãy Thử lại');
+    // }
 
-    private function respositoryInstance($model)
-    {
-        $repositoryNamespace = '\App\Repositories\\' . ucfirst($model) . 'Repository';
-        if (class_exists($repositoryNamespace)) {
-            $repositoryInstance = app($repositoryNamespace);
-        }
-        return $repositoryInstance ?? null;
-    }
+    // private function respositoryInstance($model)
+    // {
+    //     $repositoryNamespace = '\App\Repositories\\' . ucfirst($model) . 'Repository';
+    //     if (class_exists($repositoryNamespace)) {
+    //         $repositoryInstance = app($repositoryNamespace);
+    //     }
+    //     return $repositoryInstance ?? null;
+    // }
 }

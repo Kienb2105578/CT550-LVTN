@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped table-bordered">
+    <table class="table">
         <thead>
             <tr>
                 <th>
@@ -43,7 +43,7 @@
                             <a href="{{ write_url($reviewableLink) }}" target="_blank">Click để xem đối tượng</a>
                         </td>
                         <td class="text-center">
-                            <a href="{{ route('review.delete', $review->id) }}" class="btn btn-danger"><i
+                            <a href="{{ route('review.delete', $review->id) }}" class="btn btn-danger btn-outline"><i
                                     class="fa fa-trash"></i></a>
                         </td>
                     </tr>

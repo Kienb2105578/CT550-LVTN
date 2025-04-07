@@ -1,5 +1,6 @@
 @php
-    $title = str_replace('{language}', $translate['name'], $config['seo']['create']['translate']).' '.$widget['name'];
+    $title =
+        str_replace('{language}', $translate['name'], $config['seo']['create']['translate']) . ' ' . $widget['name'];
 @endphp
 @include('backend.dashboard.component.breadcrumb', ['title' => $title])
 @include('backend.dashboard.component.formError')
@@ -17,10 +18,10 @@
                     </div>
                     <div class="ibox-content">
                         @include('backend.dashboard.component.content', [
-                            'model' => ($widget) ?? null, 
-                            'disabled' => 1, 
-                            'offTitle' => true, 
-                            'offContent' => TRUE
+                            'model' => $widget ?? null,
+                            'disabled' => 1,
+                            'offTitle' => true,
+                            'offContent' => true,
                         ])
                     </div>
                 </div>
@@ -32,9 +33,9 @@
                     </div>
                     <div class="ibox-content">
                         @include('backend.dashboard.component.translate', [
-                            'model' => ($widgetTranslate) ?? null,
-                            'offTitle' => TRUE,
-                            'offContent' => TRUE,
+                            'model' => $widgetTranslate ?? null,
+                            'offTitle' => true,
+                            'offContent' => true,
                         ])
                     </div>
                 </div>

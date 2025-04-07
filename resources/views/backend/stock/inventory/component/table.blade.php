@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped table-bordered">
+    <table class="table">
         <thead>
             <tr>
                 <th class="text-center">
@@ -28,7 +28,7 @@
                             {{ $inventory->purchaseOrder->supplier->phone }}
                         </td>
                         <td class="text-center">
-                            <button class="btn btn-success btn-edit edit-stock"
+                            <button class="btn btn-info btn-outline btn-edit edit-stock"
                                 data-id="{{ $inventory->purchase_order_id }}">
                                 <i class="fa fa-edit"></i>
                             </button>

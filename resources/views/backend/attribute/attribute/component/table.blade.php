@@ -4,15 +4,13 @@
 @endphp
 
 <div class="table-responsive">
-    <table class="table table-striped table-bordered">
-        <thead>
+    <table class="table  card-table">
+        <thead class="thead-light">
             <tr>
                 <th style="width:50px;">
                     <input type="checkbox" value="" id="checkAll" class="input-checkbox">
                 </th>
-                <th>{{ __('messages.tableName') }}</th>
-                {{-- @include('backend.dashboard.component.languageTh') --}}
-                {{-- <th style="width:80px;" class="text-center">{{ __('messages.tableOrder') }}</th> --}}
+                <th>Tên thuộc tính</th>
                 <th class="text-center" style="width:200px;">{{ __('messages.tableAction') }}</th>
             </tr>
         </thead>
@@ -39,25 +37,12 @@
                                 </div>
                             </div>
                         </td>
-                        @include('backend.dashboard.component.languageTd', [
-                            'model' => $attribute,
-                            'modeling' => 'Attribute',
-                        ])
-                        {{-- <td>
-                            <input type="text" name="order" value="{{ $attribute->order }}"
-                                class="form-control sort-order text-right" data-id="{{ $attribute->id }}"
-                                data-model="{{ $config['model'] }}">
-                        </td> --}}
                         <td class="text-center">
                             <div class="btn-group">
                                 <a href="{{ route('attribute.edit', [$attribute->id, $queryUrl ?? '']) }}"
-                                    class="btn btn-success btn-sm">
+                                    class="btn btn-info btn-outline">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                {{-- <a href="{{ route('attribute.delete', $attribute->id) }}"
-                                    class="btn btn-danger btn-sm">
-                                    <i class="fa fa-trash"></i>
-                                </a> --}}
                             </div>
                         </td>
                     </tr>

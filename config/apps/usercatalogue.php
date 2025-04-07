@@ -1,13 +1,13 @@
-<?php 
-	return [
-		'index' => [
-			'title' => 'Quản lý nhóm thành viên',
-			'table' => 'Danh sách nhóm thành viên'
-		],
-		'create' => [
-			'title' => 'Thêm mới nhóm thành viên'
-		],
-		'delete' => [
-			'title' => 'Xóa nhóm thành viên'
-		]
-	];
+<?php
+return [
+	'index' => [
+		'title' => 'Quản lý nhóm nhân viên',
+		'table' => 'Danh sách nhóm nhân viên'
+	],
+	'create' => [
+		'title' => 'Thêm mới nhóm nhân viên'
+	],
+	'delete' => [
+		'title' => 'Xóa nhóm nhân viên'
+	]
+];

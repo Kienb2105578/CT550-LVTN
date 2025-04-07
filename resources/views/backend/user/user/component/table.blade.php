@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped table-bordered">
+    <table class="table">
         <thead>
             <tr>
                 <th>
@@ -9,7 +9,7 @@
                 <th>Email</th>
                 <th>Số điện thoại</th>
                 <th>Địa chỉ</th>
-                <th class="text-center">Nhóm thành viên</th>
+                <th class="text-center">Nhóm nhân viên</th>
                 <th class="text-center">Tình Trạng</th>
                 <th class="text-center">Thao tác</th>
             </tr>
@@ -43,9 +43,9 @@
                                 data-modelId="{{ $user->id }}" />
                         </td>
                         <td class="text-center">
-                            <a href="{{ route('user.edit', $user->id) }}" class="btn btn-success"><i
+                            <a href="{{ route('user.edit', $user->id) }}" class="btn btn-info btn-outline"><i
                                     class="fa fa-edit"></i></a>
-                            <a href="{{ route('user.delete', $user->id) }}" class="btn btn-danger"><i
+                            <a href="{{ route('user.delete', $user->id) }}" class="btn btn-danger btn-outline"><i
                                     class="fa fa-trash"></i></a>
                         </td>
                     </tr>

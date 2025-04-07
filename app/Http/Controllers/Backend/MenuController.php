@@ -36,8 +36,7 @@ class MenuController extends Controller
         $this->languageRepository = $languageRepository;
         $this->middleware(function ($request, $next) {
             $locale = app()->getLocale(); // vn en cn
-            $language = Language::where('canonical', $locale)->first();
-            $this->language = $language->id;
+            $this->language = 1;
             return $next($request);
         });
     }
@@ -188,44 +187,6 @@ class MenuController extends Controller
             return redirect()->route('menu.edit', ['id' => $menu->menu_catalogue_id])->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('menu.edit', ['id' => $menu->menu_catalogue_id])->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
-    }
-
-    public function translate(int $languageId = 1, int $id = 0)
-    {
-
-        $language = $this->languageRepository->findById($languageId);
-        $menuCatalogue = $this->menuCatalogueRepository->findById($id);
-
-        $currentLanguage = $this->language;
-        $menus = $this->menuRepository->findByCondition([
-            ['menu_catalogue_id', '=', $id],
-        ], TRUE, [
-            'languages' => function ($query) use ($currentLanguage) {
-                $query->where('language_id',  $currentLanguage);
-            }
-        ], ['lft', 'asc']);
-
-        $menus = buildMenu($this->menuService->findMenuItemTranslate($menus, $currentLanguage, $languageId));
-        // dd($menus);
-        $config['seo'] = __('messages.menu');
-        $config['method'] = 'translate';
-        $template = 'backend.menu.menu.translate';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'config',
-            'languageId',
-            'language',
-            'menuCatalogue',
-            'menus',
-        ));
-    }
-
-    public function saveTranslate(Request $request, $languageId = 1)
-    {
-        if ($this->menuService->saveTranslateMenu($request, $languageId)) {
-            return redirect()->route('menu.index')->with('success', 'Cập nhật bản ghi thành công');
-        }
-        return redirect()->route('menu.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
     private function config()

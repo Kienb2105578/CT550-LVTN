@@ -6,7 +6,6 @@
             </a>
         </div>
         <ul class="nav navbar-top-links navbar-right">
-            <!-- User Dropdown -->
             <li>
                 <img alt="image" class="img-circle"
                     src="{{ auth()->user()->image ?? 'frontend/resources/img/no_image.png' }}"

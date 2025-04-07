@@ -1,4 +1,19 @@
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="wrapper wrapper-content animated fadeInRight mt30">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5> biểu đồ so sánh Lợi nhuận và Chi tiêu trong năm
+                    </h5>
+                </div>
+                <div class="ibox-content">
+                    <div>
+                        <canvas id="lineChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-6">
             <div class="ibox float-e-margins">

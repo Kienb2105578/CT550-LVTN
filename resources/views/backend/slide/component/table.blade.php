@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped table-bordered">
+    <table class="table">
         <thead>
             <tr>
                 <th>
@@ -53,9 +53,9 @@
                                 {{ $slide->publish == 2 ? 'checked' : '' }} data-modelId="{{ $slide->id }}" />
                         </td>
                         <td class="text-center">
-                            <a href="{{ route('slide.edit', $slide->id) }}" class="btn btn-success"><i
+                            <a href="{{ route('slide.edit', $slide->id) }}" class="btn btn-info btn-outline"><i
                                     class="fa fa-edit"></i></a>
-                            <a href="{{ route('slide.delete', $slide->id) }}" class="btn btn-danger"><i
+                            <a href="{{ route('slide.delete', $slide->id) }}" class="btn btn-danger btn-outline "><i
                                     class="fa fa-trash"></i></a>
                         </td>
                     </tr>

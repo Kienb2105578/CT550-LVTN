@@ -157,11 +157,11 @@ if (!function_exists('getReview')) {
         }
 
         $totalReviews = $product->reviews()->count();
-        $totalRate = $product->reviews()->avg('score') ?? 0; // Nếu null thì lấy 0
+        $totalRate = $product->reviews()->avg('score') ?? 0;
         $starPercent = ($totalReviews == 0) ? 0 : ($totalRate / 5 * 100);
 
         return [
-            'star' => round($starPercent, 2), // Làm tròn 2 chữ số thập phân
+            'star' => round($starPercent, 2),
             'count' => $totalReviews,
         ];
     }
@@ -425,7 +425,6 @@ if (!function_exists('convertArrayByKey')) {
                 } else {
                     $extract = explode('.', $field);
                     if (count($extract) == 2) {
-                        // Bỏ phần xử lý languages và pivot
                         $temp[$extract[0]][] = $val->{$extract[0]};
                     } else {
                         $temp[$field][] = $val->{$field};
@@ -543,19 +542,6 @@ if (!function_exists('vnpayConfig')) {
         ];
     }
 }
-// if (!function_exists('vnpayConfig')) {
-//     function vnpayConfig()
-//     {
-//         return [
-//             'vnp_Url' => 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
-//             'vnp_Returnurl' => "https://5726-14-191-204-8.ngrok-free.app/vnpay_return",
-//             'vnp_TmnCode' => '4ZHXG5U0',
-//             'vnp_HashSecret' => 'T3QWD321XGUAF78I2HXVWSVQGA15HHPF ',
-//             'vnp_apiUrl' => 'http://sandbox.vnpayment.vn/merchant_webapi/merchant.html',
-//             'apiUrl' => 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction'
-//         ];
-//     }
-// }
 
 if (!function_exists('momoConfig')) {
     function momoConfig()
@@ -596,9 +582,7 @@ if (!function_exists('execPostRequest')) {
         );
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        //execute post
         $result = curl_exec($ch);
-        //close connection
         curl_close($ch);
         return $result;
     }
@@ -608,7 +592,6 @@ if (!function_exists('execPostRequest')) {
 if (!function_exists('getReviewName')) {
     function getReviewName($string)
     {
-        // $string = Nguyễn Công Tuấn
         $words = explode(' ', $string);
         $initialize = '';
         foreach ($words as $key => $val) {

@@ -6,14 +6,6 @@
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-lg-5">
-                <div class="panel-head">
-                    <div class="panel-title">Thông tin chung</div>
-                    <div class="panel-description">
-                        <p>{{ __('messages.generalTitle') }} <span class="text-danger">{{ $purchaseOrder->code }}</span>
-                        </p>
-                        <p>{{ __('messages.generalDescription') }}</p>
-                    </div>
-                </div>
             </div>
             <div class="col-lg-7">
                 <div class="ibox">

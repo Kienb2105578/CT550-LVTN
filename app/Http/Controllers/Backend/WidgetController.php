@@ -157,38 +157,6 @@ class WidgetController extends Controller
         return redirect()->route('widget.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
 
-    public function translate($languageId, $widgetId)
-    {
-        $this->authorize('modules', 'widget.translate');
-        $widget = $this->widgetRepository->findById($widgetId);
-        $widget->jsonDescription = $widget->description;
-        $widget->description = $widget->description[$this->language];
-
-        $widgetTranslate = new \stdClass;
-        $widgetTranslate->description = ($widget->jsonDescription[$languageId]) ?? '';
-
-
-        $translate = $this->languageRepository->findById($languageId);
-        $config = $this->config();
-        $config['seo'] = __('messages.widget');
-        $config['method'] = 'create';
-        $template = 'backend.widget.translate';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'config',
-            'translate',
-            'widget',
-            'widgetTranslate',
-        ));
-    }
-
-    public function saveTranslate(Request $request)
-    {
-        if ($this->widgetService->saveTranslate($request, $this->language)) {
-            return redirect()->route('widget.index')->with('success', 'Tạo bản dịch thành công');
-        }
-        return redirect()->route('widget.index')->with('error', 'Tạo bản dịch không thành công. Hãy thử lại');
-    }
 
     private function config()
     {

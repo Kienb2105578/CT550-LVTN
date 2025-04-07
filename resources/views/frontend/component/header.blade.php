@@ -42,7 +42,7 @@
         <div class="uk-container uk-container-center">
             <div class="uk-flex uk-flex-middle uk-flex-space-between">
                 <div class="logo">
-                    <a href="/"><img src="{{ $system['homepage_logo'] }}" alt="Logo"></a>
+                    <a href="/"><img src="{{ $system['homepage_favicon'] }}" alt="Logo"></a>
                 </div>
                 <style>
                     .input-text {

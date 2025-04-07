@@ -195,6 +195,7 @@
                 },
                 _token: _token,
             };
+            console.log(option);
 
             HT.ajaxUpdateOrderInfo(option, _this);
         });

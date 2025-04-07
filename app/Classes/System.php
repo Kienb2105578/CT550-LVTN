@@ -1,9 +1,12 @@
 <?php
+
 namespace App\Classes;
 
-class System{
+class System
+{
 
-    public function config(){
+    public function config()
+    {
         $data['homepage'] = [
             'label' => 'Thông tin chung',
             'description' => 'Cài đặt đầy đủ thông tin chung của website. Tên thương hiệu hiệu website, Logo, Favicon, vv...',
@@ -15,7 +18,7 @@ class System{
                 'favicon' => ['type' => 'images', 'label' => 'Favicon', 'title' => 'Click vào ô phía dưới để tải logo'],
                 'copyright' => ['type' => 'text', 'label' => 'Copyright'],
                 'website' => [
-                    'type' => 'select', 
+                    'type' => 'select',
                     'label' => 'Tình trạng website',
                     'option' => [
                         'open' => 'Mở cửa website',
@@ -38,11 +41,10 @@ class System{
                 'phone' => ['type' => 'text', 'label' => 'Số cố định'],
                 'fax' => ['type' => 'text', 'label' => 'Fax'],
                 'email' => ['type' => 'text', 'label' => 'Email'],
-                // 'tax' => ['type' => 'text', 'label' => 'Mã số thuế'],
                 'website' => ['type' => 'text', 'label' => 'Website'],
                 'map' => [
-                    'type' => 'textarea', 
-                    'label' => 'Bản đồ', 
+                    'type' => 'textarea',
+                    'label' => 'Bản đồ',
                     'link' => [
                         'text' => 'Hướng dẫn thiết lập bản đồ',
                         'href' => 'https://manhan.vn/hoc-website-nang-cao/huong-dan-nhung-ban-do-vao-website/',
@@ -63,20 +65,19 @@ class System{
             ]
         ];
 
-        $data['social'] = [
-            'label' => 'Cấu hình Mạng xã hội dành cho trang chủ',
-            'description' => 'Cài đặt đầy đủ thông tin về Mạng xã hội của trang chủ website. Bao gồm tiêu đề Mạng xã hội, Từ Khóa SEO, Mô Tả SEO, Meta images',
-            'value' => [
-                'facebook' => ['type' => 'text', 'label' => 'Facebook'],
-                'youtube' => ['type' => 'text', 'label' => 'Youtube'],
-                'twitter' => ['type' => 'text', 'label' => 'Twitter'],
-                'tiktok' => ['type' => 'text', 'label' => 'Tiktok'],
-                'instagram' => ['type' => 'text', 'label' => 'Instagram'],
-            ]
-        ];
+        // $data['social'] = [
+        //     'label' => 'Cấu hình Mạng xã hội dành cho trang chủ',
+        //     'description' => 'Cài đặt đầy đủ thông tin về Mạng xã hội của trang chủ website. Bao gồm tiêu đề Mạng xã hội, Từ Khóa SEO, Mô Tả SEO, Meta images',
+        //     'value' => [
+        //         'facebook' => ['type' => 'text', 'label' => 'Facebook'],
+        //         'youtube' => ['type' => 'text', 'label' => 'Youtube'],
+        //         'twitter' => ['type' => 'text', 'label' => 'Twitter'],
+        //         'tiktok' => ['type' => 'text', 'label' => 'Tiktok'],
+        //         'instagram' => ['type' => 'text', 'label' => 'Instagram'],
+        //     ]
+        // ];
 
 
         return $data;
     }
-	
 }

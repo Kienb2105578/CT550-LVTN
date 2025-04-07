@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped table-bordered">
+    <table class="table">
         <thead>
             <tr>
                 <th>
@@ -32,13 +32,13 @@
                                 data-modelId="{{ $menuCatalogue->id }}" />
                         </td>
                         <td class="text-center">
-                            <a href="{{ route('menu.edit', $menuCatalogue->id) }}" class="btn btn-success"><i
+                            <a href="{{ route('menu.edit', $menuCatalogue->id) }}" class="btn btn-info btn-outline"><i
                                     class="fa fa-edit"></i></a>
 
                             @if ($menuCatalogue->keyword == 'main-menu' || $menuCatalogue->keyword == 'footer-menu')
                             @else
-                                <a href="{{ route('menu.delete', $menuCatalogue->id) }}" class="btn btn-danger"><i
-                                        class="fa fa-trash"></i></a>
+                                <a href="{{ route('menu.delete', $menuCatalogue->id) }}"
+                                    class="btn btn-outline btn-danger"><i class="fa fa-trash"></i></a>
                             @endif
                         </td>
                     </tr>

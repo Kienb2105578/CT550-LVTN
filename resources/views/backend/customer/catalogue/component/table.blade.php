@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped table-bordered">
+    <table class="table">
         <thead>
             <tr>
                 <th>
@@ -37,9 +37,9 @@
                         </td>
                         <td class="text-center">
                             <a href="{{ route('customer.catalogue.edit', $customerCatalogue->id) }}"
-                                class="btn btn-success"><i class="fa fa-edit"></i></a>
+                                class="btn btn-info btn-outline"><i class="fa fa-edit"></i></a>
                             <a href="{{ route('customer.catalogue.delete', $customerCatalogue->id) }}"
-                                class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                class="btn btn-danger btn-outline"><i class="fa fa-trash"></i></a>
                         </td>
                     </tr>
                 @endforeach

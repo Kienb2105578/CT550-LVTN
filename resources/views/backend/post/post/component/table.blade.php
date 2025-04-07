@@ -1,13 +1,12 @@
 <div class="table-responsive">
-    <table class="table table-striped table-bordered">
+    <table class="table">
         <thead>
             <tr>
                 <th style="width:50px;">
                     <input type="checkbox" value="" id="checkAll" class="input-checkbox">
                 </th>
                 <th>{{ __('messages.tableName') }}</th>
-                @include('backend.dashboard.component.languageTh')
-                <th style="width:80px;" class="text-center">{{ __('messages.tableOrder') }}</th>
+
                 <th class="text-center" style="width:100px;">{{ __('messages.tableStatus') }}</th>
                 <th class="text-center" style="width:100px;">{{ __('messages.tableAction') }}</th>
             </tr>
@@ -42,24 +41,16 @@
                                 </div>
                             </div>
                         </td>
-                        @include('backend.dashboard.component.languageTd', [
-                            'model' => $post,
-                            'modeling' => 'Post',
-                        ])
-                        <td>
-                            <input type="text" name="order" value="{{ $post->order }}"
-                                class="form-control sort-order text-right" data-id="{{ $post->id }}"
-                                data-model="{{ $config['model'] }}">
-                        </td>
+
                         <td class="text-center js-switch-{{ $post->id }}">
                             <input type="checkbox" value="{{ $post->publish }}" class="js-switch status "
                                 data-field="publish" data-model="{{ $config['model'] }}"
                                 {{ $post->publish == 2 ? 'checked' : '' }} data-modelId="{{ $post->id }}" />
                         </td>
                         <td class="text-center">
-                            <a href="{{ route('post.edit', $post->id) }}" class="btn btn-success"><i
+                            <a href="{{ route('post.edit', $post->id) }}" class="btn btn-info btn-outline"><i
                                     class="fa fa-edit"></i></a>
-                            <a href="{{ route('post.delete', $post->id) }}" class="btn btn-danger"><i
+                            <a href="{{ route('post.delete', $post->id) }}" class="btn btn-danger btn-outline"><i
                                     class="fa fa-trash"></i></a>
                         </td>
                     </tr>

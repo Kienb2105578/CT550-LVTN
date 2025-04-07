@@ -161,6 +161,9 @@ Route::group(['middleware' => 'license'], function () {
 
    Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], function () {
       Route::get('dashboard/index', [DashboardController::class, 'index'])->name('dashboard.index');
+      Route::get('/error', function () {
+         return view('vendor.error');
+      })->name('vendor.error');
 
       /* USER */
       Route::group(['prefix' => 'user'], function () {
@@ -247,8 +250,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('{id}/update', [LanguageController::class, 'update'])->where(['id' => '[0-9]+'])->name('language.update');
          Route::get('{id}/delete', [LanguageController::class, 'delete'])->where(['id' => '[0-9]+'])->name('language.delete');
          Route::delete('{id}/destroy', [LanguageController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('language.destroy');
-         Route::get('{id}/switch', [LanguageController::class, 'swicthBackendLanguage'])->where(['id' => '[0-9]+'])->name('language.switch');
-         Route::get('{id}/{languageId}/{model}/translate', [LanguageController::class, 'translate'])->where(['id' => '[0-9]+', 'languageId' => '[0-9]+'])->name('language.translate');
          Route::post('storeTranslate', [LanguageController::class, 'storeTranslate'])->name('language.storeTranslate');
       });
 
@@ -256,8 +257,6 @@ Route::group(['middleware' => 'license'], function () {
       Route::group(['prefix' => 'system'], function () {
          Route::get('index', [SystemController::class, 'index'])->name('system.index');
          Route::post('store', [SystemController::class, 'store'])->name('system.store');
-         Route::get('{languageId}/translate', [SystemController::class, 'translate'])->where(['languageId' => '[0-9]+'])->name('system.translate');
-         Route::post('{languageId}/saveTranslate', [SystemController::class, 'saveTranslate'])->where(['languageId' => '[0-9]+'])->name('system.save.translate');
       });
 
       Route::group(['prefix' => 'review'], function () {
@@ -277,8 +276,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::delete('{id}/destroy', [MenuController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('menu.destroy');
          Route::get('{id}/children', [MenuController::class, 'children'])->where(['id' => '[0-9]+'])->name('menu.children');
          Route::post('{id}/saveChildren', [MenuController::class, 'saveChildren'])->where(['id' => '[0-9]+'])->name('menu.save.children');
-         Route::get('{languageId}/{id}/translate', [MenuController::class, 'translate'])->where(['languageId' => '[0-9]+', 'id' => '[0-9]+'])->name('menu.translate');
-         Route::post('{languageId}/saveTranslate', [MenuController::class, 'saveTranslate'])->where(['languageId' => '[0-9]+'])->name('menu.translate.save');
       });
 
 
@@ -330,8 +327,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('{id}/update', [WidgetController::class, 'update'])->where(['id' => '[0-9]+'])->name('widget.update');
          Route::get('{id}/delete', [WidgetController::class, 'delete'])->where(['id' => '[0-9]+'])->name('widget.delete');
          Route::delete('{id}/destroy', [WidgetController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('widget.destroy');
-         Route::get('{languageId}/{id}/translate', [WidgetController::class, 'translate'])->where(['id' => '[0-9]+', 'languageId' => '[0-9]+'])->name('widget.translate');
-         Route::post('saveTranslate', [WidgetController::class, 'saveTranslate'])->name('widget.saveTranslate');
       });
 
 
@@ -404,12 +399,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::get('exportFileTime', [ReportController::class, 'exportFileTime'])->name('report.exportFileTime');
          Route::get('customer', [ReportController::class, 'customer'])->name('report.customer');
       });
-
-      //@@new-module@@
-
-
-
-
 
       /* AJAX */
 

@@ -3,54 +3,30 @@ return [
     'module' => [
         [
             'title' => 'Tổng quan',
-            'icon' => 'fa fa-database',
+            'icon' => 'fa fa-pie-chart',
             'name' => ['dashboard'],
             'route' => 'dashboard/index',
             'class' => 'special'
         ],
-        [
-            'title' => 'Thống Kê',
-            'icon' => 'fa fa-money',
-            'name' => ['report'],
-            'subModule' => [
-                [
-                    'title' => 'Theo Thời Gian',
-                    'route' => 'report/time'
-                ],
-                [
-                    'title' => 'Theo Sản Phẩm',
-                    'route' => 'report/product'
-                ],
-                // [
-                //     'title' => 'Theo Nguồn Khách',
-                //     'route' => 'report/customer'
-                // ],
-            ]
-        ],
-        [
-            'title' => 'QL Sản Phẩm',
-            'icon' => 'fa fa-cube',
-            'name' => ['product', 'attribute'],
-            'subModule' => [
-                [
-                    'title' => 'QL Nhóm Sản Phẩm',
-                    'route' => 'product/catalogue/index'
-                ],
-                [
-                    'title' => 'QL Sản Phẩm',
-                    'route' => 'product/index'
-                ],
-                [
-                    'title' => 'QL Loại Thuộc Tính',
-                    'route' => 'attribute/catalogue/index'
-                ],
-                [
-                    'title' => 'QL Thuộc Tính',
-                    'route' => 'attribute/index'
-                ],
-
-            ]
-        ],
+        // [
+        //     'title' => 'Thống Kê',
+        //     'icon' => 'fa fa-money',
+        //     'name' => ['report'],
+        //     'subModule' => [
+        //         [
+        //             'title' => 'Theo Thời Gian',
+        //             'route' => 'report/time'
+        //         ],
+        //         [
+        //             'title' => 'Theo Sản Phẩm',
+        //             'route' => 'report/product'
+        //         ],
+        //         // [
+        //         //     'title' => 'Theo Nguồn Khách',
+        //         //     'route' => 'report/customer'
+        //         // ],
+        //     ]
+        // ],
         [
             'title' => 'QL Kho Hàng',
             'icon' => 'fa fa-archive',
@@ -90,12 +66,37 @@ return [
             ]
         ],
         [
+            'title' => 'QL Sản Phẩm',
+            'icon' => 'fa fa-th-large',
+            'name' => ['product', 'attribute'],
+            'subModule' => [
+                [
+                    'title' => 'QL Nhóm Sản Phẩm',
+                    'route' => 'product/catalogue/index'
+                ],
+                [
+                    'title' => 'QL Sản Phẩm',
+                    'route' => 'product/index'
+                ],
+                [
+                    'title' => 'QL Loại Thuộc Tính',
+                    'route' => 'attribute/catalogue/index'
+                ],
+                [
+                    'title' => 'QL Thuộc Tính',
+                    'route' => 'attribute/index'
+                ],
+
+            ]
+        ],
+
+        [
             'title' => 'QL Marketing',
-            'icon' => 'fa fa-money',
+            'icon' => 'fa fa-credit-card',
             'name' => ['promotion', 'source', 'slide'],
             'subModule' => [
                 [
-                    'title' => 'QL Khuyến mại',
+                    'title' => 'QL Khuyến Mại',
                     'route' => 'promotion/index'
                 ],
                 // [
@@ -110,7 +111,7 @@ return [
         ],
         [
             'title' => 'QL Bài viết',
-            'icon' => 'fa fa-file',
+            'icon' => 'fa fa-file-pdf-o',
             'name' => ['post'],
             'subModule' => [
                 [
@@ -124,25 +125,42 @@ return [
             ]
         ],
         [
-            'title' => 'QL Bình Luận',
-            'icon' => 'fa fa-comment',
+            'title' => 'QL Đánh Giá',
+            'icon' => 'fa fa-weixin',
             'name' => ['reviews'],
             'subModule' => [
                 [
-                    'title' => 'QL Bình Luận',
+                    'title' => 'QL Đánh Giá',
                     'route' => 'review/index'
                 ]
             ]
         ],
+
         [
-            'title' => 'QL Nhóm Khách Hàng',
+            'title' => 'QL Tài Khoản',
             'icon' => 'fa fa-user',
-            'name' => ['customer'],
+            'name' => ['user', 'permission', 'customer'],
             'subModule' => [
                 [
-                    'title' => 'QL Nhóm Khách hàng',
-                    'route' => asset('customer/catalogue/index')
+                    'title' => 'QL Nhóm Nhân Viên',
+                    'route' => 'user/catalogue/index'
                 ],
+                [
+                    'title' => 'QL Nhân Viên',
+                    'route' => 'user/index'
+                ],
+                [
+                    'title' => 'QL Quyền',
+                    'route' => 'permission/index'
+                ],
+                [
+                    'title' => 'Phân Quyền',
+                    'route' => 'user/catalogue/permission'
+                ],
+                // [
+                //     'title' => 'QL Nhóm Khách hàng',
+                //     'route' => 'customer/catalogue/index'
+                // ],
                 [
                     'title' => 'QL Khách hàng',
                     'route' => 'customer/index'
@@ -150,28 +168,9 @@ return [
             ]
         ],
         [
-            'title' => 'QL Nhóm Thành Viên',
-            'icon' => 'fa fa-user',
-            'name' => ['user', 'permission'],
-            'subModule' => [
-                [
-                    'title' => 'QL Nhóm Thành Viên',
-                    'route' => 'user/catalogue/index'
-                ],
-                [
-                    'title' => 'QL Thành Viên',
-                    'route' => 'user/index'
-                ],
-                [
-                    'title' => 'QL Quyền',
-                    'route' => 'permission/index'
-                ]
-            ]
-        ],
-        [
             'title' => 'Cấu hình chung',
             'icon' => 'fa fa-cogs',
-            'name' => ['language', 'generate', 'system', 'widget', 'menu', 'slide'],
+            'name' => ['system', 'widget', 'menu'],
             'subModule' => [
                 [
                     'title' => 'Cài đặt Menu',

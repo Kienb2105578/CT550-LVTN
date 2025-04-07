@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped table-bordered">
+    <table class="table">
         <thead>
             <tr>
                 <th class="text-center">
@@ -29,7 +29,7 @@
                             {{ $product->total_remaining_quantity }}
                         </td>
                         <td class="text-center">
-                            <button class="btn btn-success btn-edit edit-product"
+                            <button class="btn btn-info btn-outline btn-edit edit-product"
                                 data-variant="{{ $product->variant_id }}" data-id="{{ $product->product_id }}">
                                 <i class="fa fa-edit"></i>
                             </button>

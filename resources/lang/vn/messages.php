@@ -227,20 +227,20 @@ return [
     ],
     'userCatalogue' => [
         'index' => [
-            'title' => 'Quản lý nhóm thành viên',
-            'table' => 'Danh sách nhóm thành viên'
+            'title' => 'Quản lý nhóm nhân viên',
+            'table' => 'Danh sách nhóm nhân viên'
         ],
         'create' => [
-            'title' => 'Thêm mới nhóm thành viên'
+            'title' => 'Thêm mới nhóm nhân viên'
         ],
         'edit' => [
-            'title' => 'Cập nhật nhóm thành viên'
+            'title' => 'Cập nhật nhóm nhân viên'
         ],
         'delete' => [
-            'title' => 'Xóa nhóm thành viên'
+            'title' => 'Xóa nhóm nhân viên'
         ],
         'permission' => [
-            'title' => 'Cập nhật quyền'
+            'title' => 'Phân quyền nhân viên'
         ],
 
     ],
@@ -261,17 +261,17 @@ return [
     ],
     'customer' => [
         'index' => [
-            'title' => 'Quản lý nhóm khách hàng',
-            'table' => 'Danh sách nhóm khách hàng'
+            'title' => 'Quản lý khách hàng',
+            'table' => 'Danh sách khách hàng'
         ],
         'create' => [
-            'title' => 'Thêm mới nhóm khách hàng'
+            'title' => 'Thêm mới khách hàng'
         ],
         'edit' => [
-            'title' => 'Cập nhật nhóm khách hàng'
+            'title' => 'Cập nhật khách hàng'
         ],
         'delete' => [
-            'title' => 'Xóa nhóm khách hàng'
+            'title' => 'Xóa khách hàng'
         ],
     ],
     'supplier' => [
@@ -361,7 +361,7 @@ return [
     'image' => 'Chọn ảnh đại diện',
     'advange' => 'Cấu hình nâng cao',
     'search' => 'Tìm Kiếm',
-    'searchInput' => 'Nhập Từ khóa bạn muốn tìm kiếm...',
+    'searchInput' => 'Nhập từ khóa ... ',
     'perpage' => 'bản ghi',
     'title' => 'Tiêu đề',
     'description' => 'Mô tả ngắn',
@@ -404,8 +404,7 @@ return [
         'image' => 'Chọn Hình',
         'notice' => 'Sử dụng nút chọn hình hoặc click vào đây để thêm hình ảnh'
     ],
-    'generalTitle' => 'Thông tin chung',
-    'generalDescription' => 'Bạn đang muốn xóa ngôn ngữ có tên là:
-    Lưu ý: Không thể khôi phục dữ liệu sau khi xóa. Hãy chắc chắn bạn muốn thực hiện chức năng này',
+    'generalTitle' => 'Thông tin chung: ',
+    'generalDescription' => 'Lưu ý: Không thể khôi phục dữ liệu sau khi xóa. Hãy chắc chắn bạn muốn thực hiện chức năng này',
 
 ];

@@ -10,6 +10,7 @@ class SystemComposer
 {
 
     protected $language;
+    protected $systemRepository;
 
     public function __construct(
         SystemRepository $systemRepository,

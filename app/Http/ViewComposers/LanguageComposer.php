@@ -6,6 +6,7 @@ use Illuminate\View\View;
 use App\Repositories\Interfaces\LanguageRepositoryInterface  as LanguageRepository;
 use App\Services\Interfaces\UserServiceInterface  as UserService;
 use App\Repositories\Interfaces\PermissionRepositoryInterface  as PermissionRepository;
+use Illuminate\Support\Facades\Auth;
 
 class LanguageComposer
 {
@@ -29,10 +30,13 @@ class LanguageComposer
     public function compose(View $view)
     {
         $menus = __('sidebar.module');
+        $user = Auth::user();
+        $usercatalogue_id_login = $user ? $user->user_catalogue_id : null;
         $user_login = $this->userService->getUserPermissions();
         $accessibleMenus = $this->filterAccessibleMenus($user_login, $menus);
         $languages = $this->languageRepository->findByCondition(...$this->agrument());
         $view->with('languages', $languages)
+            ->with('usercatalogue_id_login', $usercatalogue_id_login)
             ->with('accessibleMenus', $accessibleMenus);
     }
     public function filterAccessibleMenus($permissions, $menus)

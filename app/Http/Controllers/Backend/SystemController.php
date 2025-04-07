@@ -21,11 +21,10 @@ class SystemController extends Controller
         SystemService $systemService,
         SystemRepository $systemRepository,
 
-    ){
-        $this->middleware(function($request, $next){
-            $locale = app()->getLocale(); // vn en cn
-            $language = Language::where('canonical', $locale)->first();
-            $this->language = $language->id;
+    ) {
+        $this->middleware(function ($request, $next) {
+            $locale = app()->getLocale();
+            $this->language = 1;
             return $next($request);
         });
         $this->systemLibrary = $systemLibrary;
@@ -33,15 +32,17 @@ class SystemController extends Controller
         $this->systemRepository = $systemRepository;
     }
 
-    public function index(){
-        
+    public function index()
+    {
+
         $systemConfig = $this->systemLibrary->config();
         $systems = convert_array($this->systemRepository->findByCondition(
             [
                 ['language_id', '=', $this->language]
-            ], TRUE
+            ],
+            TRUE
         ), 'keyword', 'content');
-        
+
         $config = $this->config();
         $config['seo'] = __('messages.system');
         $template = 'backend.system.index';
@@ -53,20 +54,23 @@ class SystemController extends Controller
         ));
     }
 
-    public function store(Request $request){
-        if($this->systemService->save($request, $this->language)){
-            return redirect()->route('system.index')->with('success','Cập nhật bản ghi thành công');
+    public function store(Request $request)
+    {
+        if ($this->systemService->save($request, $this->language)) {
+            return redirect()->route('system.index')->with('success', 'Cập nhật bản ghi thành công');
         }
-        return redirect()->route('system.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('system.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function translate($languageId = 0){
+    public function translate($languageId = 0)
+    {
 
         $systemConfig = $this->systemLibrary->config();
         $systems = convert_array($this->systemRepository->findByCondition(
             [
                 ['language_id', '=', $languageId]
-            ], TRUE
+            ],
+            TRUE
         ), 'keyword', 'content');
         $config = $this->config();
         $config['seo'] = __('messages.system');
@@ -81,14 +85,16 @@ class SystemController extends Controller
         ));
     }
 
-    public function saveTranslate(Request $request, $languageId){
-        if($this->systemService->save($request, $languageId)){
-            return redirect()->route('system.translate', ['languageId' => $languageId])->with('success','Cập nhật bản ghi thành công');
+    public function saveTranslate(Request $request, $languageId)
+    {
+        if ($this->systemService->save($request, $languageId)) {
+            return redirect()->route('system.translate', ['languageId' => $languageId])->with('success', 'Cập nhật bản ghi thành công');
         }
-        return redirect()->route('system.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('system.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
-    
-    private function config(){
+
+    private function config()
+    {
         return [
             'js' => [
                 'backend/plugins/ckeditor/ckeditor.js',
@@ -97,6 +103,4 @@ class SystemController extends Controller
             ]
         ];
     }
-
 }
-

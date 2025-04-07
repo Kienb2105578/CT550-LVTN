@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped table-bordered">
+    <table class="table">
         <thead>
             <tr>
                 <th>
@@ -24,10 +24,10 @@
                             {{ $permission->canonical }}
                         </td>
                         <td class="text-center">
-                            <a href="{{ route('permission.edit', $permission->id) }}" class="btn btn-success"><i
-                                    class="fa fa-edit"></i></a>
-                            <a href="{{ route('permission.delete', $permission->id) }}" class="btn btn-danger"><i
-                                    class="fa fa-trash"></i></a>
+                            <a href="{{ route('permission.edit', $permission->id) }}"
+                                class="btn btn-info btn-outline"><i class="fa fa-edit"></i></a>
+                            <a href="{{ route('permission.delete', $permission->id) }}"
+                                class="btn btn-danger btn-outline"><i class="fa fa-trash"></i></a>
                         </td>
                     </tr>
                 @endforeach

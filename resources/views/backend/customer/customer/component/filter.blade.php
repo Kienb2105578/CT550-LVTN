@@ -24,8 +24,6 @@
                         @endforeach
                     </select> --}}
                     @include('backend.dashboard.component.keyword')
-                    <a href="{{ route('customer.create') }}" class="btn btn-danger"><i class="fa fa-plus mr5"></i>Thêm
-                        mới khách hàng</a>
                 </div>
             </div>
         </div>

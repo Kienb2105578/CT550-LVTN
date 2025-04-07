@@ -1,12 +1,11 @@
 <div class="table-responsive">
-    <table class="table table-striped table-bordered">
+    <table class="table">
         <thead>
             <tr>
                 <th style="width:50px;">
                     <input type="checkbox" value="" id="checkAll" class="input-checkbox">
                 </th>
                 <th>{{ __('messages.tableName') }}</th>
-                @include('backend.dashboard.component.languageTh')
                 <th class="text-center" style="width:100px;">{{ __('messages.tableStatus') }} </th>
                 <th class="text-center" style="width:100px;">{{ __('messages.tableAction') }} </th>
             </tr>
@@ -22,10 +21,6 @@
                         <td>
                             {{ str_repeat('|----', $postCatalogue->level > 0 ? $postCatalogue->level - 1 : 0) . $postCatalogue->name }}
                         </td>
-                        @include('backend.dashboard.component.languageTd', [
-                            'model' => $postCatalogue,
-                            'modeling' => 'PostCatalogue',
-                        ])
                         <td class="text-center">
                             <input type="checkbox" value="{{ $postCatalogue->publish }}"
                                 class="js-switch status js-switch-{{ $postCatalogue->id }}" data-field="publish"

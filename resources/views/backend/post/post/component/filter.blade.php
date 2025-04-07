@@ -9,15 +9,14 @@
                         $postCatalogueId = request('post_catalogue_id') ?: old('post_catalogue_id');
                     @endphp
                     <select name="post_catalogue_id" class="form-control setupSelect2 ml10">
-                        @foreach($dropdown as $key => $val)
-                        <option {{ ($postCatalogueId == $key)  ? 'selected' : '' }} value="{{ $key }}">{{ $val }}</option>
+                        @foreach ($dropdown as $key => $val)
+                            <option {{ $postCatalogueId == $key ? 'selected' : '' }} value="{{ $key }}">
+                                {{ $val }}</option>
                         @endforeach
                     </select>
                     @include('backend.dashboard.component.keyword')
-                    <a href="{{ route('post.create') }}" class="btn btn-danger"><i class="fa fa-plus mr5"></i>{{ __('messages.post.create.title') }}</a>
                 </div>
             </div>
         </div>
     </div>
 </form>
-

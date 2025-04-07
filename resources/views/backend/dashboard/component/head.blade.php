@@ -17,6 +17,9 @@
 <link href="backend/css/style.css" rel="stylesheet">
 <link href="backend/css/customize.css" rel="stylesheet">
 <script src="backend/js/jquery-3.1.1.min.js"></script>
+<script src="{{ asset('backend/js/plugins/icheck/icheck.min.js') }}"></script>
+<script src="backend/js/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js"></script>
+<script src="backend/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
 <script>
     var BASE_URL = '{{ config('app.url') }}'
     var SUFFIX = '{{ config('apps.general.suffix') }}'

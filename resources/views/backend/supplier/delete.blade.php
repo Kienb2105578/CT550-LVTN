@@ -9,8 +9,9 @@
                 <div class="panel-head">
                     <div class="panel-title">Thông tin chung</div>
                     <div class="panel-description">
-                        <p>Bạn đang muốn xóa thành viên có email là: {{ $supplier->email }}</p>
-                        <p>Lưu ý: Không thể khôi phục thành viên sau khi xóa. Hãy chắc chắn bạn muốn thực hiện chức năng
+                        <p>Bạn đang muốn xóa nhà cung cấp có email là: {{ $supplier->name }}</p>
+                        <p>Lưu ý: Không thể khôi phục nhà cung cấp sau khi xóa. Hãy chắc chắn bạn muốn thực hiện chức
+                            năng
                             này</p>
                     </div>
                 </div>

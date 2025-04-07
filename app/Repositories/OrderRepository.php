@@ -419,9 +419,38 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             ->count();
     }
 
+    public function getOrderIncomeByTime($month, $year)
+    {
+        $orders = $this->model
+            ->whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
+            ->where('delivery', '=', 'success')
+            ->get();
+
+        return $orders->sum(function ($order) {
+            $cart = is_array($order->cart) ? $order->cart : json_decode($order->cart, true);
+            return $cart['cartTotal'] ?? 0;
+        });
+    }
+
+    public function getOrderIncomeToday()
+    {
+        $today = Carbon::today();
+        $orders = $this->model
+            ->whereDate('updated_at', $today)
+            ->where('delivery', '=', 'success')
+            ->get();
+        return $orders->sum(function ($order) {
+            $cart = is_array($order->cart) ? $order->cart : json_decode($order->cart, true);
+            return $cart['cartTotal'] ?? 0;
+        });
+    }
+
     public function getTotalOrders()
     {
-        return $this->model->count();
+        return $this->model
+            ->where('delivery', '=', 'success')
+            ->count();
     }
 
     public function getCancleOrders()
@@ -435,23 +464,23 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         return $this->model
             ->join('order_product', 'order_product.order_id', '=', 'orders.id')
             ->where('orders.payment', '=', 'paid')
+            ->where('orders.delivery', '=', 'success')
             ->sum(DB::raw('order_product.price * order_product.qty'));
     }
 
     public function checkUserHasOrderForProduct($userId, $productId)
     {
         if ($userId) {
-            // Kiểm tra xem người dùng đã có đơn hàng với sản phẩm cụ thể hay chưa
             $hasOrder = $this->model
-                ->join('order_product', 'order_product.order_id', '=', 'orders.id') // Kết nối bảng orders và order_product
-                ->where('orders.customer_id', $userId) // Lọc theo customer_id
-                ->where('order_product.product_id', $productId) // Lọc theo product_id
-                ->whereNull('orders.deleted_at') // Lọc theo trường deleted_at trong bảng orders (nếu cần)
-                ->exists(); // Kiểm tra sự tồn tại của đơn hàng
+                ->join('order_product', 'order_product.order_id', '=', 'orders.id')
+                ->where('orders.customer_id', $userId)
+                ->where('order_product.product_id', $productId)
+                ->whereNull('orders.deleted_at')
+                ->exists();
 
-            return $hasOrder; // Trả về true nếu có đơn hàng, false nếu không
+            return $hasOrder;
         } else {
-            return false; // Nếu không có userId, trả về false
+            return false;
         }
     }
 
@@ -480,6 +509,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             ->leftJoin('orders', function ($join) use ($year) {
                 $join->on(DB::raw('months.month'), '=', DB::raw('MONTH(orders.created_at)'))
                     ->where('orders.payment', '=', 'paid')
+                    ->where('orders.delivery', '=', 'success')
                     ->where(DB::raw('YEAR(orders.created_at)'), '=', $year);
             })
             ->groupBy('months.month')
@@ -535,7 +565,8 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
             ->leftJoin('orders', function ($join) {
                 $join->on(DB::raw('DATE(orders.created_at)'), '=', DB::raw('dates.date'))
-                    ->where('orders.payment', '=', 'paid');
+                    ->where('orders.payment', '=', 'paid')
+                    ->where('orders.delivery', '=', 'success');
             })
             ->where(DB::raw('dates.date'), '>=', DB::raw('CURDATE() - INTERVAL 6 DAY'))
             ->groupBy(DB::raw('dates.date'))
@@ -552,6 +583,7 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             ->whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
             ->where('orders.payment', '=', 'paid')
+            ->where('orders.delivery', '=', 'success')
             ->groupBy('day')
             ->orderBy('day')
             ->get()->toArray();
