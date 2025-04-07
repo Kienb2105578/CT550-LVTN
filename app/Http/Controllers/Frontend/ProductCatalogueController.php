@@ -12,6 +12,7 @@ use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
 use App\Models\System;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Models\Product;
 use Cart;
 
 class ProductCatalogueController extends FrontendController
@@ -255,6 +256,86 @@ class ProductCatalogueController extends FrontendController
         ));
     }
 
+    public function searchProductByImage(Request $request)
+    {
+        $image = $request->file('image');
+        $imagePath = $image->store('images', 'public');
+
+        $pythonScript = storage_path('app/python/extract_features.py');
+        $imageFullPath = storage_path('app/public/' . $imagePath);
+        $imageFullPath  = str_replace('\\', '/', $imageFullPath);
+        $command = "python $pythonScript $imageFullPath";
+        $output = shell_exec($command);
+        $output = preg_replace('/\e\[[0-9;]*m/', '', $output);
+        $output = preg_replace('/\d+\/\d+.*\n/', '', $output);
+
+        $features = json_decode($output, true);
+
+        $similarProducts = $this->searchSimilarProducts($features);
+
+        $products = $this->productRepository->updateProductTotalQuantity($similarProducts);
+        $config = $this->config();
+        $system = $this->system;
+        $seo = [
+            'meta_title' => 'Tìm kiếm bằng ảnh',
+            'meta_keyword' => '',
+            'meta_description' => '',
+            'meta_image' => '',
+            'canonical' => write_url('tim-kiem-bang-ảnh')
+        ];
+        return view('frontend.product.catalogue.search', compact(
+            'config',
+            'seo',
+            'system',
+            'products'
+        ));
+    }
+
+    private function searchSimilarProducts($uploadedImageFeatures)
+    {
+        $products = Product::all();
+        $similarProducts = [];
+
+        foreach ($products as $product) {
+            if (empty($product->features)) {
+                continue;
+            }
+
+            $storedFeatures = json_decode($product->features);
+
+
+            if (!is_array($storedFeatures)) {
+                continue;
+            }
+
+            $similarity = $this->cosineSimilarity($uploadedImageFeatures, $storedFeatures);
+            if ($similarity > 0.5) {
+                $similarProducts[] = $product;
+            }
+        }
+
+        return $similarProducts;
+    }
+
+
+    private function cosineSimilarity($vecA, $vecB)
+    {
+        $dotProduct = array_sum(array_map(function ($a, $b) {
+            return $a * $b;
+        }, $vecA, $vecB));
+        $magnitudeA = sqrt(array_sum(array_map(function ($a) {
+            return $a * $a;
+        }, $vecA)));
+        $magnitudeB = sqrt(array_sum(array_map(function ($b) {
+            return $b * $b;
+        }, $vecB)));
+
+        if ($magnitudeA == 0 || $magnitudeB == 0) {
+            return 0;
+        }
+
+        return $dotProduct / ($magnitudeA * $magnitudeB);
+    }
 
     private function config()
     {

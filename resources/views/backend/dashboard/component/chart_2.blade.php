@@ -3,7 +3,7 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> biểu đồ so sánh Lợi nhuận và Chi tiêu trong năm
+                    <h5> biểu đồ so sánh Doanh thu và Chi tiêu hằng tháng
                     </h5>
                 </div>
                 <div class="ibox-content">

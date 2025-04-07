@@ -29,7 +29,7 @@
             let _this = $(this);
             let selectedModel = _this.val();
             let searchKeyword = $(".search-model").val();
-            console.log("Model đã chọn:", selectedModel); // In model được chọn
+            console.log("Model đã chọn:", selectedModel);
             console.log("Từ khóa tìm kiếm:", searchKeyword);
 
             $(".search-model-result").html("");
@@ -53,12 +53,12 @@
                 _this.find(".auto-icon").html(HT.setChecked());
                 _this.attr("data-flag", 1);
                 $(".search-model-result").append(HT.modelTemplate(data));
-                console.log("Model đã thêm:", data); // In model vừa được thêm
+                console.log("Model đã thêm:", data);
             } else {
                 $("#model-" + data.id).remove();
                 _this.find(".auto-icon").html("");
                 _this.attr("data-flag", 0);
-                console.log("Model đã xóa:", data.id); // In model vừa bị xóa
+                console.log("Model đã xóa:", data.id);
             }
         });
     };

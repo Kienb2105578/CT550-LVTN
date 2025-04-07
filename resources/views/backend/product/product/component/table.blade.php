@@ -36,7 +36,6 @@
                                                 title="">{{ $val['name'] }}</a>
                                         @endforeach
                                     </div>
-
                                 </div>
                             </div>
                         </td>
@@ -48,10 +47,46 @@
                         <td class="text-center">
                             <a href="{{ route('product.edit', [$product->id, $queryUrl ?? 'p']) }}"
                                 class="btn btn-info btn-outline"><i class="fa fa-edit"></i></a>
-                            <a href="{{ route('product.delete', $product->id) }}" class="btn btn-danger btn-outline"><i
-                                    class="fa fa-trash"></i></a>
+                            <button type="button" class="btn btn-danger btn-outline" data-toggle="modal"
+                                data-target="#deleteProductModal-{{ $product->id }}"><i
+                                    class="fa fa-trash"></i></button>
                         </td>
                     </tr>
+
+                    <!-- Modal Xóa Sản Phẩm -->
+                    <div class="modal fade" id="deleteProductModal-{{ $product->id }}" tabindex="-1" role="dialog"
+                        aria-labelledby="deleteProductModalLabel-{{ $product->id }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <form action="{{ route('product.destroy', $product->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <div class="modal-content">
+                                    <div class="ibox-title">
+                                        <h5 class="modal-title" id="deleteProductModalLabel-{{ $product->id }}">Xác
+                                            nhận xóa sản phẩm</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Bạn có chắc chắn muốn xóa sản phẩm <strong>{{ $product->name }}</strong>
+                                            không?</p>
+                                        <p><span class="text-danger">Lưu ý:</span> Thao tác này không thể hoàn tác.</p>
+                                        <div class="form-group">
+                                            <label>Tên sản phẩm</label>
+                                            <input type="text" class="form-control" value="{{ $product->name }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Hủy</button>
+                                        <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 @endforeach
             @endif
         </tbody>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Ajax;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Repositories\Interfaces\OrderRepositoryInterface  as OrderRepository;
 use App\Models\Language;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
@@ -13,13 +14,15 @@ class DashboardController extends Controller
 {
 
     protected $language;
+    protected $orderRepository;
 
-    public function __construct()
-    {
+    public function __construct(
+        OrderRepository $orderRepository,
+    ) {
+        $this->orderRepository = $orderRepository;
         $this->middleware(function ($request, $next) {
             $locale = app()->getLocale(); // vn en cn
-            $language = Language::where('canonical', $locale)->first();
-            $this->language = $language->id;
+            $this->language = 1;
             return $next($request);
         });
     }
@@ -187,5 +190,11 @@ class DashboardController extends Controller
         ]);
 
         return response()->json($object);
+    }
+
+    public function DasnboardchartRevenueAndCost(Request $request)
+    {
+        $chart = $this->orderRepository->DasnboardchartRevenueAndCost();
+        return response()->json($chart);
     }
 }

@@ -813,4 +813,43 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         Log::info('Chart Data:', $chartData);
         return $chartData;
     }
+
+    public function DasnboardchartRevenueAndCost()
+    {
+        $year = Carbon::now()->year;
+        $months = [];
+
+        for ($i = 1; $i <= 12; $i++) {
+            $months[] = str_pad($i, 2, '0', STR_PAD_LEFT) . '/' . $year;
+        }
+
+        $startOfYear = Carbon::createFromDate($year, 1, 1)->startOfDay();
+        $endOfYear = Carbon::createFromDate($year, 12, 31)->endOfDay();
+
+        // Doanh thu theo tháng
+        $revenue = $this->model
+            ->selectRaw("DATE_FORMAT(updated_at, '%m/%Y') as month, SUM(JSON_UNQUOTE(JSON_EXTRACT(cart, '$.cartTotal'))) as total")
+            ->where('delivery', 'success')
+            ->whereBetween('updated_at', [$startOfYear, $endOfYear])
+            ->groupBy('month')
+            ->pluck('total', 'month');
+
+        // Chi phí nhập hàng theo tháng
+        $cost = DB::table('purchase_orders')
+            ->selectRaw("DATE_FORMAT(updated_at, '%m/%Y') as month, SUM(total) as total")
+            ->where('status', 'approved')
+            ->whereBetween('updated_at', [$startOfYear, $endOfYear])
+            ->groupBy('month')
+            ->pluck('total', 'month');
+
+        // Chuẩn hóa dữ liệu cho biểu đồ
+        $chartData = [
+            'months'  => $months,
+            'revenue' => array_map(fn($m) => isset($revenue[$m]) ? (float) $revenue[$m] : 0, $months),
+            'cost'    => array_map(fn($m) => isset($cost[$m]) ? (float) $cost[$m] : 0, $months),
+        ];
+
+        Log::info('Chart Data:', $chartData);
+        return $chartData;
+    }
 }

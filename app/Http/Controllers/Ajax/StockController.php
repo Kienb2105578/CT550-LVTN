@@ -26,17 +26,15 @@ class StockController extends Controller
     public function getInventoryWithPurchase(Request $request)
     {
         $purchaseOrderId = $request->_id;
-        Log::info('Received purchaseOrderId:', ['purchaseOrderId' => $purchaseOrderId]);
         $inventory = $this->inventoryBatchRepository->getInventoryWithPurchase($purchaseOrderId);
         return response()->json($inventory);
     }
 
     public function getInventoryWithProduct(Request $request)
     {
-        $productId = $request->_id; // Lấy product_id từ request
-        $variantId = $request->variant_id; // Lấy variant_id từ request (có thể là null
+        $productId = $request->_id;
+        $variantId = $request->variant_id;
         $inventory = $this->inventoryBatchRepository->getInventoryDetails($productId, $variantId);
-        log::info("ÌNO", ['$inventory ' => $inventory]);
         return response()->json($inventory);
     }
 

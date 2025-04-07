@@ -22,8 +22,7 @@
                             <div class="uk-flex uk-flex-middle">
                                 <div class="image mr5">
                                     <div class="img-cover image-post"><img src="{{ image($post->image) }}"
-                                            alt="">
-                                    </div>
+                                            alt=""></div>
                                 </div>
                                 <div class="main-info">
                                     <div class="name"><span class="maintitle">{{ $post->name }}</span></div>
@@ -36,25 +35,59 @@
                                             </a>
                                         @endforeach
                                     </div>
-
-
                                 </div>
                             </div>
                         </td>
 
                         <td class="text-center js-switch-{{ $post->id }}">
-                            <input type="checkbox" value="{{ $post->publish }}" class="js-switch status "
+                            <input type="checkbox" value="{{ $post->publish }}" class="js-switch status"
                                 data-field="publish" data-model="{{ $config['model'] }}"
                                 {{ $post->publish == 2 ? 'checked' : '' }} data-modelId="{{ $post->id }}" />
                         </td>
                         <td class="text-center">
                             <a href="{{ route('post.edit', $post->id) }}" class="btn btn-info btn-outline"><i
                                     class="fa fa-edit"></i></a>
-                            <a href="{{ route('post.delete', $post->id) }}" class="btn btn-danger btn-outline"><i
-                                    class="fa fa-trash"></i></a>
+                            <button type="button" class="btn btn-danger btn-outline" data-toggle="modal"
+                                data-target="#deletePostModal-{{ $post->id }}"><i class="fa fa-trash"></i></button>
                         </td>
                     </tr>
+
+                    <!-- Modal Xóa Bài Viết -->
+                    <div class="modal fade" id="deletePostModal-{{ $post->id }}" tabindex="-1" role="dialog"
+                        aria-labelledby="deletePostModalLabel-{{ $post->id }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <form action="{{ route('post.destroy', $post->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <div class="modal-content">
+                                    <div class="ibox-title">
+                                        <h5 class="modal-title" id="deletePostModalLabel-{{ $post->id }}">Xác nhận
+                                            xóa bài viết</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Bạn có chắc chắn muốn xóa bài viết <strong>{{ $post->name }}</strong>
+                                            không?</p>
+                                        <p><span class="text-danger">Lưu ý:</span> Thao tác này không thể hoàn tác.</p>
+                                        <div class="form-group">
+                                            <label>Tên bài viết</label>
+                                            <input type="text" class="form-control" value="{{ $post->name }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Hủy</button>
+                                        <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 @endforeach
+
             @endif
         </tbody>
     </table>

@@ -104,6 +104,10 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             ->get();
     }
 
+    public function getTotalProduct()
+    {
+        return $this->model->whereNull('deleted_at')->count();
+    }
 
 
 

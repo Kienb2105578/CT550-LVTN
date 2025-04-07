@@ -114,19 +114,6 @@ class CustomerController extends Controller
         return redirect()->route('customer.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id)
-    {
-        $this->authorize('modules', 'customer.destroy');
-        $config['seo'] = __('messages.customer');
-        $customer = $this->customerRepository->findById($id);
-        $template = 'backend.customer.customer.delete';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'customer',
-            'config',
-        ));
-    }
-
     public function destroy($id)
     {
         if ($this->customerService->destroy($id)) {

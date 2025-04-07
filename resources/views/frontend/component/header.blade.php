@@ -72,7 +72,17 @@
                             Tìm kiếm <i class="fa fa-search"></i>
                         </button>
                     </form>
+
                 </div>
+                <form action="{{ route('product.catalogue.searchProductByImage') }}" method="POST"
+                    enctype="multipart/form-data" class="d-inline-block">
+                    @csrf
+                    <input type="file" name="image" id="image_product" style="display: none;"
+                        onchange="this.form.submit()">
+                    <button type="button" class="btn-login" style="font-size: 11px;"
+                        onclick="document.getElementById('image_product').click()">Tìm ảnh</button>
+                </form>
+
                 <div class="header-toolbox">
                     <div class="uk-flex uk-flex-middle">
                         <div class="header-cart">

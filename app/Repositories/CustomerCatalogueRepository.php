@@ -16,8 +16,7 @@ class CustomerCatalogueRepository extends BaseRepository implements CustomerCata
 
     public function __construct(
         CustomerCatalogue $model
-    ){
+    ) {
         $this->model = $model;
     }
-    
 }

@@ -461,10 +461,12 @@ class OrderService extends BaseService implements OrderServiceInterface
         $orderPreviousMonth = $this->orderRepository->getOrderByTime($previousMonth, $previousYear);
         $orderIncomeMonth = $this->orderRepository->getOrderIncomeByTime($month, $year);
         $orderIncomeToday = $this->orderRepository->getOrderIncomeToday();
+        $productTotal = $this->productRepository->getTotalProduct();
         return [
             'orderCurrentMonth' => $orderCurrentMonth,
             'orderPreviousMonth' => $orderPreviousMonth,
             'orderIncomeMonth' => $orderIncomeMonth,
+            'productTotal' => $productTotal,
             'grow' => growth($orderCurrentMonth, $orderPreviousMonth),
             'totalOrders' => $this->orderRepository->getTotalOrders(),
             'cancleOrders' => $this->orderRepository->getCancleOrders(),

@@ -8,5 +8,5 @@ namespace App\Repositories\Interfaces;
  */
 interface CustomerCatalogueRepositoryInterface
 {
-    
+    public function findById($id);
 }

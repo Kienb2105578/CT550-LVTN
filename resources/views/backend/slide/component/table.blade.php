@@ -19,12 +19,8 @@
                         <td>
                             <input type="checkbox" value="{{ $slide->id }}" class="input-checkbox checkBoxItem">
                         </td>
-                        <td>
-                            {{ $slide->name }}
-                        </td>
-                        <td>
-                            {{ $slide->keyword }}
-                        </td>
+                        <td>{{ $slide->name }}</td>
+                        <td>{{ $slide->keyword }}</td>
                         <td>
                             <div class="sortui ui-sortable table-slide clearfix">
                                 @foreach ($slide->item[$config['language']] as $item)
@@ -55,15 +51,53 @@
                         <td class="text-center">
                             <a href="{{ route('slide.edit', $slide->id) }}" class="btn btn-info btn-outline"><i
                                     class="fa fa-edit"></i></a>
-                            <a href="{{ route('slide.delete', $slide->id) }}" class="btn btn-danger btn-outline "><i
-                                    class="fa fa-trash"></i></a>
+                            <!-- Nút Xóa mở Modal -->
+                            <button type="button" class="btn btn-danger btn-outline" data-toggle="modal"
+                                data-target="#deleteSlideModal-{{ $slide->id }}"><i
+                                    class="fa fa-trash"></i></button>
                         </td>
                     </tr>
+
+                    <!-- Modal Xóa Slide -->
+                    <div class="modal fade" id="deleteSlideModal-{{ $slide->id }}" tabindex="-1" role="dialog"
+                        aria-labelledby="deleteSlideModalLabel-{{ $slide->id }}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <form action="{{ route('slide.destroy', $slide->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <div class="modal-content">
+                                    <div class="ibox-title">
+                                        <h5 class="modal-title" id="deleteSlideModalLabel-{{ $slide->id }}">Xác nhận
+                                            xóa Slide</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Bạn có chắc chắn muốn xóa Slide có tên là
+                                            <strong>{{ $slide->name }}</strong> không?</p>
+                                        <p><span class="text-danger">Lưu ý:</span> Thao tác này không thể hoàn tác.</p>
+                                        <div class="form-group">
+                                            <label for="" class="control-label text-left">Tên Slide</label>
+                                            <input type="text" class="form-control" value="{{ $slide->name }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Hủy</button>
+                                        <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 @endforeach
             @endif
         </tbody>
     </table>
 </div>
+
 <div class="pagination-wrapper">
     {{ $slides->links('pagination::bootstrap-4') }}
 </div>

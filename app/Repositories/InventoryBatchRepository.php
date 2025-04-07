@@ -70,8 +70,8 @@ class InventoryBatchRepository extends BaseRepository implements InventoryBatchR
             ->leftJoin('product_variants AS pv', 'pv.id', '=', 'ib.variant_id')
             ->where('ib.purchase_order_id', $purchaseOrderId)
             ->select([
-                'ib.id',  // ID của batch trong kho
-                'ib.purchase_order_id',  // ID của phiếu nhập
+                'ib.id',
+                'ib.purchase_order_id',
                 DB::raw('CASE 
                 WHEN ib.variant_id IS NOT NULL THEN CONCAT(p.name, " - ", pv.name) 
                 ELSE p.name 
@@ -86,10 +86,10 @@ class InventoryBatchRepository extends BaseRepository implements InventoryBatchR
     public function getInventoryWithProduct()
     {
         return DB::table('inventory_batches AS ib')
-            ->join('products AS p', 'p.id', '=', 'ib.product_id') // Kết nối với bảng products
-            ->leftJoin('product_variants AS pv', 'pv.id', '=', 'ib.variant_id') // Kết nối với bảng product_variants
-            ->groupBy('ib.product_id', 'ib.variant_id', 'p.name', 'pv.name') // Nhóm theo product_id và variant_id
-            ->having(DB::raw('SUM(ib.quantity)'), '<', 100) // Lọc những sản phẩm có tổng số lượng còn lại bé hơn 20
+            ->join('products AS p', 'p.id', '=', 'ib.product_id')
+            ->leftJoin('product_variants AS pv', 'pv.id', '=', 'ib.variant_id')
+            ->groupBy('ib.product_id', 'ib.variant_id', 'p.name', 'pv.name')
+            ->having(DB::raw('SUM(ib.quantity)'), '<', 100)
             ->select([
                 'ib.product_id',
                 'ib.variant_id',
@@ -117,53 +117,50 @@ class InventoryBatchRepository extends BaseRepository implements InventoryBatchR
             })
             ->select([
                 'po.code AS batch_id',
-                'ib.id', // Mã lô hàng
-                'ib.initial_quantity', // Số lượng nhập
+                'ib.id',
+                'ib.initial_quantity',
                 'ib.price',
-                'ib.quantity AS remaining_quantity', // Số lượng còn lại
-                'ib.created_at AS purchase_date', // Ngày nhập
+                'ib.quantity AS remaining_quantity',
+                'ib.created_at AS purchase_date',
                 DB::raw('CONCAT(p.name, IFNULL(CONCAT(" - ", pv.name), "")) AS full_product_name'),
-                'ib.publish', // Trạng thái publish
-                'p.price AS product_price', // Giá sản phẩm từ bảng products
-                'pv.price AS variant_price' // Giá sản phẩm từ bảng product_variants (nếu có)
+                'ib.publish',
+                'p.price AS product_price',
+                'pv.price AS variant_price'
             ])
             ->get()
             ->map(function ($item) use ($variantId) {
-                // Kiểm tra nếu variant_id là null thì sử dụng giá từ bảng products, còn nếu không thì lấy giá từ bảng product_variants
                 if ($variantId === null) {
                     $item->product_name = $item->full_product_name;
                     $item->product_price = $item->product_price;
                 } else {
-                    $item->product_name = $item->full_product_name; // Tên sản phẩm cộng với tên biến thể
-                    $item->product_price = $item->variant_price; // Giá từ bảng product_variants
+                    $item->product_name = $item->full_product_name;
+                    $item->product_price = $item->variant_price;
                 }
-                unset($item->variant_price); // Loại bỏ variant_price nếu không sử dụng
+                unset($item->variant_price);
                 return $item;
             });
 
-        // Nếu có dữ liệu, nhóm lại theo thông tin sản phẩm
+
         if ($inventoryDetails->isNotEmpty()) {
-            $firstItem = $inventoryDetails->first(); // Lấy sản phẩm đầu tiên để truy xuất tên và giá
+            $firstItem = $inventoryDetails->first();
             $productDetails = [
-                'product_name' => $firstItem->product_name, // Tên sản phẩm
-                'product_price' => $firstItem->product_price, // Giá sản phẩm
-                'details' => $inventoryDetails // Thông tin chi tiết các lô hàng
+                'product_name' => $firstItem->product_name,
+                'product_price' => $firstItem->product_price,
+                'details' => $inventoryDetails
             ];
             return $productDetails;
         }
 
-        return null; // Trả về null nếu không có dữ liệu
+        return null;
     }
     public function getInventoryWithTime($product_id, $startDate, $endDate)
     {
-        // Chuyển đổi ngày từ d/m/Y thành format chuẩn
+
         $startDate = Carbon::createFromFormat('d/m/Y', $startDate)->startOfDay()->toDateTimeString();
         $endDate = Carbon::createFromFormat('d/m/Y', $endDate)->endOfDay()->toDateTimeString();
 
-        // Lấy thông tin sản phẩm
         $product = DB::table('products')->where('id', $product_id)->first(['id', 'name']);
 
-        // Lấy danh sách biến thể (nếu không có thì tạo object mặc định)
         $variants = DB::table('product_variants')
             ->where('product_id', $product_id)
             ->get(['id', 'name']);
@@ -174,7 +171,6 @@ class InventoryBatchRepository extends BaseRepository implements InventoryBatchR
 
         $variantIds = $variants->pluck('id')->toArray();
 
-        // Lấy dữ liệu từ bảng stock_movements
         $movements = DB::table('stock_movements')
             ->where('product_id', $product_id)
             ->whereBetween('created_at', [$startDate, $endDate])
@@ -188,7 +184,6 @@ class InventoryBatchRepository extends BaseRepository implements InventoryBatchR
             ->orderBy('created_at', 'asc')
             ->get(['type', 'quantity', 'variant_id', 'reference_id', 'reference_type', 'user_id', 'created_at']);
 
-        // Lấy dữ liệu từ bảng inventory_batches
         $inventoryBatches = DB::table('inventory_batches')
             ->where('product_id', $product_id)
             ->whereBetween('created_at', [$startDate, $endDate])
@@ -201,11 +196,9 @@ class InventoryBatchRepository extends BaseRepository implements InventoryBatchR
             })
             ->get(['variant_id', 'initial_quantity', 'quantity', 'price', 'purchase_order_id', 'created_at']);
 
-        // Gom nhóm dữ liệu theo variant_id
         $groupedMovements = $movements->groupBy('variant_id');
         $groupedBatches = $inventoryBatches->groupBy('variant_id');
 
-        // Xử lý dữ liệu tồn kho theo từng biến thể
         $inventoryData = $variants->map(function ($variant) use ($groupedMovements, $groupedBatches) {
             $variantMovements = $groupedMovements[$variant->id] ?? collect();
             $variantBatches = $groupedBatches[$variant->id] ?? collect();
@@ -224,13 +217,11 @@ class InventoryBatchRepository extends BaseRepository implements InventoryBatchR
                 'total_export'  => $total_export,
                 'total_return'  => $total_return,
 
-                // Tổng số lượng từ inventory_batches
                 'total_initial_quantity' => $total_initial_quantity,
                 'total_current_quantity' => $total_current_quantity,
 
-                // Chênh lệch tồn kho
                 'expected_stock' => $expected_stock,
-                'missing_stock'  => $missing_stock, // Nếu > 0 thì mất hàng
+                'missing_stock'  => $missing_stock,
 
                 'batch_data'    => $variantBatches->map(function ($batch) {
                     return [
@@ -245,15 +236,11 @@ class InventoryBatchRepository extends BaseRepository implements InventoryBatchR
             ];
         });
 
-
-        // Dữ liệu trả về
         $data = [
             'product_id' => $product->id,
             'product_name' => $product->name,
             'variants' => $inventoryData,
         ];
-
-        Log::info('Inventory Data:', $data);
 
         return $data;
     }

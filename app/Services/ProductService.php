@@ -166,7 +166,6 @@ class ProductService extends BaseService implements ProductServiceInterface
                     $languageId
                 );
 
-
                 $product->product_variants()->each(function ($variant) {
                     $variant->attributes()->detach();
                     $variant->delete();
@@ -215,8 +214,6 @@ class ProductService extends BaseService implements ProductServiceInterface
         $path = public_path('qrcodes/' . $name . '.jpg');
         $qrCode = QrCode::size(400)->generate($canonical);
 
-
-        // echo $qrCode; die();
         return $qrCode;
     }
 
@@ -255,7 +252,6 @@ class ProductService extends BaseService implements ProductServiceInterface
             }
         }
 
-        // $variantLanguage  = $this->productVariantLanguageRepository->createBatch($productVariantLanguage);
         $variantAttribute = $this->productVariantAttributeRepository->createBatch($variantAttribute);
     }
 
@@ -323,9 +319,39 @@ class ProductService extends BaseService implements ProductServiceInterface
             $payload['attribute'] = null;
         }
         $payload['qrcode'] = $this->qrCode($request);
+
+        $imagePath = $payload['image'] ?? null;
+        if (!empty($imagePath)) {
+            $features = $this->extractImageFeatures($imagePath);
+            $payload['features'] = $features;
+        } else {
+            $payload['features'] = [];
+        }
+        $payload['features'] = json_encode($features);
         return $this->productRepository->update($id, $payload);
     }
 
+    private function extractImageFeatures($imagePath)
+    {
+        $imagePath = ltrim($imagePath, '/');
+        $imagePath = public_path($imagePath);
+        $imagePath = str_replace('\\', '/', $imagePath);
+        $imagePath = rtrim($imagePath, '/');
+        $imagePath = urldecode($imagePath);
+
+        if (file_exists($imagePath)) {
+            // Cập nhật lệnh gọi Python
+            $pythonScriptPath = storage_path('app/python/extract_features.py');
+            $command = "python $pythonScriptPath \"" . escapeshellarg($imagePath) . "\"";  // Sử dụng python3 thay cho python
+            // Lấy cả stderr và stdout
+            $output = shell_exec($command);  // Lệnh này sẽ lấy cả output và lỗi
+        }
+
+        $output = preg_replace('/\e\[[0-9;]*m/', '', $output);  // Loại bỏ mã màu
+        $output = preg_replace('/\d+\/\d+.*\n/', '', $output);   // Loại bỏ tiến trình
+        $features = json_decode($output, true);
+        return $features;
+    }
 
 
     private function updateCatalogueForProduct($product, $request)
@@ -367,6 +393,7 @@ class ProductService extends BaseService implements ProductServiceInterface
             'image',
             'album',
             'quantity',
+            'features',
             'price',
             'made_in',
             'code',

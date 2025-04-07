@@ -16,6 +16,7 @@ class Product extends Model
         'image',
         'album',
         'publish',
+        'features',
         'order',
         'user_id',
         'product_catalogue_id',

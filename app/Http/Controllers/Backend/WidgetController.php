@@ -135,20 +135,6 @@ class WidgetController extends Controller
         }
         return redirect()->route('widget.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
-
-    public function delete($id)
-    {
-        $this->authorize('modules', 'widget.destroy');
-        $config['seo'] = __('messages.widget');
-        $widget = $this->widgetRepository->findById($id);
-        $template = 'backend.widget.delete';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'widget',
-            'config',
-        ));
-    }
-
     public function destroy($id)
     {
         if ($this->widgetService->destroy($id)) {

@@ -85,6 +85,7 @@ Route::group(['middleware' => 'license'], function () {
    Route::get('lien-he' . config('apps.general.suffix'), [FeContactController::class, 'index'])->name('fe.contact.index');
    Route::get('bai-viet' . config('apps.general.suffix'), [FePostController::class, 'main'])->name('post.main');
    Route::get('san-pham' . config('apps.general.suffix'), [FeProductCatalogueController::class, 'main'])->name('product.catalogue.main');
+   Route::post('tim-kiem-bang-anh' . config('apps.general.suffix'), [FeProductCatalogueController::class, 'searchProductByImage'])->name('product.catalogue.searchProductByImage');
 
 
    /* CUSTOMER  */
@@ -195,7 +196,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('store', [CustomerController::class, 'store'])->name('customer.store');
          Route::get('{id}/edit', [CustomerController::class, 'edit'])->where(['id' => '[0-9]+'])->name('customer.edit');
          Route::post('{id}/update', [CustomerController::class, 'update'])->where(['id' => '[0-9]+'])->name('customer.update');
-         Route::get('{id}/delete', [CustomerController::class, 'delete'])->where(['id' => '[0-9]+'])->name('customer.delete');
          Route::delete('{id}/destroy', [CustomerController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('customer.destroy');
       });
 
@@ -236,7 +236,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('store', [CustomerCatalogueController::class, 'store'])->name('customer.catalogue.store');
          Route::get('{id}/edit', [CustomerCatalogueController::class, 'edit'])->where(['id' => '[0-9]+'])->name('customer.catalogue.edit');
          Route::post('{id}/update', [CustomerCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('customer.catalogue.update');
-         Route::get('{id}/delete', [CustomerCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('customer.catalogue.delete');
          Route::delete('{id}/destroy', [CustomerCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('customer.catalogue.destroy');
          Route::get('permission', [CustomerCatalogueController::class, 'permission'])->name('customer.catalogue.permission');
          Route::post('updatePermission', [CustomerCatalogueController::class, 'updatePermission'])->name('customer.catalogue.updatePermission');
@@ -325,7 +324,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('store', [WidgetController::class, 'store'])->name('widget.store');
          Route::get('{id}/edit', [WidgetController::class, 'edit'])->where(['id' => '[0-9]+'])->name('widget.edit');
          Route::post('{id}/update', [WidgetController::class, 'update'])->where(['id' => '[0-9]+'])->name('widget.update');
-         Route::get('{id}/delete', [WidgetController::class, 'delete'])->where(['id' => '[0-9]+'])->name('widget.delete');
          Route::delete('{id}/destroy', [WidgetController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('widget.destroy');
       });
 
@@ -405,6 +403,7 @@ Route::group(['middleware' => 'license'], function () {
       Route::post('ajax/dashboard/changeStatus', [AjaxDashboardController::class, 'changeStatus'])->name('ajax.dashboard.changeStatus');
       Route::post('ajax/dashboard/changeStatusAll', [AjaxDashboardController::class, 'changeStatusAll'])->name('ajax.dashboard.changeStatusAll');
       Route::get('ajax/dashboard/getMenu', [AjaxDashboardController::class, 'getMenu'])->name('ajax.dashboard.getMenu');
+      Route::get('ajax/dashboard/DasnboardchartRevenueAndCost', [AjaxDashboardController::class, 'DasnboardchartRevenueAndCost'])->name('ajax.dashboard.DasnboardchartRevenueAndCost');
 
       Route::get('ajax/dashboard/findPromotionObject', [AjaxDashboardController::class, 'findPromotionObject'])->name('ajax.dashboard.findPromotionObject');
       Route::get('ajax/dashboard/getPromotionConditionValue', [AjaxDashboardController::class, 'getPromotionConditionValue'])->name('ajax.dashboard.getPromotionConditionValue');

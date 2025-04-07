@@ -58,18 +58,20 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Mã SP</th>
+                        <th class="text-center" style="width:7%">Mã SP</th>
                         <th>Tên sản phẩm</th>
-                        <th>Số lượng hiện tại</th>
-                        <th>Số lượng nhập mới</th>
-                        ${showPriceColumn ? `<th>Giá mua 1 SP</th>` : ""}
+                        <th class="text-center" style="width:15%">Số lượng nhập</th>
+                        ${
+                            showPriceColumn
+                                ? `<th class="text-center" style="width:15%">Giá mua 1 SP</th>`
+                                : ""
+                        }
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>${product.id}</td>
+                        <td class="text-center">${product.id}</td>
                         <td>${product.name}</td>
-                        <td>${product.quantity}</td>
                         <td>
                             <input type="number" name="quantity[${
                                 product.id

@@ -17,12 +17,13 @@ class CustomerCatalogueController extends Controller
     public function __construct(
         CustomerCatalogueService $customerCatalogueService,
         CustomerCatalogueRepository $customerCatalogueRepository,
-    ){
+    ) {
         $this->customerCatalogueService = $customerCatalogueService;
         $this->customerCatalogueRepository = $customerCatalogueRepository;
     }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $this->authorize('modules', 'customer.catalogue.index');
         $customerCatalogues = $this->customerCatalogueService->paginate($request);
         $config = [
@@ -45,7 +46,8 @@ class CustomerCatalogueController extends Controller
         ));
     }
 
-    public function create(){
+    public function create()
+    {
         $this->authorize('modules', 'customer.catalogue.create');
         $config['seo'] = __('messages.customerCatalogue');
         $config['method'] = 'create';
@@ -56,14 +58,16 @@ class CustomerCatalogueController extends Controller
         ));
     }
 
-    public function store(StoreCustomerCatalogueRequest $request){
-        if($this->customerCatalogueService->create($request)){
-            return redirect()->route('customer.catalogue.index')->with('success','Thêm mới bản ghi thành công');
+    public function store(StoreCustomerCatalogueRequest $request)
+    {
+        if ($this->customerCatalogueService->create($request)) {
+            return redirect()->route('customer.catalogue.index')->with('success', 'Thêm mới bản ghi thành công');
         }
-        return redirect()->route('customer.catalogue.index')->with('error','Thêm mới bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('customer.catalogue.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         $this->authorize('modules', 'customer.catalogue.update');
         $customerCatalogue = $this->customerCatalogueRepository->findById($id);
         $config['seo'] = __('messages.customerCatalogue');
@@ -76,31 +80,20 @@ class CustomerCatalogueController extends Controller
         ));
     }
 
-    public function update($id, StoreCustomerCatalogueRequest $request){
-        if($this->customerCatalogueService->update($id, $request)){
-            return redirect()->route('customer.catalogue.index')->with('success','Cập nhật bản ghi thành công');
+    public function update($id, StoreCustomerCatalogueRequest $request)
+    {
+        if ($this->customerCatalogueService->update($id, $request)) {
+            return redirect()->route('customer.catalogue.index')->with('success', 'Cập nhật bản ghi thành công');
         }
-        return redirect()->route('customer.catalogue.index')->with('error','Cập nhật bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('customer.catalogue.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id){
-        $this->authorize('modules', 'customer.catalogue.destroy');
-        $config['seo'] = __('messages.customerCatalogue');
-        $customerCatalogue = $this->customerCatalogueRepository->findById($id);
-        $template = 'backend.customer.catalogue.delete';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'customerCatalogue',
-            'config',
-        ));
-    }
 
-    public function destroy($id){
-        if($this->customerCatalogueService->destroy($id)){
-            return redirect()->route('customer.catalogue.index')->with('success','Xóa bản ghi thành công');
+    public function destroy($id)
+    {
+        if ($this->customerCatalogueService->destroy($id)) {
+            return redirect()->route('customer.catalogue.index')->with('success', 'Xóa bản ghi thành công');
         }
-        return redirect()->route('customer.catalogue.index')->with('error','Xóa bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('customer.catalogue.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
-
-
 }

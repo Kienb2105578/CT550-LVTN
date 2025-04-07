@@ -36,13 +36,11 @@
                         <td>
                             <div class="discount-information text-center">
                                 {!! renderDiscountInformation($promotion) !!}
-
                             </div>
                         </td>
 
                         <td>
                             <div>{{ __('module.promotion')[$promotion->method] }}</div>
-
                         </td>
                         <td>
                             {{ $startDate }}
@@ -58,11 +56,49 @@
                         <td class="text-center">
                             <a href="{{ route('promotion.edit', $promotion->id) }}" class="btn btn-info btn-outline"><i
                                     class="fa fa-edit"></i></a>
-                            <a href="{{ route('promotion.delete', $promotion->id) }}"
-                                class="btn btn-danger btn-outline"><i class="fa fa-trash"></i></a>
+                            <button type="button" class="btn btn-danger btn-outline" data-toggle="modal"
+                                data-target="#deletePromotionModal-{{ $promotion->id }}"><i
+                                    class="fa fa-trash"></i></button>
                         </td>
                     </tr>
+
+                    <!-- Modal Xóa Khuyến Mãi -->
+                    <div class="modal fade" id="deletePromotionModal-{{ $promotion->id }}" tabindex="-1"
+                        role="dialog" aria-labelledby="deletePromotionModalLabel-{{ $promotion->id }}"
+                        aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <form action="{{ route('promotion.destroy', $promotion->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <div class="modal-content">
+                                    <div class="ibox-title">
+                                        <h5 class="modal-title" id="deletePromotionModalLabel-{{ $promotion->id }}">Xác
+                                            nhận xóa khuyến mãi</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Bạn có chắc chắn muốn xóa khuyến mãi <strong>{{ $promotion->name }}</strong>
+                                            không?</p>
+                                        <p><span class="text-danger">Lưu ý:</span> Thao tác này không thể hoàn tác.</p>
+                                        <div class="form-group">
+                                            <label>Tên khuyến mãi</label>
+                                            <input type="text" class="form-control" value="{{ $promotion->name }}"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Hủy</button>
+                                        <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 @endforeach
+
             @endif
         </tbody>
     </table>
