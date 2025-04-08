@@ -52,14 +52,7 @@ class PostCatalogueController extends FrontendController
             ['keyword' => 'post-catalogue-why', 'object' => true],
             ['keyword' => 'staff', 'object' => true],
         ], $this->language);
-
-        if ($postCatalogue->canonical == 've-chung-toi') {
-            $template = 'frontend.post.catalogue.intro';
-        } else if ($postCatalogue->canonical == 'du-an-noi-bat') {
-            $template = 'frontend.post.catalogue.project';
-        } else {
-            $template = 'frontend.post.catalogue.index';
-        }
+        $template = 'frontend.post.catalogue.index';
         $config = $this->config();
         $system = $this->system;
         $carts = Cart::instance('shopping')->content();

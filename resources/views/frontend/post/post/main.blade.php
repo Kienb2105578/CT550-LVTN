@@ -33,11 +33,12 @@
                                             </div>
                                             <div class="uk-width-2-3">
                                                 <div class="blog-item">
-                                                    <h3 class="title">
+                                                    <h3 class="title" style="text-align: justify;">
                                                         <a href="{{ $canonical }}"
                                                             title="{{ $name }}">{{ $name }}</a>
                                                     </h3>
-                                                    <div class="description">
+                                                    <div class="description"
+                                                        style="text-align: justify; font-size: 13px; font-weight: 400 !important;">
                                                         {!! $description !!}
                                                     </div>
                                                 </div>

@@ -120,18 +120,6 @@ class PostCatalogueController extends Controller
         return redirect()->route('post.catalogue.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id)
-    {
-        $this->authorize('modules', 'post.catalogue.destroy');
-        $config['seo'] = __('messages.postCatalogue');
-        $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($id, $this->language);
-        $template = 'backend.post.catalogue.delete';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'postCatalogue',
-            'config',
-        ));
-    }
 
     public function destroy(DeletePostCatalogueRequest $request, $id)
     {

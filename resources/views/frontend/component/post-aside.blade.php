@@ -19,8 +19,9 @@
                             <a href="{{ $canonical }}" class="image img-cover"><img src="{{ $image }}"
                                     alt="{{ $name }}"></a>
                             <div class="info">
-                                <h3 class="title"><a href="{{ $canonical }}"
-                                        title="{{ $name }}">{{ $name }}</a></h3>
+                                <h3 class="title" style="text-align: justify; font-size: 13px;"><a
+                                        href="{{ $canonical }}" title="{{ $name }}">{{ $name }}</a>
+                                </h3>
                             </div>
                         </div>
                     @endif

@@ -54,18 +54,6 @@ class ReviewController extends Controller
         ));
     }
 
-    public function delete($id)
-    {
-        $this->authorize('modules', 'review.destroy');
-        $config['seo'] = __('messages.review');
-        $review = $this->reviewRepository->findById($id);
-        $template = 'backend.review.delete';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'review',
-            'config',
-        ));
-    }
 
     public function destroy($id)
     {

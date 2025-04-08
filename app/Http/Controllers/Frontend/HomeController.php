@@ -116,8 +116,6 @@ class HomeController extends FrontendController
         $product_new = $this->productRepository->updateProductTotalQuantity($product_new);
         $product_recommend = $this->productRepository->updateProductTotalQuantity($product_recommend);
         $slides = $this->slideService->getSlide([SlideEnum::BANNER, SlideEnum::MAIN, 'banner'], $this->language);
-
-
         /*
          * Lấy khuyến mãi hot
          */
@@ -137,7 +135,6 @@ class HomeController extends FrontendController
         }
         $product_promotion = $this->productRepository->updateProductTotalQuantity($product_promotion);
         $promotion_new = $this->promotionRepository->getLatestActivePromotion();
-
 
         $system = $this->system;
         $seo = [

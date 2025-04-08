@@ -137,19 +137,6 @@ class ProductController extends Controller
         return redirect()->route('product.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id)
-    {
-        $this->authorize('modules', 'product.destroy');
-        $config['seo'] = __('messages.product');
-        $product = $this->productRepository->getProductById($id, $this->language);
-        $template = 'backend.product.product.delete';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'product',
-            'config',
-        ));
-    }
-
     public function destroy($id)
     {
         if ($this->productService->destroy($id, $this->language)) {

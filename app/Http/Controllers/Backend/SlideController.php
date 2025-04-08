@@ -108,18 +108,7 @@ class SlideController extends Controller
         return redirect()->route('slide.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id)
-    {
-        $this->authorize('modules', 'slide.destroy');
-        $config['seo'] = __('messages.slide');
-        $slide = $this->slideRepository->findById($id);
-        $template = 'backend.slide.delete';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'slide',
-            'config',
-        ));
-    }
+
 
     public function destroy($id)
     {

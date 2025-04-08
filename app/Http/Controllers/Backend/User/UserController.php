@@ -109,18 +109,6 @@ class UserController extends Controller
         return redirect()->route('user.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id)
-    {
-        $this->authorize('modules', 'user.destroy');
-        $config['seo'] = config('apps.user');
-        $user = $this->userRepository->findById($id);
-        $template = 'backend.user.user.delete';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'user',
-            'config',
-        ));
-    }
 
     public function destroy($id)
     {

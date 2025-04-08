@@ -43,7 +43,6 @@ class AttributeService extends BaseService implements AttributeServiceInterface
             'groupBy' => $this->paginateSelect()
         ];
         $orderBy = ['attributes.id', 'DESC'];
-        $relations = ['attribute_catalogues'];
         $rawQuery = $this->whereRaw($request);
         $attributes = $this->attributeRepository->pagination(
             $this->paginateSelect(),
@@ -52,7 +51,6 @@ class AttributeService extends BaseService implements AttributeServiceInterface
             $paginationConfig,
             $orderBy,
             [],
-            $relations,
             $rawQuery
         );
         return $attributes;
@@ -83,7 +81,7 @@ class AttributeService extends BaseService implements AttributeServiceInterface
             $attribute = $this->createAttribute($request);
             if ($attribute->id > 0) {
                 //$this->updateLanguageForAttribute($attribute, $request, $languageId);
-                $this->updateCatalogueForAttribute($attribute, $request);
+                // $this->updateCatalogueForAttribute($attribute, $request);
                 $this->createRouter($attribute, $request, $this->controllerName, $languageId);
             }
             DB::commit();
@@ -104,7 +102,7 @@ class AttributeService extends BaseService implements AttributeServiceInterface
             $attribute = $this->attributeRepository->findById($id);
             if ($this->uploadAttribute($attribute, $request)) {
                 //$this->updateLanguageForAttribute($attribute, $request, $languageId);
-                $this->updateCatalogueForAttribute($attribute, $request);
+                //$this->updateCatalogueForAttribute($attribute, $request);
                 $this->updateRouter(
                     $attribute,
                     $request,

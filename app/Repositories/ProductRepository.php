@@ -109,8 +109,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         return $this->model->whereNull('deleted_at')->count();
     }
 
-
-
     public function wishlist($ids, $language_id)
     {
         return $this->model->select(

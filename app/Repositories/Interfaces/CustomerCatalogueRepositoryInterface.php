@@ -8,5 +8,10 @@ namespace App\Repositories\Interfaces;
  */
 interface CustomerCatalogueRepositoryInterface
 {
-    public function findById($id);
+    public function findById(
+        int $modelId,
+        array $column = ['*'],
+        array $relation = [],
+
+    );
 }

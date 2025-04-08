@@ -27,7 +27,7 @@
                 <!-- Error Message Template -->
                 <div class="chat-message bot">
                     <div class="message-avatar">
-                        <img src="frontend\resources\core\image\chatbox.jpg" alt="Bot Avatar">
+                        <img src="frontend/resources/core/image/chatbox.jpg" alt="Bot Avatar">
                     </div>
                     <div class="message-content">
                         <div class="message-text">

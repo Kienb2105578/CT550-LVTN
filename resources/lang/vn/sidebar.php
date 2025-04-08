@@ -91,7 +91,7 @@ return [
         ],
 
         [
-            'title' => 'QL Marketing',
+            'title' => 'QL Truyền Thông',
             'icon' => 'fa fa-credit-card',
             'name' => ['promotion', 'source', 'slide'],
             'subModule' => [

@@ -43,28 +43,94 @@
             const messageText = chatInput.value.trim();
             if (messageText === "") return;
 
-            // Hiển thị tin nhắn của người dùng
             HT.appendMessage("user", messageText);
             chatInput.value = "";
             HT.showTypingIndicator();
 
-            // Gửi tin nhắn lên server qua AJAX
             $.ajax({
                 url: "/ajax/chatbot/create",
                 type: "POST",
                 data: {
                     _token: _token,
                     message: messageText,
-                    session_id: "default-session", // Cần đảm bảo session_id hợp lệ
+                    session_id: "default-session",
                 },
                 success: function (response) {
+                    const products = response.products;
+                    const userMessage = response.message;
+                    console.log(response.message);
+
+                    let productList = products
+                        .map((product, index) => {
+                            const stockStatus =
+                                product.stock > 0
+                                    ? `Còn ${product.stock} cái`
+                                    : "Hết hàng";
+                            const imageHtml = product.image
+                                ? `<img src="${product.image}" style="max-width:100px;">`
+                                : "";
+                            const productLink = product.link
+                                ? `<a href="${product.link}" target="_blank">Xem chi tiết</a>`
+                                : "";
+
+                            return `
+                                    <div style="margin-bottom: 10px;">
+                                        ${imageHtml}<br>
+                                        <strong>${index + 1}. ${
+                                product.name
+                            }</strong><br>
+                                        Giá: ${product.price}K<br>
+                                        Tình trạng: ${stockStatus}<br>
+                                        Danh mục: ${product.category}<br>
+                                        ${productLink}
+                                    </div>
+                                    `.trim();
+                        })
+                        .join("<br>");
+
+                    const prompt = `
+                            Người dùng hỏi: "${userMessage}"
+                            Dưới đây là danh sách sản phẩm hiện có (bao gồm hình ảnh và liên kết HTML):
+                            ${productList}
+
+                            Yêu cầu:
+                                - Phân tích và hiểu câu hỏi của người dùng.
+                                - Chọn lọc dữ liệu phù hợp.
+                                - Trả lời tự nhiên, lịch sự, dễ hiểu.
+                                - Không được bịa thêm sản phẩm không có trong danh sách.
+                                - Giữ nguyên định dạng HTML có sẵn (đặc biệt là thẻ <a href> và hình ảnh).
+                                - Nếu sản phẩm không phù hợp, hãy gợi ý các sản phẩm gần nhất.
+                        `;
+
+                    // Gửi đến Gemini API
+                    $.get("/ajax/get-gemini-key", function (res) {
+                        const apiKey = res.key;
+                        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                        $.ajax({
+                            url: geminiUrl,
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                contents: [{ parts: [{ text: prompt }] }],
+                            }),
+                            success: function (geminiRes) {
+                                const reply =
+                                    geminiRes?.candidates?.[0]?.content
+                                        ?.parts?.[0]?.text ??
+                                    "Không có phản hồi từ AI.";
+                                HT.appendMessage("bot", reply);
+                            },
+                            error: function () {
+                                HT.appendMessage(
+                                    "bot",
+                                    "Không thể kết nối đến Gemini."
+                                );
+                            },
+                        });
+                    });
+
                     HT.hideTypingIndicator();
-                    if (response.success) {
-                        // Hiển thị tin nhắn phản hồi từ chatbot
-                        HT.appendMessage("bot", response.bot_chat.message);
-                    } else {
-                        HT.appendMessage("bot", "Xin lỗi, có lỗi xảy ra.");
-                    }
                 },
                 error: function () {
                     HT.hideTypingIndicator();
@@ -85,7 +151,7 @@
                     }" alt="${sender} Avatar">
                 </div>
                 <div class="message-content">
-                    <div class="message-text">${text}</div>
+                    <div class="message-text">${HT.decodeHtml(text)}</div>
                     <div class="message-meta">
                         <span class="message-time">${new Date().toLocaleTimeString(
                             [],
@@ -159,6 +225,12 @@
                 HT.minimizeChat();
             }
         });
+    };
+
+    HT.decodeHtml = function (html) {
+        const txt = document.createElement("textarea");
+        txt.innerHTML = html;
+        return txt.value;
     };
 
     $(document).ready(function () {

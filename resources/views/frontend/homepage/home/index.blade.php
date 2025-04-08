@@ -133,7 +133,7 @@
                     <div class="panel-body">
                         <div class="uk-grid uk-grid-medium">
                             @foreach ($product_new as $key => $product)
-                                @if ($product->publish == 2 && $product->total_quantity > 0)
+                                @if ($product->publish == 2 && $product->total_quantity != 0)
                                     <div
                                         class="uk-width-1-2 uk-width-small-1-2 uk-width-medium-1-3 uk-width-large-1-5 mb20">
                                         @include('frontend.component.product-item', [

@@ -77,24 +77,22 @@ class AttributeRepository extends BaseRepository implements AttributeRepositoryI
 
     public function addAttributeCatalogueNamesToAttributes($attributes)
     {
-        $attributeIds = $attributes->pluck('id')->unique();
-        $attributeCatalogueMapping = DB::table('attribute_catalogue_attribute')
-            ->whereIn('attribute_id', $attributeIds)
-            ->get()
-            ->groupBy('attribute_id');
-        $catalogueIds = $attributeCatalogueMapping->flatMap(fn($items) => $items->pluck('attribute_catalogue_id'))->unique();
-        $attributeCatalogues = DB::table('attribute_catalogues')
+        $catalogueIds = $attributes->pluck('attribute_catalogue_id')->unique();
+        $catalogues = DB::table('attribute_catalogues')
             ->whereIn('id', $catalogueIds)
             ->get(['id', 'name'])
             ->keyBy('id');
-        $attributes->transform(function ($attribute) use ($attributeCatalogueMapping, $attributeCatalogues) {
-            $catalogueIds = $attributeCatalogueMapping[$attribute->id] ?? collect();
-            $attribute->array_attribute_catalogue_name = $catalogueIds->pluck('attribute_catalogue_id')->map(fn($id) => [
-                'id' => $id,
-                'name' => $attributeCatalogues[$id]->name ?? null
-            ])->filter()->values();
+
+        $attributes->transform(function ($attribute) use ($catalogues) {
+            $attribute->array_attribute_catalogue_name = [
+                [
+                    'id' => $attribute->attribute_catalogue_id,
+                    'name' => $catalogues[$attribute->attribute_catalogue_id]->name ?? null
+                ]
+            ];
             return $attribute;
         });
+
         return $attributes;
     }
 

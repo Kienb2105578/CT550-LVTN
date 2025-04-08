@@ -127,6 +127,8 @@ Route::group(['middleware' => 'license'], function () {
    Route::post('ajax/product/wishlist', [AjaxProductController::class, 'wishlist'])->name('product.wishlist');
 
    Route::post('ajax/chatbot/create', [AjaxChatbotController::class, 'create'])->name('ajax.chatbot.create');
+   Route::get('/ajax/get-gemini-key', [AjaxChatbotController::class, 'getGeminiKey']);
+
 
    /* VNPAY */
    Route::get('return/vnpay' . config('apps.general.suffix'), [VnpayController::class, 'vnpay_return'])->name('vnpay.momo_return');
@@ -173,7 +175,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('store', [UserController::class, 'store'])->name('user.store');
          Route::get('{id}/edit', [UserController::class, 'edit'])->where(['id' => '[0-9]+'])->name('user.edit');
          Route::post('{id}/update', [UserController::class, 'update'])->where(['id' => '[0-9]+'])->name('user.update');
-         Route::get('{id}/delete', [UserController::class, 'delete'])->where(['id' => '[0-9]+'])->name('user.delete');
          Route::delete('{id}/destroy', [UserController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('user.destroy');
       });
 
@@ -184,7 +185,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('store', [UserCatalogueController::class, 'store'])->name('user.catalogue.store');
          Route::get('{id}/edit', [UserCatalogueController::class, 'edit'])->where(['id' => '[0-9]+'])->name('user.catalogue.edit');
          Route::post('{id}/update', [UserCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('user.catalogue.update');
-         Route::get('{id}/delete', [UserCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('user.catalogue.delete');
          Route::delete('{id}/destroy', [UserCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('user.catalogue.destroy');
          Route::get('permission', [UserCatalogueController::class, 'permission'])->name('user.catalogue.permission');
          Route::post('updatePermission', [UserCatalogueController::class, 'updatePermission'])->name('user.catalogue.updatePermission');
@@ -205,7 +205,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('store', [SupplierController::class, 'store'])->name('supplier.store');
          Route::get('{id}/edit', [SupplierController::class, 'edit'])->where(['id' => '[0-9]+'])->name('supplier.edit');
          Route::post('{id}/update', [SupplierController::class, 'update'])->where(['id' => '[0-9]+'])->name('supplier.update');
-         Route::get('{id}/delete', [SupplierController::class, 'delete'])->where(['id' => '[0-9]+'])->name('supplier.delete');
          Route::delete('{id}/destroy', [SupplierController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('supplier.destroy');
       });
 
@@ -216,7 +215,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('store', [PurchaseOrderController::class, 'store'])->name('purchase-order.store');
          Route::get('{id}/edit', [PurchaseOrderController::class, 'edit'])->where(['id' => '[0-9]+'])->name('purchase-order.edit');
          Route::post('{id}/update', [PurchaseOrderController::class, 'update'])->where(['id' => '[0-9]+'])->name('purchase-order.update');
-         Route::get('{id}/delete', [PurchaseOrderController::class, 'delete'])->where(['id' => '[0-9]+'])->name('purchase-order.delete');
          Route::delete('{id}/destroy', [PurchaseOrderController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('purchase-order.destroy');
       });
 
@@ -260,7 +258,6 @@ Route::group(['middleware' => 'license'], function () {
 
       Route::group(['prefix' => 'review'], function () {
          Route::get('index', [ReviewController::class, 'index'])->name('review.index');
-         Route::get('{id}/delete', [ReviewController::class, 'delete'])->where(['id' => '[0-9]+'])->name('review.delete');
          Route::delete('{id}/delete', [ReviewController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('review.destroy');
       });
 
@@ -271,7 +268,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::get('{id}/edit', [MenuController::class, 'edit'])->where(['id' => '[0-9]+'])->name('menu.edit');
          Route::get('{id}/editMenu', [MenuController::class, 'editMenu'])->where(['id' => '[0-9]+'])->name('menu.editMenu');
          Route::post('{id}/update', [MenuController::class, 'update'])->where(['id' => '[0-9]+'])->name('menu.update');
-         Route::get('{id}/delete', [MenuController::class, 'delete'])->where(['id' => '[0-9]+'])->name('menu.delete');
          Route::delete('{id}/destroy', [MenuController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('menu.destroy');
          Route::get('{id}/children', [MenuController::class, 'children'])->where(['id' => '[0-9]+'])->name('menu.children');
          Route::post('{id}/saveChildren', [MenuController::class, 'saveChildren'])->where(['id' => '[0-9]+'])->name('menu.save.children');
@@ -284,7 +280,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('store', [PostCatalogueController::class, 'store'])->name('post.catalogue.store');
          Route::get('{id}/edit', [PostCatalogueController::class, 'edit'])->where(['id' => '[0-9]+'])->name('post.catalogue.edit');
          Route::post('{id}/update', [PostCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('post.catalogue.update');
-         Route::get('{id}/delete', [PostCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('post.catalogue.delete');
          Route::delete('{id}/destroy', [PostCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('post.catalogue.destroy');
       });
 
@@ -294,7 +289,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('store', [PostController::class, 'store'])->name('post.store');
          Route::get('{id}/edit', [PostController::class, 'edit'])->where(['id' => '[0-9]+'])->name('post.edit');
          Route::post('{id}/update', [PostController::class, 'update'])->where(['id' => '[0-9]+'])->name('post.update');
-         Route::get('{id}/delete', [PostController::class, 'delete'])->where(['id' => '[0-9]+'])->name('post.delete');
          Route::delete('{id}/destroy', [PostController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('post.destroy');
       });
 
@@ -304,7 +298,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('store', [PermissionController::class, 'store'])->name('permission.store');
          Route::get('{id}/edit', [PermissionController::class, 'edit'])->where(['id' => '[0-9]+'])->name('permission.edit');
          Route::post('{id}/update', [PermissionController::class, 'update'])->where(['id' => '[0-9]+'])->name('permission.update');
-         Route::get('{id}/delete', [PermissionController::class, 'delete'])->where(['id' => '[0-9]+'])->name('permission.delete');
          Route::delete('{id}/destroy', [PermissionController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('permission.destroy');
       });
 
@@ -314,7 +307,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('store', [SlideController::class, 'store'])->name('slide.store');
          Route::get('{id}/edit', [SlideController::class, 'edit'])->where(['id' => '[0-9]+'])->name('slide.edit');
          Route::post('{id}/update', [SlideController::class, 'update'])->where(['id' => '[0-9]+'])->name('slide.update');
-         Route::get('{id}/delete', [SlideController::class, 'delete'])->where(['id' => '[0-9]+'])->name('slide.delete');
          Route::delete('{id}/destroy', [SlideController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('slide.destroy');
       });
 
@@ -335,7 +327,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('store', [PromotionController::class, 'store'])->name('promotion.store');
          Route::get('{id}/edit', [PromotionController::class, 'edit'])->where(['id' => '[0-9]+'])->name('promotion.edit');
          Route::post('{id}/update', [PromotionController::class, 'update'])->where(['id' => '[0-9]+'])->name('promotion.update');
-         Route::get('{id}/delete', [PromotionController::class, 'delete'])->where(['id' => '[0-9]+'])->name('promotion.delete');
          Route::delete('{id}/destroy', [PromotionController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('promotion.destroy');
       });
 
@@ -345,7 +336,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('store', [ProductCatalogueController::class, 'store'])->name('product.catalogue.store');
          Route::get('{id}/edit', [ProductCatalogueController::class, 'edit'])->where(['id' => '[0-9]+'])->name('product.catalogue.edit');
          Route::post('{id}/update', [ProductCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('product.catalogue.update');
-         Route::get('{id}/delete', [ProductCatalogueController::class, 'delete'])->where(['id' => '[0-9]+'])->name('product.catalogue.delete');
          Route::delete('{id}/destroy', [ProductCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('product.catalogue.destroy');
       });
       Route::group(['prefix' => 'product'], function () {
@@ -354,7 +344,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::post('store', [ProductController::class, 'store'])->name('product.store');
          Route::get('{id}/edit', [ProductController::class, 'edit'])->where(['id' => '[0-9]+'])->name('product.edit');
          Route::post('{id}/update', [ProductController::class, 'update'])->where(['id' => '[0-9]+'])->name('product.update');
-         Route::get('{id}/delete', [ProductController::class, 'delete'])->where(['id' => '[0-9]+'])->name('product.delete');
          Route::delete('{id}/destroy', [ProductController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('product.destroy');
       });
       Route::group(['prefix' => 'attribute/catalogue'], function () {

@@ -63,11 +63,6 @@
                     </div>
                 </div>
 
-                <div class="product-specs">
-                    <div class="spec-row">Mã sản phẩm: <strong>{{ $product->code }}</strong></div>
-                    <div class="spec-row">Tình Trạng: <strong>Còn hàng</strong></div>
-                </div>
-
                 <div class="uk-grid uk-grid-small">
                     <div class="uk-width-large">
                         <div class="a-left">
@@ -122,10 +117,6 @@
 
                         </div>
                     </div>
-
-                </div>
-                <div class="product-description">
-                    {!! $product->description !!}
                 </div>
             </div>
         </div>

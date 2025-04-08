@@ -121,19 +121,6 @@ class PostController extends Controller
         return redirect()->route('post.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id)
-    {
-        $this->authorize('modules', 'post.destroy');
-        $config['seo'] = __('messages.post');
-        $post = $this->postRepository->getPostById($id, $this->language);
-        $template = 'backend.post.post.delete';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'post',
-            'config',
-        ));
-    }
-
     public function destroy($id)
     {
         if ($this->postService->destroy($id)) {

@@ -109,18 +109,6 @@ class PromotionController extends Controller
         return redirect()->route('promotion.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id)
-    {
-        $this->authorize('modules', 'promotion.destroy');
-        $config['seo'] = __('messages.promotion');
-        $promotion = $this->promotionRepository->findById($id);
-        $template = 'backend.promotion.promotion.delete';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'promotion',
-            'config',
-        ));
-    }
 
     public function destroy($id)
     {

@@ -124,19 +124,6 @@ class ProductCatalogueController extends Controller
         return redirect()->route('product.catalogue.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id)
-    {
-        $this->authorize('modules', 'product.catalogue.destroy');
-        $config['seo'] = __('messages.productCatalogue');
-        $productCatalogue = $this->productCatalogueRepository->getProductCatalogueById($id, $this->language);
-        $template = 'backend.product.catalogue.delete';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'productCatalogue',
-            'config',
-        ));
-    }
-
     public function destroy(DeleteProductCatalogueRequest $request, $id)
     {
         if ($this->productCatalogueService->destroy($id, $this->language)) {

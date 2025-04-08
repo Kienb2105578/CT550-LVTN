@@ -133,19 +133,6 @@ class PurchaseOrderController extends Controller
         return redirect()->route('purchase-order.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id)
-    {
-        $this->authorize('modules', 'purchase-order.destroy');
-        $config['seo'] = __('messages.purchase-order');
-        $purchaseOrder = $this->purchaseOrderRepository->getPurchaseOrderById($id, $this->language);
-        $template = 'backend.purchase-order.delete';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'purchaseOrder',
-            'config',
-        ));
-    }
-
     public function destroy($id)
     {
         if ($this->purchaseOrderService->destroy($id, $this->language)) {

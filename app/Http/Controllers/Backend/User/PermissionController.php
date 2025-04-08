@@ -93,18 +93,6 @@ class PermissionController extends Controller
         return redirect()->route('permission.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id)
-    {
-        $this->authorize('modules', 'permission.destroy');
-        $config['seo'] = __('messages.permission');
-        $permission = $this->permissionRepository->findById($id);
-        $template = 'backend.permission.delete';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'permission',
-            'config',
-        ));
-    }
 
     public function destroy($id)
     {

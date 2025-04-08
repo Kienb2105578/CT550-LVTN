@@ -102,18 +102,6 @@ class SupplierController extends Controller
         return redirect()->route('supplier.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function delete($id)
-    {
-        $this->authorize('modules', 'supplier.destroy');
-        $config['seo'] = __('messages.supplier');
-        $supplier = $this->supplierRepository->findById($id);
-        $template = 'backend.supplier.delete';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'supplier',
-            'config',
-        ));
-    }
 
     public function destroy($id)
     {

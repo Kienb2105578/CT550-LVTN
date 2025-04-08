@@ -198,7 +198,7 @@ if (!function_exists('convertDateTime')) {
 }
 
 if (!function_exists('renderDiscountInformation')) {
-    function renderDiscountInformation($promotion = [])
+    function renderDiscountInformation($promotion)
     {
         if ($promotion->method === 'product_and_quantity') {
             $discountValue = $promotion->discountInformation['info']['discountValue'];

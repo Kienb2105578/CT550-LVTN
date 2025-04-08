@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Ajax;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Chatbot;
+use App\Models\Product;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 
 class ChatbotController extends Controller
 {
@@ -15,68 +16,44 @@ class ChatbotController extends Controller
 
     public function create(Request $request)
     {
-        try {
-            $validatedData = $request->validate([
-                'message' => 'required|string',
-                'session_id' => 'required|string|max:100',
-            ]);
+        $question = $request->input('message');
 
-            $customer = Auth::guard('customer')->user();
-            $customerId = $customer ? $customer->id : null;
+        $products = DB::table('products')
+            ->select(
+                'products.id',
+                'products.name',
+                'products.price',
+                'products.image',
+                'products.canonical',
+                'product_catalogues.name as category_name',
+                DB::raw('SUM(inventory_batches.quantity) as stock')
+            )
+            ->join('inventory_batches', 'products.id', '=', 'inventory_batches.product_id')
+            ->leftJoin('product_catalogues', 'products.product_catalogue_id', '=', 'product_catalogues.id')
+            ->where('inventory_batches.publish', 2)
+            ->groupBy('products.id', 'products.name', 'products.price', 'products.image', 'products.canonical', 'product_catalogues.name')
+            ->get()
+            ->map(function ($product) {
+                return [
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'stock' => $product->stock,
+                    'image' => $product->image,
+                    'link' => write_url($product->canonical),
+                    'category' => $product->category_name,
+                ];
+            });
 
-            // ✅ Lưu tin nhắn của người dùng với intent đã xử lý
-            $chat = Chatbot::create([
-                'customer_id' => $customerId,
-                'session_id' => $validatedData['session_id'],
-                'sender' => 'customer',
-                'message' => $validatedData['message'],
-            ]);
+        return response()->json([
+            'message' => $question,
+            'products' => $products,
+        ]);
+    }
 
-            Log::info("Nhận request từ frontend: " . json_encode($request->all()));
-
-            // Gửi yêu cầu đến Flask để lấy phản hồi
-            $response = Http::post("http://127.0.0.1:5001/chat", [
-                "message" => $validatedData['message'], // ✅ Gửi tin nhắn đã xử lý
-            ]);
-
-            Log::info("Phản hồi từ Flask: " . $response->body());
-
-            if ($response->successful()) {
-                $botReply = $response->json()['response'] ?? 'Xin lỗi, tôi chưa hiểu câu hỏi của bạn.';
-
-                // Kiểm tra nếu phản hồi trống
-                if (!$botReply || trim($botReply) === '') {
-                    $botReply = 'Xin lỗi, tôi chưa hiểu câu hỏi của bạn.';
-                }
-
-                // ✅ Cập nhật phản hồi cho tin nhắn người dùng
-                $chat->update([
-                    'response' => $botReply,
-                    'intent' => $response->json()['intent']
-                ]);
-
-                // ✅ Lưu phản hồi chatbot vào database
-                $botChat = Chatbot::create([
-                    'customer_id' => $customerId,
-                    'session_id' => $validatedData['session_id'],
-                    'sender' => 'bot',
-                    'message' => $botReply,  // 🔥 Đảm bảo không null
-                    'response' => $botReply,
-                    'intent' => $response->json()['intent'] ?? 'unknown',
-                ]);
-
-                return response()->json([
-                    'success' => true,
-                    'user_chat' => $chat,
-                    'bot_chat' => $botChat
-                ]);
-            }
-
-
-            return response()->json(['success' => false, 'message' => 'Lỗi khi gọi chatbot.'], 500);
-        } catch (\Exception $e) {
-            Log::error('Chatbot create error: ' . $e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Có lỗi xảy ra. Vui lòng thử lại!'], 500);
-        }
+    public function getGeminiKey()
+    {
+        return response()->json([
+            'key' => env('GEMINI_API_KEY')
+        ]);
     }
 }
