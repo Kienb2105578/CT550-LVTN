@@ -188,7 +188,6 @@ class PostService extends BaseService implements PostServiceInterface
             'posts.image',
             'posts.order',
             'posts.name',
-            'posts.album',
             'posts.description',
             'posts.content',
             'posts.meta_title',

@@ -7,7 +7,7 @@
         <div class="page-breadcrumb background">
             <div class="uk-container uk-container-center">
                 <ul class="uk-list uk-clearfix">
-                    <li><a href="/"><i class="fi-rs-home mr5"></i>{{ __('frontend.home') }}</a></li>
+                    <li><a href="/"><i class="mr5"></i>{{ __('frontend.home') }}</a></li>
                     <li><a href="{{ route('post.main') }}" title="Bài viết">Bài Viết</a></li>
                     <li><a href="{{ write_url($postCatalogue->canonical) }}"
                             title="{{ $postCatalogue->name }}">{{ $postCatalogue->name }}</a></li>

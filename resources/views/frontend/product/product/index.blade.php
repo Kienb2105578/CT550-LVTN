@@ -4,8 +4,7 @@
         <div class="page-breadcrumb background">
             <div class="uk-container uk-container-center">
                 <ul class="uk-list uk-clearfix">
-                    <li><a href="/"><i class="fi-rs-home mr5"></i>{{ __('frontend.home') }}</a></li>
-                    {{-- <li><a href="http://127.0.0.1:8000/san-pham.html" title="Sản phẩm">Sản phẩm</a></li> --}}
+                    <li><a href="/"><i class="mr5"></i>{{ __('frontend.home') }}</a></li>
                     <li><a href="{{ write_url($productCatalogue->canonical) }}"
                             title="{{ $productCatalogue->name }}">{{ $productCatalogue->name }}</a></li>
                 </ul>

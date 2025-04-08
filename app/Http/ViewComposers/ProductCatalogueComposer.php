@@ -14,6 +14,8 @@ class ProductCatalogueComposer
     protected $widgetService;
     protected $productCatalogueRepository;
 
+    protected $nestedset;
+
     public function __construct(
         // WidgetService $widgetService,
         ProductCatalogueRepository $productCatalogueRepository,

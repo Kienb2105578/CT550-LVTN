@@ -12,7 +12,6 @@ use App\Http\ViewComposers\MenuComposer;
 use App\Http\ViewComposers\LanguageComposer;
 use App\Http\ViewComposers\CategoryComposer;
 use App\Http\ViewComposers\CartComposer;
-use App\Http\ViewComposers\WishlistComposer;
 use App\Http\ViewComposers\CustomerComposer;
 use App\Http\ViewComposers\ProductCatalogueComposer;
 use App\Models\Language;
@@ -89,12 +88,10 @@ class AppServiceProvider extends ServiceProvider
 
         view()->composer('*', function ($view) use ($language) {
             $composerClasses = [
-                // SystemComposer::class,
                 MenuComposer::class,
                 LanguageComposer::class,
                 CategoryComposer::class,
                 CartComposer::class,
-                WishlistComposer::class,
                 CustomerComposer::class,
                 ProductCatalogueComposer::class,
             ];

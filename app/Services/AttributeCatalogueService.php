@@ -99,7 +99,7 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
         }
     }
 
-    public function destroy($id, $languageId)
+    public function destroy($id, $request, $languageId)
     {
         DB::beginTransaction();
         try {

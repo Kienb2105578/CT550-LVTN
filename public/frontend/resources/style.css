@@ -1706,7 +1706,9 @@ a.ui-button:active,
 
 /* END FILTER */
 .page-breadcrumb {
-    margin-top: 10px;
+    background-color: rgb(230, 232, 234);
+    padding: 20px 0px;
+    margin-bottom: 30px;
 }
 .page-breadcrumb li {
     display: inline-block;
@@ -1746,7 +1748,7 @@ a.ui-button:active,
     top: 0;
     bottom: 0;
     margin: auto;
-    color: #fff;
+    color: rgb(148, 148, 148);
 }
 
 .pc-header .upper {

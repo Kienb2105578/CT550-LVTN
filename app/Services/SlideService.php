@@ -13,57 +13,61 @@ use Illuminate\Support\Facades\Hash;
  * Class SlideService
  * @package App\Services
  */
-class SlideService extends BaseService implements SlideServiceInterface 
+class SlideService extends BaseService implements SlideServiceInterface
 {
     protected $slideRepository;
-    
+
 
     public function __construct(
         SlideRepository $slideRepository
-    ){
+    ) {
         $this->slideRepository = $slideRepository;
     }
 
-    
 
-    public function paginate($request){
+
+    public function paginate($request)
+    {
         $condition['keyword'] = addslashes($request->input('keyword'));
         $condition['publish'] = $request->integer('publish');
         $perPage = $request->integer('perpage');
         $slides = $this->slideRepository->pagination(
-            $this->paginateSelect(), 
-            $condition, 
+            $this->paginateSelect(),
+            $condition,
             $perPage,
-            ['path' => 'slide/index'], 
+            ['path' => 'slide/index'],
         );
-        
+
         // dd($slides);
 
-        
+
         return $slides;
     }
 
-    public function create($request, $languageId){
+    public function create($request, $languageId)
+    {
         DB::beginTransaction();
-        try{
+        try {
 
             $payload = $request->only(['_token', 'name', 'keyword', 'setting', 'short_code']);
             $payload['item'] = $this->handleSlideItem($request, $languageId);
             $slide = $this->slideRepository->create($payload);
             DB::commit();
             return true;
-        }catch(\Exception $e ){
+        } catch (\Exception $e) {
             DB::rollBack();
             // Log::error($e->getMessage());
-            echo $e->getMessage();die();
+            echo $e->getMessage();
+            die();
             return false;
         }
     }
 
 
-    public function update($id, $request, $languageId){
+    public function update($id, $request, $languageId)
+    {
         DB::beginTransaction();
-        try{
+        try {
             $slide = $this->slideRepository->findById($id);
             $slideItem = $slide->item;
             unset($slideItem[$languageId]);
@@ -72,33 +76,37 @@ class SlideService extends BaseService implements SlideServiceInterface
             $slide = $this->slideRepository->update($id, $payload);
             DB::commit();
             return true;
-        }catch(\Exception $e ){
+        } catch (\Exception $e) {
             DB::rollBack();
             // Log::error($e->getMessage());
-            echo $e->getMessage();die();
+            echo $e->getMessage();
+            die();
             return false;
         }
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
         DB::beginTransaction();
-        try{
+        try {
             $slide = $this->slideRepository->delete($id);
 
             DB::commit();
             return true;
-        }catch(\Exception $e ){
+        } catch (\Exception $e) {
             DB::rollBack();
             // Log::error($e->getMessage());
-            echo $e->getMessage();die();
+            echo $e->getMessage();
+            die();
             return false;
         }
     }
 
-    private function handleSlideItem($request, $languageId){
+    private function handleSlideItem($request, $languageId)
+    {
         $slide = $request->input('slide');
         $temp = [];
-        foreach($slide['image'] as $key => $val){
+        foreach ($slide['image'] as $key => $val) {
             $temp[$languageId][] = [
                 'image' => $val,
                 'name' => $slide['name'][$key],
@@ -111,10 +119,11 @@ class SlideService extends BaseService implements SlideServiceInterface
         return $temp;
     }
 
-    public function updateSlideOrder($post, $language){
+    public function updateSlideOrder($post, $language)
+    {
         $slideId = $post[0]['id'];
-        
-        $temp = array_map(function($item){
+
+        $temp = array_map(function ($item) {
             unset($item['id']);
             return $item;
         }, $post);
@@ -125,23 +134,25 @@ class SlideService extends BaseService implements SlideServiceInterface
         $payload['item'][$language] = $temp + $slideItem;
         $slide = $this->slideRepository->update($slideId, $payload);
     }
-  
 
-    public function converSlideArray(array $slide = []): array{
+
+    public function converSlideArray(array $slide = []): array
+    {
         $temp = [];
-        $fields = ['image', 'description', 'window','canonical','name','alt'];
+        $fields = ['image', 'description', 'window', 'canonical', 'name', 'alt'];
         // dd($slide);
-        foreach($slide as $key => $val){
-            foreach($fields as $field){
+        foreach ($slide as $key => $val) {
+            foreach ($fields as $field) {
                 $temp[$field][] = $val[$field];
             }
         }
         return $temp;
     }
-    
-    private function paginateSelect(){
+
+    private function paginateSelect()
+    {
         return [
-            'id', 
+            'id',
             'name',
             'keyword',
             'item',
@@ -149,17 +160,19 @@ class SlideService extends BaseService implements SlideServiceInterface
         ];
     }
 
-    public function getSlide($array = [], $language = 1){
+    public function getSlide($array = [], $language = 1)
+    {
         $slides = $this->slideRepository->findByCondition(...$this->getSlideAgrument($array));
         $temp = [];
-        foreach($slides as $key => $val){
+        foreach ($slides as $key => $val) {
             $temp[$val->keyword]['item'] = $val->item[$language];
             $temp[$val->keyword]['setting'] = $val->setting;
         }
         return $temp;
     }
 
-    private function getSlideAgrument($array){
+    private function getSlideAgrument($array)
+    {
         return [
             'condition' => [
                 config('apps.general.defaultPublish'),
@@ -173,5 +186,4 @@ class SlideService extends BaseService implements SlideServiceInterface
             ]
         ];
     }
-
 }

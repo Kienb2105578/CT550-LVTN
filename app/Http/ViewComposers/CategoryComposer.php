@@ -1,4 +1,5 @@
-<?php  
+<?php
+
 namespace App\Http\ViewComposers;
 
 use Illuminate\View\View;
@@ -8,11 +9,12 @@ class CategoryComposer
 {
 
     protected $language;
+    protected $productCatalogueRepository;
 
     public function __construct(
         ProductCatalogueRepository $productCatalogueRepository,
         $language
-    ){
+    ) {
         $this->productCatalogueRepository = $productCatalogueRepository;
         $this->language = $language;
     }
@@ -22,8 +24,8 @@ class CategoryComposer
         $language = $this->language;
         $category = $this->productCatalogueRepository->all(
             [
-                'products', 
-                'languages' => function($query) use ($language){
+                'products',
+                'languages' => function ($query) use ($language) {
                     $query->where('language_id', $language);
                 }
             ]
@@ -31,7 +33,4 @@ class CategoryComposer
         $category = recursive($category);
         $view->with('category', $category);
     }
-
-   
-
 }

@@ -4,7 +4,7 @@
         <div class="page-breadcrumb background">
             <div class="uk-container uk-container-center">
                 <ul class="uk-list uk-clearfix">
-                    <li><a href="/"><i class="fi-rs-home mr5"></i>{{ __('frontend.home') }}</a></li>
+                    <li><a href="/"><i class="mr5"></i>{{ __('frontend.home') }}</a></li>
                     {{-- <li><a href="/" title="Sản phẩm">Sản phẩm</a></li> --}}
                     <li><a href="{{ write_url($productCatalogue->canonical) }}"
                             title="{{ $productCatalogue->name }}">{{ $productCatalogue->name }}</a></li>
@@ -160,7 +160,6 @@
                                 </h1>
                                 @include('frontend.product.catalogue.component.filter')
                             </div>
-                            {{-- @include('frontend.product.catalogue.component.filterContent') --}}
                             @if (!is_null($products))
                                 <div class="product-list">
                                     <div class="uk-grid uk-grid-medium">

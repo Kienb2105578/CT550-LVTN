@@ -43,15 +43,15 @@ class ProductCatalogueController extends FrontendController
 
     public function index($id, $request, $page = 1)
     {
-        $productCatalogue = $this->productCatalogueRepository->getProductCatalogueById($id, $this->language);
+        $productCatalogue = $this->productCatalogueRepository->getProductCatalogueById($id);
 
         $filters = $this->filter($productCatalogue);
 
-        $breadcrumb = $this->productCatalogueRepository->breadcrumb($productCatalogue, $this->language);
+        $breadcrumb = $this->productCatalogueRepository->breadcrumb($productCatalogue, 1);
 
         $products = $this->productService->paginate(
             $request,
-            $this->language,
+            1,
             $productCatalogue,
             $page,
             ['path' => $productCatalogue->canonical],
@@ -64,7 +64,7 @@ class ProductCatalogueController extends FrontendController
 
         $widgets = $this->widgetService->getWidget([
             ['keyword' => 'products-hl', 'promotion' => true],
-        ], $this->language);
+        ], 1);
 
 
         $widgets['products-hl']->object = $this->productRepository->widgetProductTotalQuantity($widgets['products-hl']->object);
@@ -84,68 +84,7 @@ class ProductCatalogueController extends FrontendController
             'widgets',
         ));
     }
-    // public function main(Request $request, $page = 1)
-    // {
 
-    //     $productCatalogues = $this->productCatalogueRepository->all();
-    //     $allFilters = [];
-
-    //     foreach ($productCatalogues as $productCatalogue) {
-    //         $filters = $this->filter($productCatalogue);
-
-    //         if ($filters instanceof \Illuminate\Support\Collection) {
-    //             $filters = $filters->toArray(); // Chuyển Collection thành array
-    //         }
-
-    //         if (!empty($filters)) {
-    //             $allFilters = array_merge($allFilters, $filters);
-    //         }
-    //     }
-
-    //     // Chuyển về mảng và loại bỏ trùng
-    //     $allFilters = array_values(array_unique($allFilters, SORT_REGULAR));
-
-    //     dd(collect($allFilters)); // Nếu muốn giữ Collection, có thể chuyển lại
-
-    //     $products = $this->productService->paginate(
-    //         $request,
-    //         $this->language,
-    //         null,
-    //         $page,
-    //         ['path' => route('product.catalogue.main')],
-    //     );
-
-    //     $productId = $products->pluck('id')->toArray();
-    //     if (count($productId) && !is_null($productId)) {
-    //         $products = $this->productService->combineProductAndPromotion($productId, $products);
-    //     }
-
-    //     $widgets = $this->widgetService->getWidget([
-    //         ['keyword' => 'products-hl', 'promotion' => true],
-    //     ], $this->language);
-
-
-    //     $widgets['products-hl']->object = $this->productRepository->widgetProductTotalQuantity($widgets['products-hl']->object);
-    //     $products = $this->productRepository->updateProductTotalQuantity($products);
-
-    //     $config = $this->config();
-    //     $system = $this->system;
-    //     $seo = [
-    //         'meta_title' => 'Sản phẩm',
-    //         'meta_keyword' => '',
-    //         'meta_description' => '',
-    //         'meta_image' => '',
-    //         'canonical' => route('product.catalogue.main')
-    //     ];
-    //     return view('frontend.product.catalogue.main', compact(
-    //         'config',
-    //         'seo',
-    //         'system',
-    //         'products',
-    //         'widgets',
-    //         'filters'
-    //     ));
-    // }
 
     private function filter($productCatalogue)
     {
@@ -167,7 +106,7 @@ class ProductCatalogueController extends FrontendController
         }
 
         if (isset($groupedAttributes) && !is_null($groupedAttributes) &&  count($groupedAttributes)) {
-            $filters = $this->productCatalogueService->getFilterList($groupedAttributes, $this->language);
+            $filters = $this->productCatalogueService->getFilterList($groupedAttributes);
         }
         return $filters;
     }
@@ -194,11 +133,11 @@ class ProductCatalogueController extends FrontendController
         if (!empty($products)) {
             $product_recommend = [];
             foreach ($products as $id) {
-                $product_recommend[] = $this->productRepository->getProductById($id, 1);
+                $product_recommend[] = $this->productRepository->getProductById($id);
             }
             $products = $product_recommend;
         } elseif (empty($products)) {
-            $products = $this->productRepository->search($keyword, $this->language);
+            $products = $this->productRepository->search($keyword);
         }
 
         $productId = collect($products)->pluck('id')->toArray();
@@ -212,36 +151,6 @@ class ProductCatalogueController extends FrontendController
         $carts = Cart::instance('shopping')->content();
         $seo = [
             'meta_title' => 'Tìm kiếm cho từ khóa: ' . $request->input('keyword'),
-            'meta_keyword' => '',
-            'meta_description' => '',
-            'meta_image' => '',
-            'canonical' => write_url('tim-kiem')
-        ];
-        return view('frontend.product.catalogue.search', compact(
-            'config',
-            'seo',
-            'system',
-            'products',
-            'carts'
-        ));
-    }
-
-    public function wishlist(Request $request)
-    {
-
-        $id = Cart::instance('wishlist')->content()->pluck('id')->toArray();
-
-        $products = $this->productRepository->wishlist($id, $this->language);
-        $productId = $products->pluck('id')->toArray();
-        if (count($productId) && !is_null($productId)) {
-            $products = $this->productService->combineProductAndPromotion($productId, $products);
-        }
-
-        $config = $this->config();
-        $system = $this->system;
-        $carts = Cart::instance('shopping')->content();
-        $seo = [
-            'meta_title' => 'Danh sách yêu thích',
             'meta_keyword' => '',
             'meta_description' => '',
             'meta_image' => '',

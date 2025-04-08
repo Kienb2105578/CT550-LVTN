@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use App\Traits\QueryScopes;
 
 class Product extends Model
@@ -92,5 +93,16 @@ class Product extends Model
     public function purchaseOrderDetails()
     {
         return $this->hasMany(PurchaseOrderDetail::class, 'product_id', 'id');
+    }
+
+    public static function hasProducts($catalogueId)
+    {
+        $hasDirectProducts = self::where('product_catalogue_id', $catalogueId)->exists();
+
+        $hasRelationProducts = DB::table('product_catalogue_product')
+            ->where('product_catalogue_id', $catalogueId)
+            ->exists();
+
+        return $hasDirectProducts || $hasRelationProducts;
     }
 }

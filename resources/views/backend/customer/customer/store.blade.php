@@ -31,15 +31,24 @@
                             </div>
                             <div class="col-lg-3">
                                 <div class="form-row">
-                                    <label for="" class="control-label text-left">Mã khách hàng</label>
-                                    <div class="code">
-                                        <input type="text" name="code"
+                                    <label for="codeInput" class="control-label text-left">Mã khách hàng</label>
+                                    <div class="code d-flex align-items-center gap-2">
+                                        <input type="text" id="codeInput" name="code"
                                             value="{{ old('code', $customer->code ?? time()) }}" class="form-control"
                                             placeholder="" autocomplete="off" readonly>
-                                        <input type="checkbox">
                                     </div>
                                 </div>
                             </div>
+
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    const codeInput = document.getElementById("codeInput");
+                                    if (codeInput.value.trim() === "") {
+                                        codeInput.value = Math.floor(Date.now() / 1000);
+                                    }
+                                });
+                            </script>
+
                             <div class="col-lg-4">
                                 <div class="form-row">
                                     <label for="" class="control-label text-left">Họ Tên <span
@@ -50,37 +59,6 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- <div class="row mb15">
-                            <div class="col-lg-6">
-                                <div class="form-row customerWrapper">
-                                    <label for="" class="control-label text-left">Nhóm khách hàng <span
-                                            class="text-danger">(*)</span></label>
-                                    <select name="customer_catalogue_id" class="form-control setupSelect2">
-                                        <option value="0">[Chọn Nhóm Khách Hàng]</option>
-                                        @foreach ($customerCatalogues as $key => $item)
-                                            <option
-                                                {{ $item->id == old('customer_catalogue_id', isset($customer->customer_catalogue_id) ? $customer->customer_catalogue_id : '') ? 'selected' : '' }}
-                                                value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-row customerWrapper">
-                                    <label for="" class="control-label text-left">Nguồn khách <span
-                                            class="text-danger">(*)</span></label>
-                                    <select name="source_id" class="form-control setupSelect2">
-                                        <option value="0">[Chọn Nguồn khách]</option>
-                                        @foreach ($sources as $key => $val)
-                                            <option
-                                                {{ $val->id == old('source_id', isset($customer->source_id) ? $customer->source_id : '') ? 'selected' : '' }}
-                                                value="{{ $val->id }}">{{ $val->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                        </div> --}}
                         @if ($config['method'] == 'create')
                             <div class="row mb15">
                                 <div class="col-lg-6">

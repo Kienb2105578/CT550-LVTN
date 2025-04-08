@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped table-bordered order-table">
+    <table class="table  order-table">
         <thead>
             <tr>
                 <th>Mã đơn hàng</th>

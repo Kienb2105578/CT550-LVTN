@@ -36,11 +36,11 @@ class PostCatalogueController extends FrontendController
 
     public function index($id, $request, $page = 1)
     {
-        $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($id, $this->language);
-        $breadcrumb = $this->postCatalogueRepository->breadcrumb($postCatalogue, $this->language);
+        $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($id);
+        $breadcrumb = $this->postCatalogueRepository->breadcrumb($postCatalogue, 1);
         $posts = $this->postService->paginate(
             $request,
-            $this->language,
+            1,
             $postCatalogue,
             $page,
             ['path' => $postCatalogue->canonical],
@@ -51,11 +51,10 @@ class PostCatalogueController extends FrontendController
             ['keyword' => 'vision', 'object' => true],
             ['keyword' => 'post-catalogue-why', 'object' => true],
             ['keyword' => 'staff', 'object' => true],
-        ], $this->language);
+        ], 1);
         $template = 'frontend.post.catalogue.index';
         $config = $this->config();
         $system = $this->system;
-        $carts = Cart::instance('shopping')->content();
         $seo = seo($postCatalogue, $page);
         return view($template, compact(
             'config',
@@ -65,11 +64,8 @@ class PostCatalogueController extends FrontendController
             'postCatalogue',
             'posts',
             'widgets',
-            'carts'
         ));
     }
-
-
 
 
     private function config()

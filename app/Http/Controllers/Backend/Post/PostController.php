@@ -25,8 +25,7 @@ class PostController extends Controller
     ) {
         $this->middleware(function ($request, $next) {
             $locale = app()->getLocale(); // vn en cn
-            $language = Language::where('canonical', $locale)->first();
-            $this->language = $language->id;
+            $this->language = 1;
             $this->initialize();
             return $next($request);
         });

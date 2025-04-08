@@ -97,30 +97,33 @@ class ProductController extends FrontendController
             ['keyword' => 'products-hl', 'promotion' => true],
         ], $this->language);
 
-        $productSeen = [
-            'id' => $product->id,
-            'name' => $product->name,
-            'qty' => $product->quantity,
-            'price' => $product->price,
-            'options' => [
-                'canonical' =>  write_url($productcanonical ?? $product->canonical),
-                'image' => $product->image,
-                'catName' =>  $product->product_catalogue_name ?? '',
-                'review' => getReview($product),
-            ]
-        ];
-        Cart::instance('seen')->add($productSeen);
-        $cartSeen = Cart::instance('seen')->content();
-
-        $productId = $cartSeen->pluck('id')->toArray();
-        if (count($productId) && !is_null($productId)) {
-            $cartSeen = $this->productService->combineProductAndPromotion($productId, $cartSeen);
-        }
 
 
         $widgets['products-hl']->object = $this->productRepository->widgetProductTotalQuantity($widgets['products-hl']->object);
         $productCatalogue->products = $this->productRepository->updateProductTotalQuantity($productCatalogue->products);
         $product_recommend = $this->productRepository->updateProductTotalQuantity($product_recommend);
+
+
+        // $productSeen = [
+        //     'id' => $product->id,
+        //     'name' => $product->name,
+        //     'qty' => $product->total_quantity,
+        //     'price' => $product->price,
+        //     'options' => [
+        //         'canonical' =>  write_url($productcanonical ?? $product->canonical),
+        //         'image' => $product->image,
+        //         'catName' =>  $product->product_catalogue_name ?? '',
+        //         'review' => getReview($product),
+        //     ]
+        // ];
+        // Cart::instance('seen')->add($productSeen);
+        // $cartSeen = Cart::instance('seen')->content();
+
+        // $productId = $cartSeen->pluck('id')->toArray();
+        // if (count($productId) && !is_null($productId)) {
+        //     $cartSeen = $this->productService->combineProductAndPromotion($productId, $cartSeen);
+        // }
+
 
         // dd($productCatalogue);
         $config = $this->config();
@@ -134,7 +137,6 @@ class ProductController extends FrontendController
             'productCatalogue',
             'product',
             'widgets',
-            'cartSeen',
             'order_product',
             'product_recommend'
         ));

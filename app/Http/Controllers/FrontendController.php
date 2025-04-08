@@ -28,8 +28,6 @@ class FrontendController extends Controller
         $locale = app()->getLocale(); // vn en cn
         $language = 'vn';
         $this->language = 1;
-        // $language = Language::where('canonical', $locale)->first();
-        // $this->language = $language->id;
     }
 
     public function setSystem()

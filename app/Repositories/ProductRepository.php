@@ -23,7 +23,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         $this->model = $model;
     }
 
-    public function search($keyword, $language_id)
+    public function search($keyword)
     {
         return $this->model->select(
             [
@@ -107,40 +107,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     public function getTotalProduct()
     {
         return $this->model->whereNull('deleted_at')->count();
-    }
-
-    public function wishlist($ids, $language_id)
-    {
-        return $this->model->select(
-            [
-                'products.id',
-                'products.product_catalogue_id',
-                'products.image',
-                'products.album',
-                'products.publish',
-                'products.quantity',
-                'products.price',
-                'products.code',
-                'products.made_in',
-                'products.attributeCatalogue',
-                'products.attribute',
-                'products.variant',
-                'products.name',
-                'products.description',
-                'products.content',
-                'products.canonical',
-            ]
-        )
-            ->with([
-                'product_catalogues',
-                'product_variants' => function ($query) use ($language_id) {
-                    $query->with(['attributes']); // Keep attributes without language-specific filtering
-                },
-                'reviews'
-            ])
-            ->where('products.publish', '=', 2) // Filter for only published products
-            ->whereIn('products.id', $ids) // Filter by product ids
-            ->get();
     }
 
 

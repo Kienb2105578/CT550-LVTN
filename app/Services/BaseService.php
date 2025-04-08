@@ -32,8 +32,7 @@ class BaseService implements BaseServiceInterface
     public function currentLanguage()
     {
         $locale = app()->getLocale();
-        $language = Language::where('canonical', $locale)->first();
-        return $language->id;
+        return 1;
     }
 
     public function formatAlbum($request)
@@ -74,7 +73,6 @@ class BaseService implements BaseServiceInterface
     public function updateRouter($model, $request, $controllerName, $languageId)
     {
         $payload = $this->formatRouterPayload($model, $request, $controllerName, $languageId);
-        // dd($payload);
         $condition = [
             ['module_id', '=', $model->id],
             ['language_id', '=', $languageId],

@@ -203,7 +203,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
 
 
 
-    public function getFilterList(array $attribute = [], $languageId)
+    public function getFilterList(array $attribute = [])
     {
         $attributeCatalougeId = array_keys($attribute);
         $attributeId = array_unique(array_merge(...$attribute));

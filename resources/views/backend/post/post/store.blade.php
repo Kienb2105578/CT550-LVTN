@@ -9,7 +9,7 @@
     </div>
 @endif
 @php
-    $url = ($config['method'] == 'create') ? route('post.store') : route('post.update', $post->id);
+    $url = $config['method'] == 'create' ? route('post.store') : route('post.update', $post->id);
 @endphp
 <form action="{{ $url }}" method="post" class="box">
     @csrf
@@ -21,11 +21,10 @@
                         <h5>{{ __('messages.tableHeading') }}</h5>
                     </div>
                     <div class="ibox-content">
-                        @include('backend.dashboard.component.content', ['model' => ($post) ?? null])
+                        @include('backend.dashboard.component.content', ['model' => $post ?? null])
                     </div>
                 </div>
-               @include('backend.dashboard.component.album')
-               @include('backend.dashboard.component.seo', ['model' => ($post) ?? null])
+                @include('backend.dashboard.component.seo', ['model' => $post ?? null])
             </div>
             <div class="col-lg-3">
                 @include('backend.post.post.component.aside')

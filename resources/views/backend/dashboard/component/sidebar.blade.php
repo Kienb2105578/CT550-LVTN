@@ -14,7 +14,7 @@
                 $sidebarModules = __('sidebar.module');
                 $selectedModules = array_slice($sidebarModules, 0, 1);
 
-                if ($languages->first()?->id == 1) {
+                if ($languages->first()['id'] == 1) {
                     $accessibleMenus = array_merge($selectedModules, $accessibleMenus ?? []);
                 }
             @endphp

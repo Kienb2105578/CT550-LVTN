@@ -25,22 +25,22 @@ class MenuController extends Controller
         MenuCatalogueService $menuCatalogueService,
         MenuService $menuService,
         MenuRepository $menuRepository,
-    ){
+    ) {
         $this->menuCatalogueRepository = $menuCatalogueRepository;
         $this->menuCatalogueService = $menuCatalogueService;
         $this->menuService = $menuService;
         $this->menuRepository = $menuRepository;
-        $this->middleware(function($request, $next){
+        $this->middleware(function ($request, $next) {
             $locale = app()->getLocale(); // vn en cn
-            $language = Language::where('canonical', $locale)->first();
-            $this->language = $language->id;
+            $this->language = 1;
             return $next($request);
         });
     }
 
-    public function createCatalogue(StoreMenuCatalogueRequest $request){
+    public function createCatalogue(StoreMenuCatalogueRequest $request)
+    {
         $menuCatalogue = $this->menuCatalogueService->create($request);
-        if($menuCatalogue !== FALSE){
+        if ($menuCatalogue !== FALSE) {
             return response()->json([
                 'code' => 0,
                 'message' => 'Tạo nhóm menu thành công!',
@@ -53,16 +53,17 @@ class MenuController extends Controller
         ]);
     }
 
-    public function drag(Request $request){
+    public function drag(Request $request)
+    {
         $json = json_decode($request->string('json'), TRUE);
         $menuCatalogueId = $request->integer('menu_catalogue_id');
 
         $flag = $this->menuService->dragUpdate($json, $menuCatalogueId, $this->language);
     }
-    
-    public function deleteMenu(Request $request){
+
+    public function deleteMenu(Request $request)
+    {
         $id = $request->input('menu_id');
         $this->menuService->destroyMenu($id, $this->language);
     }
-    
 }

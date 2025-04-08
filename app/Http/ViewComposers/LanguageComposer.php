@@ -34,7 +34,9 @@ class LanguageComposer
         $usercatalogue_id_login = $user ? $user->user_catalogue_id : null;
         $user_login = $this->userService->getUserPermissions();
         $accessibleMenus = $this->filterAccessibleMenus($user_login, $menus);
-        $languages = $this->languageRepository->findByCondition(...$this->agrument());
+        // $languages = $this->languageRepository->findByCondition(...$this->agrument());
+        $languages = collect(config('languages'));
+
         $view->with('languages', $languages)
             ->with('usercatalogue_id_login', $usercatalogue_id_login)
             ->with('accessibleMenus', $accessibleMenus);

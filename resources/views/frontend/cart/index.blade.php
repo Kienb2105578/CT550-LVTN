@@ -4,7 +4,7 @@
         <div class="page-breadcrumb background">
             <div class="uk-container uk-container-center">
                 <ul class="uk-list uk-clearfix">
-                    <li><a href="/"><i class="fi-rs-home mr5"></i>Trang chủ</a></li>
+                    <li><a href="/"><i class="mr5"></i>Trang chủ</a></li>
                     <li><a href="http://127.0.0.1:8000/thanh-toan.html" title="Thanh toán">Thanh toán</a></li>
                 </ul>
             </div>

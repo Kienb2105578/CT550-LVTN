@@ -22,20 +22,7 @@
                         <td>{{ $widget->name }}</td>
                         <td>{{ $widget->keyword }}</td>
                         <td>{{ $widget->short_code ?? '-' }}</td>
-                        @foreach ($languages as $language)
-                            @if (session('app_locale') === $language->canonical)
-                                @continue
-                            @endif
-                            @php
-                                $translated = isset($widget->description[$language->id]) ? 1 : 0;
-                            @endphp
-                            <td class="text-center">
-                                <a class="{{ $translated == 1 ? '' : 'text-danger' }}"
-                                    href="{{ route('widget.translate', ['languageId' => $language->id, 'id' => $widget->id]) }}">
-                                    {{ $translated == 1 ? 'Đã dịch' : 'Chưa dịch' }}
-                                </a>
-                            </td>
-                        @endforeach
+
                         <td class="text-center js-switch-{{ $widget->id }}">
                             <input type="checkbox" value="{{ $widget->publish }}" class="js-switch status"
                                 data-field="publish" data-model="{{ $config['model'] }}"

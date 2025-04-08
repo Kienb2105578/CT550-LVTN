@@ -1,7 +1,10 @@
 @include('backend.dashboard.component.breadcrumb', ['title' => $config['seo'][$config['method']]['title']])
 @include('backend.dashboard.component.formError')
 @php
-    $url = ($config['method'] == 'create') ? route('post.catalogue.store') : route('post.catalogue.update', $postCatalogue->id);
+    $url =
+        $config['method'] == 'create'
+            ? route('post.catalogue.store')
+            : route('post.catalogue.update', $postCatalogue->id);
 @endphp
 <form action="{{ $url }}" method="post" class="box">
     @csrf
@@ -13,11 +16,12 @@
                         <h5>{{ __('messages.tableHeading') }}</h5>
                     </div>
                     <div class="ibox-content">
-                        @include('backend.dashboard.component.content', ['model' => ($postCatalogue) ?? null])
+                        @include('backend.dashboard.component.content', [
+                            'model' => $postCatalogue ?? null,
+                        ])
                     </div>
                 </div>
-               @include('backend.dashboard.component.album', ['model' => ($postCatalogue) ?? null])
-               @include('backend.dashboard.component.seo', ['model' => ($postCatalogue) ?? null])
+                @include('backend.dashboard.component.seo', ['model' => $postCatalogue ?? null])
             </div>
             <div class="col-lg-3">
                 @include('backend.post.catalogue.component.aside')

@@ -183,7 +183,7 @@
                         THÊM</span></a></h2>
         </div>
     </div>
-    @if (count($cartSeen))
+    {{-- @if (count($cartSeen))
         <div class="product-related">
             <div class="panel-product">
                 <div class="panel-head style-head">
@@ -233,7 +233,7 @@
                 </div>
             </div>
         </div>
-    @endif
+    @endif --}}
 
 
 </div>

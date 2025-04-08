@@ -9,6 +9,7 @@ class MenuComposer
 {
 
     protected $language;
+    protected $menuCatalogueRepository;
 
     public function __construct(
         MenuCatalogueRepository $menuCatalogueRepository,
