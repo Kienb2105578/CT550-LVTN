@@ -158,7 +158,7 @@
                             <div class="uk-flex uk-flex-middle uk-flex-space-between mb20">
                                 <h1 class="heading-2"><span>{{ $productCatalogue->name }}</span>
                                 </h1>
-                                @include('frontend.product.catalogue.component.filter')
+                                {{-- filter --}}
                             </div>
                             @if (!is_null($products))
                                 <div class="product-list">

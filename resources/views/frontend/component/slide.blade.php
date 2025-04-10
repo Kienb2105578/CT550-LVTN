@@ -2,9 +2,6 @@
     $slideKeyword = App\Enums\SlideEnum::MAIN;
 @endphp
 @if (count($slides[$slideKeyword]['item']))
-    @php
-        dd($slides);
-    @endphp
     <div class="panel-slide page-setup" data-setting="{{ json_encode($slides[$slideKeyword]['setting']) }}">
         <div class="swiper-container">
             <div class="swiper-button-next"></div>

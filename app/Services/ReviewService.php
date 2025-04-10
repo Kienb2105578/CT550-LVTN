@@ -61,6 +61,32 @@ class ReviewService extends BaseService implements ReviewServiceInterface
             die();
         }
     }
+    public function reply($id, $replyText)
+    {
+        DB::beginTransaction();
+        try {
+            $review = $this->reviewRepository->findById($id);
+            $replies = json_decode($review->replies, true);
+            if (!is_array($replies)) {
+                $replies = [];
+            }
+            $newReply = [
+                'reply_by' => auth()->id(),
+                'reply_text' => $replyText,
+                'created_at' => now()
+            ];
+
+            $replies[] = $newReply;
+            $payload['replies'] = json_encode($replies);
+            $this->reviewRepository->update($id, $payload);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            echo $e->getMessage();
+            die();
+        }
+    }
+
 
     private function paginateSelect()
     {
@@ -71,6 +97,7 @@ class ReviewService extends BaseService implements ReviewServiceInterface
             'product_id',
             'reviewable_type',
             'email',
+            'replies',
             'phone',
             'fullname',
             'gender',

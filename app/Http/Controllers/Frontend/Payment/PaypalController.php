@@ -11,22 +11,23 @@ use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class PaypalController extends FrontendController
 {
-  
+
     protected $orderRepository;
     protected $orderService;
 
     public function __construct(
         OrderRepository $orderRepository,
         OrderService $orderService,
-    ){
-       
+    ) {
+
         $this->orderRepository = $orderRepository;
         $this->orderService = $orderService;
         parent::__construct();
     }
 
 
-    public function success(Request $request){
+    public function success(Request $request)
+    {
         $system = $this->system;
         $provider = new PaypalClient;
         $provider->setApiCredentials(config('paypal'));
@@ -35,9 +36,9 @@ class PaypalController extends FrontendController
 
         $orderId = $request->input('orderId');
 
-       
 
-        if(isset($response['status']) && $response['status'] == 'COMPLETED'){
+
+        if (isset($response['status']) && $response['status'] == 'COMPLETED') {
             $payload['payment'] = 'paid';
             $payload['confirm'] = 'confirm';
             $order = $this->orderRepository->findByCondition([
@@ -45,7 +46,7 @@ class PaypalController extends FrontendController
             ], false, ['products']);
             $flag = $this->orderService->updatePaymentOnline($payload, $order);
             $seo = [
-                'meta_title' => 'Thông tin thanh toán mã đơn hàng #'.$orderId,
+                'meta_title' => 'Thông tin thanh toán mã đơn hàng #' . $orderId,
                 'meta_keyword' => '',
                 'meta_description' => '',
                 'meta_image' => '',
@@ -59,13 +60,11 @@ class PaypalController extends FrontendController
                 'template',
             ));
         }
-
     }
 
-    public function cancel(Request $request){
-        echo 'Hủy thanh toán thành công';die();
+    public function cancel(Request $request)
+    {
+        echo 'Hủy thanh toán thành công';
+        die();
     }
-
-  
-
 }

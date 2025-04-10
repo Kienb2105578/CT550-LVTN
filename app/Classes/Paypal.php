@@ -18,7 +18,7 @@ class Paypal
         $paypalValue = number_format($cartTotal / $usd, 2, '.', '');
 
         $provider = new PayPalClient;
-        $provider = \PayPal::setProvider();
+        // $provider = \PayPal::setProvider();
 
         $accessToken = $provider->getAccessToken();
 

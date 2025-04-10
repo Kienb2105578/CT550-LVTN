@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Product;
 use App\Models\PurchaseOrder;
+use App\Models\ProductVariant;
+use Illuminate\Support\Facades\DB;
 
 class PurchaseOrderController extends Controller
 {
@@ -29,29 +31,41 @@ class PurchaseOrderController extends Controller
         if (!$product) {
             return response()->json(['error' => 'Sản phẩm không tồn tại'], 404);
         }
-        Log::info("Product", ["product", $product]);
+
+        $totalQuantity = DB::table('inventory_batches')
+            ->where('product_id', $product->id)
+            ->whereNull('variant_id')
+            ->where('publish', 2)
+            ->sum('quantity');
+
+        $variantsQuantities = $product->product_variants->map(function ($variant) {
+            return [
+                'id' => $variant->id,
+                'quantity' => DB::table('inventory_batches')
+                    ->where('variant_id', $variant->id)
+                    ->where('publish', 2)
+                    ->sum('quantity'),
+                'code' => $variant->sku,
+                'name' => $variant->name,
+            ];
+        });
+
+        Log::info("Product", ["product" => $product]);
 
         return response()->json([
             'id' => $product->id,
             'name' => $product->name,
-            'quantity' => $product->quantity,
+            'quantity' => $totalQuantity,
             'status' => $product->status,
             'price' => 0,
-            'variants' => $product->product_variants?->map(function ($variant) {
-                return [
-                    'id' => $variant->id,
-                    'code' => $variant->sku,
-                    'name' => $variant->name,
-                    'quantity' => $variant->quantity
-                ];
-            }) ?? collect([])
+            'variants' => $variantsQuantities
         ]);
     }
+
+
     public function loadExistingProducts($orderId)
     {
-        $order = PurchaseOrder::with(['purchase_order_details.product.product_variants'])
-            ->where('id', $orderId)
-            ->first();
+        $order = PurchaseOrder::find($orderId);
 
         if (!$order) {
             return response()->json(['error' => 'Đơn hàng không tồn tại'], 404);
@@ -60,57 +74,62 @@ class PurchaseOrderController extends Controller
         $products = [];
 
         foreach ($order->purchase_order_details as $detail) {
-            $productId = $detail->product->id;
+            $productId = $detail->product_id;
+            $variantId = $detail->variant_id;
+
+            // Lấy tên sản phẩm
+            $productName = Product::where('id', $productId)->pluck('name')->first();
+
+            // Kiểm tra nếu sản phẩm đã tồn tại trong danh sách
             if (!isset($products[$productId])) {
-                $totalQuantity = 0;
-                $productPrice = 0;
+                $products[$productId] = [
+                    'id' => $productId,
+                    'name' => $productName,
+                    'quantity' => 0, // Số lượng tổng cộng
+                    'price' => 0,    // Tổng giá
+                    'status' => $order->status,
+                    'variants' => [], // Mảng biến thể
+                ];
+            }
 
-                if ($detail->product->product_variants->isNotEmpty()) {
-                    $variantQuantities = $detail->product->product_variants->sum(function ($variant) use ($detail) {
-                        return $detail->quantity;
-                    });
+            // Biến lưu trữ số lượng và giá trị cho biến thể
+            $totalQuantity = 0;
+            $productPrice = 0;
 
-                    $totalQuantity += $variantQuantities;
-                    $productPrice = $detail->product->product_variants->sum(function ($variant) use ($detail) {
-                        return $detail->price * $detail->quantity;
-                    });
+            // Kiểm tra nếu có biến thể
+            if ($variantId != null) {
+                $variant = ProductVariant::find($variantId);
 
-                    $products[$productId] = [
-                        'id' => $detail->product->id,
-                        'name' => $detail->product->name,
-                        'quantity' => $totalQuantity,
-                        'price' => (int)$productPrice,
-                        'status' => $order->status,
-                        'variants' => $detail->product->product_variants->map(function ($variant) use ($detail) {
-                            return [
-                                'id' => $variant->id,
-                                'name' => $variant->name,
-                                'quantity' => $detail->quantity,
-                                'price' => (int) $detail->price
-                            ];
-                        })
-                    ];
-                } else {
-                    $totalQuantity = $detail->quantity;
-                    $productPrice = $detail->price * $totalQuantity;
+                // Nếu có biến thể, thêm thông tin vào mảng 'variants'
+                if ($variant) {
+                    $variantQuantity = $detail->quantity;
+                    $variantPrice = $detail->price;
 
-                    $products[$productId] = [
-                        'id' => $detail->product->id,
-                        'name' => $detail->product->name,
-                        'quantity' => $totalQuantity,
-                        'price' => (int)$detail->price,
-                        'status' => $order->status,
-                        'variants' => []
+                    // Cộng dồn số lượng và giá sản phẩm
+                    $totalQuantity += $variantQuantity;
+                    $productPrice += $variantPrice;
+
+                    $products[$productId]['variants'][] = [
+                        'id' => $variant->id,
+                        'name' => $variant->name,
+                        'quantity' => $variantQuantity,
+                        'price' => (int) $variantPrice,
                     ];
                 }
+            } else {
+                // Nếu không có biến thể, dùng thông tin của sản phẩm chính
+                $totalQuantity = $detail->quantity;
+                $productPrice = $detail->price;
             }
-        }
-        $productDetails = array_values($products);
 
-        // Thêm status của phiếu nhập hàng vào response
+            // Cập nhật số lượng và giá sản phẩm chính
+            $products[$productId]['quantity'] += $totalQuantity;
+            $products[$productId]['price'] += $productPrice;
+        }
+
         return response()->json([
-            'status' => $order->status, // Lấy status của purchase_order
-            'details' => $productDetails
+            'status' => $order->status,
+            'details' => array_values($products)
         ]);
     }
 }

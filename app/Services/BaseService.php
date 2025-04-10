@@ -13,15 +13,15 @@ use App\Models\Language;
 use Illuminate\Support\Str;
 
 /**
- * Class LanguageService
  * @package App\Services
  */
 class BaseService implements BaseServiceInterface
 {
 
-    protected $routerRespository;
+    protected $routerRepository;
     protected $controllerName;
     protected $language;
+    protected $nestedset;
 
     public function __construct(
         RouterRepository $routerRepository

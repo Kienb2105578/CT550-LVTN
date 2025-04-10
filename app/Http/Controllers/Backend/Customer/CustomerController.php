@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Services\Interfaces\CustomerServiceInterface  as CustomerService;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface  as ProvinceRepository;
 use App\Repositories\Interfaces\CustomerRepositoryInterface as CustomerRepository;
-use App\Repositories\Interfaces\CustomerCatalogueRepositoryInterface as CustomerCatalogueRepository;
 use App\Repositories\Interfaces\SourceRepositoryInterface as SourceRepository;
 
 use App\Http\Requests\Customer\StoreCustomerRequest;
@@ -19,19 +18,16 @@ class CustomerController extends Controller
     protected $customerService;
     protected $provinceRepository;
     protected $customerRepository;
-    protected $customerCatalogueRepository;
 
 
     public function __construct(
         CustomerService $customerService,
         ProvinceRepository $provinceRepository,
         CustomerRepository $customerRepository,
-        CustomerCatalogueRepository $customerCatalogueRepository,
     ) {
         $this->customerService = $customerService;
         $this->provinceRepository = $provinceRepository;
         $this->customerRepository = $customerRepository;
-        $this->customerCatalogueRepository = $customerCatalogueRepository;
     }
 
     public function index(Request $request)
@@ -39,8 +35,6 @@ class CustomerController extends Controller
         $this->authorize('modules', 'customer.index');
         $customers = $this->customerService->paginate($request);
 
-
-        $customerCatalogues = $this->customerCatalogueRepository->all();
         $config = [
             'js' => [
                 'backend/js/plugins/switchery/switchery.js',
@@ -58,7 +52,6 @@ class CustomerController extends Controller
             'template',
             'config',
             'customers',
-            'customerCatalogues',
         ));
     }
 
@@ -66,7 +59,6 @@ class CustomerController extends Controller
     {
         $this->authorize('modules', 'customer.create');
         $provinces = $this->provinceRepository->all();
-        $customerCatalogues = $this->customerCatalogueRepository->all();
         $config = $this->config();
         $config['seo'] = __('messages.customer');
         $config['method'] = 'create';
@@ -75,7 +67,6 @@ class CustomerController extends Controller
             'template',
             'config',
             'provinces',
-            'customerCatalogues',
         ));
     }
 
@@ -92,7 +83,6 @@ class CustomerController extends Controller
         $this->authorize('modules', 'customer.update');
         $customer = $this->customerRepository->findById($id);
         $provinces = $this->provinceRepository->all();
-        $customerCatalogues = $this->customerCatalogueRepository->all();
         $config = $this->config();
         $config['seo'] = __('messages.customer');
         $config['method'] = 'edit';
@@ -102,7 +92,6 @@ class CustomerController extends Controller
             'config',
             'provinces',
             'customer',
-            'customerCatalogues',
         ));
     }
 

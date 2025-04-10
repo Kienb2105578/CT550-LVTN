@@ -31,10 +31,6 @@ class Customer extends Authenticatable
         'birthday',
         'image',
         'description',
-        'user_agent',
-        'ip',
-        'customer_catalogue_id',
-        'source_id',
         'publish',
     ];
 
@@ -45,7 +41,6 @@ class Customer extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 
     /**
@@ -54,7 +49,6 @@ class Customer extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
 
@@ -62,16 +56,6 @@ class Customer extends Authenticatable
         'publish' => 2
     ];
 
-
-    public function customer_catalogues()
-    {
-        return $this->belongsTo(CustomerCatalogue::class, 'customer_catalogue_id', 'id');
-    }
-
-    // public function sources()
-    // {
-    //     return $this->belongsTo(Source::class, 'source_id', 'id');
-    // }
     public function reviews()
     {
         return $this->hasMany(Review::class, 'customer_id');

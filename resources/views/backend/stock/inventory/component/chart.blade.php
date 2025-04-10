@@ -77,7 +77,7 @@
                             </thead>
                             <tbody id="inventoryTable">
                                 <tr>
-                                    <td colspan="" class="text-center">Chưa có dữ liệu</td>
+                                    <td colspan="7" class="text-center">Chưa có dữ liệu</td>
                                 </tr>
                             </tbody>
                         </table>

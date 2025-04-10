@@ -33,7 +33,7 @@
         <div class="col-lg-3">
             <div class="widget gray-bg no-padding">
                 <div class="p-m">
-                    <h1 class="no-margins">{{ $orderStatistic['orderCurrentMonth'] }}</h1>
+                    <h1 class="m-xs">{{ $orderStatistic['orderCurrentMonth'] }}</h1>
                     <h3 class="font-bold no-margins">
                         Đơn hàng trong tháng
                     </h3>

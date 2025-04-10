@@ -135,7 +135,6 @@ class HomeController extends FrontendController
         }
         $product_promotion = $this->productRepository->updateProductTotalQuantity($product_promotion);
         $promotion_new = $this->promotionRepository->getLatestActivePromotion();
-
         $system = $this->system;
         $seo = [
             'meta_title' => $this->system['seo_meta_title'],

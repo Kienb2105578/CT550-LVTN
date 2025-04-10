@@ -11,11 +11,8 @@ use App\Http\Controllers\Backend\User\UserCatalogueController;
 use App\Http\Controllers\Backend\User\PermissionController;
 use App\Http\Controllers\Backend\Customer\CustomerController;
 use App\Http\Controllers\Backend\Supplier\SupplierController;
-use App\Http\Controllers\Backend\Customer\CustomerCatalogueController;
-use App\Http\Controllers\Backend\Customer\SourceController;
 use App\Http\Controllers\Backend\Post\PostCatalogueController;
 use App\Http\Controllers\Backend\Post\PostController;
-use App\Http\Controllers\Backend\LanguageController;
 use App\Http\Controllers\Backend\MenuController;
 use App\Http\Controllers\Backend\SlideController;
 use App\Http\Controllers\Backend\WidgetController;
@@ -135,7 +132,7 @@ Route::group(['middleware' => 'license'], function () {
    Route::get('return/vnpay_ipn' . config('apps.general.suffix'), [VnpayController::class, 'vnpay_ipn'])->name('vnpay.vnpay_ipn');
 
    Route::get('return/momo' . config('apps.general.suffix'), [MomoController::class, 'momo_return'])->name('momo.momo_return');
-   Route::get('return/ipn' . config('apps.general.suffix'), [MomoController::class, 'vnpay_ipn'])->name('momo.momo_ipn');
+   Route::get('return/ipn' . config('apps.general.suffix'), [MomoController::class, 'momo_ipn'])->name('momo.momo_ipn');
 
    Route::get('paypal/success' . config('apps.general.suffix'), [PaypalController::class, 'success'])->name('paypal.success');
    Route::get('paypal/cancel' . config('apps.general.suffix'), [PaypalController::class, 'cancel'])->name('paypal.cancel');
@@ -143,6 +140,7 @@ Route::group(['middleware' => 'license'], function () {
 
    /* FRONTEND AJAX ROUTE */
    Route::post('ajax/review/create', [AjaxReviewController::class, 'create'])->name('ajax.review.create');
+   Route::post('ajax/review/reply', [AjaxReviewController::class, 'reply'])->name('ajax.review.reply');
    Route::get('ajax/product/loadVariant', [AjaxProductController::class, 'loadVariant'])->name('ajax.loadVariant');
    Route::get('ajax/product/filter', [AjaxProductController::class, 'filter'])->name('ajax.filter');
    Route::post('ajax/cart/create', [AjaxCartController::class, 'create'])->name('ajax.cart.create');
@@ -150,7 +148,6 @@ Route::group(['middleware' => 'license'], function () {
    Route::post('ajax/cart/change-mini-cart', [AjaxCartController::class, 'changeMinyCartQuantity'])->name('ajax.cart.change-mini-cart');
    Route::post('ajax/cart/delete', [AjaxCartController::class, 'delete'])->name('ajax.cart.delete');
    Route::get('ajax/location/getLocation', [LocationController::class, 'getLocation'])->name('ajax.location.index');
-   Route::post('updatePermission', [CustomerCatalogueController::class, 'updatePermission'])->name('customer.catalogue.updatePermission');
    Route::post('ajax/order/update-cancle', [AjaxOrderController::class, 'updateCancle'])->name('ajax.order.update-cancle');
    Route::post('ajax/order/update-return', [AjaxOrderController::class, 'updateReturn'])->name('ajax.order.update-return');
    Route::post('ajax/order/getMyOrder', [AjaxOrderController::class, 'getMyOrder'])->name('ajax.order.getMyOrder');
@@ -227,28 +224,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::get('report/exportFile', [StockController::class, 'exportFile'])->name('stock.report.exportFile');
       });
 
-
-      Route::group(['prefix' => 'customer/catalogue'], function () {
-         Route::get('index', [CustomerCatalogueController::class, 'index'])->name('customer.catalogue.index');
-         Route::get('create', [CustomerCatalogueController::class, 'create'])->name('customer.catalogue.create');
-         Route::post('store', [CustomerCatalogueController::class, 'store'])->name('customer.catalogue.store');
-         Route::get('{id}/edit', [CustomerCatalogueController::class, 'edit'])->where(['id' => '[0-9]+'])->name('customer.catalogue.edit');
-         Route::post('{id}/update', [CustomerCatalogueController::class, 'update'])->where(['id' => '[0-9]+'])->name('customer.catalogue.update');
-         Route::delete('{id}/destroy', [CustomerCatalogueController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('customer.catalogue.destroy');
-         Route::get('permission', [CustomerCatalogueController::class, 'permission'])->name('customer.catalogue.permission');
-         Route::post('updatePermission', [CustomerCatalogueController::class, 'updatePermission'])->name('customer.catalogue.updatePermission');
-      });
-
-      Route::group(['prefix' => 'language'], function () {
-         Route::get('index', [LanguageController::class, 'index'])->name('language.index')->middleware(['admin', 'locale']);
-         Route::get('create', [LanguageController::class, 'create'])->name('language.create');
-         Route::post('store', [LanguageController::class, 'store'])->name('language.store');
-         Route::get('{id}/edit', [LanguageController::class, 'edit'])->where(['id' => '[0-9]+'])->name('language.edit');
-         Route::post('{id}/update', [LanguageController::class, 'update'])->where(['id' => '[0-9]+'])->name('language.update');
-         Route::get('{id}/delete', [LanguageController::class, 'delete'])->where(['id' => '[0-9]+'])->name('language.delete');
-         Route::delete('{id}/destroy', [LanguageController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('language.destroy');
-         Route::post('storeTranslate', [LanguageController::class, 'storeTranslate'])->name('language.storeTranslate');
-      });
 
 
       Route::group(['prefix' => 'system'], function () {

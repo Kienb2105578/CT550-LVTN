@@ -65,11 +65,6 @@ class ProductController extends FrontendController
         }
         $breadcrumb = $this->productCatalogueRepository->breadcrumb($productCatalogue, $this->language);
         $product = $this->productService->getAttribute($product, $this->language);
-        // $category = recursive(
-        //     $this->productCatalogueRepository->all([], categorySelectRaw('product'))
-        // );
-        // //$wishlist = Cart::instance('wishlist')->content();
-        // //dd($wishlist);
         try {
             $apiUrl = 'http://127.0.0.1:5555/api/product-recommendations';
             $response = Http::timeout(5)->get($apiUrl, ['id' => $id]);
@@ -97,35 +92,9 @@ class ProductController extends FrontendController
             ['keyword' => 'products-hl', 'promotion' => true],
         ], $this->language);
 
-
-
         $widgets['products-hl']->object = $this->productRepository->widgetProductTotalQuantity($widgets['products-hl']->object);
         $productCatalogue->products = $this->productRepository->updateProductTotalQuantity($productCatalogue->products);
         $product_recommend = $this->productRepository->updateProductTotalQuantity($product_recommend);
-
-
-        // $productSeen = [
-        //     'id' => $product->id,
-        //     'name' => $product->name,
-        //     'qty' => $product->total_quantity,
-        //     'price' => $product->price,
-        //     'options' => [
-        //         'canonical' =>  write_url($productcanonical ?? $product->canonical),
-        //         'image' => $product->image,
-        //         'catName' =>  $product->product_catalogue_name ?? '',
-        //         'review' => getReview($product),
-        //     ]
-        // ];
-        // Cart::instance('seen')->add($productSeen);
-        // $cartSeen = Cart::instance('seen')->content();
-
-        // $productId = $cartSeen->pluck('id')->toArray();
-        // if (count($productId) && !is_null($productId)) {
-        //     $cartSeen = $this->productService->combineProductAndPromotion($productId, $cartSeen);
-        // }
-
-
-        // dd($productCatalogue);
         $config = $this->config();
         $system = $this->system;
         $seo = seo($product);

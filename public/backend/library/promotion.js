@@ -129,9 +129,17 @@
 
     HT.checkConditionItemSet = () => {
         let checkedValue = $(".conditionItemSelected").val();
-        if (checkedValue.length && $(".conditionItem").length) {
-            checkedValue = JSON.parse(checkedValue);
-            $(".conditionItem").val(checkedValue).trigger("change");
+
+        if (!checkedValue) {
+            return;
+        }
+        if ($(".conditionItem").length) {
+            try {
+                checkedValue = JSON.parse(checkedValue);
+                $(".conditionItem").val(checkedValue).trigger("change");
+            } catch (e) {
+                console.error("Lỗi parse JSON:", e);
+            }
         }
     };
 
@@ -202,46 +210,10 @@
         return wrapperBox.prop("outerHTML");
     };
 
-    // HT.deleteCondition = () => {
-    //     $(document).on('click', '.wrapperConditionItem .delete', function(){
-    //         let _this = $(this)
-    //         let unSelectedValue = _this.attr('data-condition-item')
-    //         let selectedItem = $('.conditionItem').val()
-    //         let indexOf = selectedItem.indexOf(unSelectedValue)
-    //         if(indexOf !== -1){
-    //             selectedItem.splice(selectedItem, indexOf)
-    //         }
-
-    //         console.log(selectedItem);
-
-    //         // $('.conditionItem').val(unSelectedValue).trigger('change')
-    //     })
-    // }
-
     HT.promotionMultipleSelect2 = () => {
         $(".multipleSelect2").select2({
-            // minimumInputLength: 2,
             placeholder: "Click vào ô để lựa chọn...",
             closeOnSelect: true,
-            // ajax: {
-            //     url: 'ajax/attribute/getAttribute',
-            //     type: 'GET',
-            //     dataType: 'json',
-            //     deley: 250,
-            //     data: function (params){
-            //         return {
-            //             search: params.term,
-            //             option: option,
-            //         }
-            //     },
-            //     processResults: function(data){
-            //         return {
-            //             results: data.items
-            //         }
-            //     },
-            //     cache: true
-
-            //   }
         });
     };
 
@@ -344,12 +316,6 @@
                 case "product_and_quantity":
                     HT.renderProductAndQuantity();
                     break;
-                // case "product_quantity_range":
-                //     console.log("product_quantity_range");
-                //     break;
-                // case "goods_discount_by_quantity":
-                //     console.log("goods_discount_by_quantity");
-                //     break;
                 default:
                     HT.removePromotionContainer();
             }
@@ -485,8 +451,8 @@
                 <thead>
                     <tr>
                         <th class="text-right" style="width:400px;max-width:400px;">Sản phẩm mua</th>
-                        <th class="text-right" style="width:80px">Tối thiểu</th>
-                        <th class="text-right">Giới hạn KM</th>
+                        <th class="text-right" style="width:80px">SL tối thiểu</th>
+                        <th class="text-right">Giá giảm tối đa</th>
                         <th class="text-right">Chiết khấu</th>
                     </tr>
                 </thead>

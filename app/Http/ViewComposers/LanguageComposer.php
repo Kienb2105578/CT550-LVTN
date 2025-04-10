@@ -3,7 +3,6 @@
 namespace App\Http\ViewComposers;
 
 use Illuminate\View\View;
-use App\Repositories\Interfaces\LanguageRepositoryInterface  as LanguageRepository;
 use App\Services\Interfaces\UserServiceInterface  as UserService;
 use App\Repositories\Interfaces\PermissionRepositoryInterface  as PermissionRepository;
 use Illuminate\Support\Facades\Auth;
@@ -13,16 +12,13 @@ class LanguageComposer
 
     protected $language;
     protected $permissionRepository;
-    protected $languageRepository;
     protected $userService;
 
     public function __construct(
-        LanguageRepository $languageRepository,
         $language,
         UserService $userService,
         PermissionRepository $permissionRepository,
     ) {
-        $this->languageRepository = $languageRepository;
         $this->userService = $userService;
         $this->permissionRepository = $permissionRepository;
     }
@@ -34,7 +30,6 @@ class LanguageComposer
         $usercatalogue_id_login = $user ? $user->user_catalogue_id : null;
         $user_login = $this->userService->getUserPermissions();
         $accessibleMenus = $this->filterAccessibleMenus($user_login, $menus);
-        // $languages = $this->languageRepository->findByCondition(...$this->agrument());
         $languages = collect(config('languages'));
 
         $view->with('languages', $languages)

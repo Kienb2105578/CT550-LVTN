@@ -16,6 +16,7 @@ class PurchaseOrderDetail extends Model
         'uuid',
         'quantity',
         'price',
+        'variant_id',
     ];
 
     protected $table = 'purchase_order_details';

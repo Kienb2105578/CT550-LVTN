@@ -110,7 +110,6 @@ class CustomerService extends BaseService implements CustomerServiceInterface
         DB::beginTransaction();
         try {
             $customer = $this->customerRepository->delete($id);
-
             DB::commit();
             return true;
         } catch (\Exception $e) {
@@ -143,18 +142,14 @@ class CustomerService extends BaseService implements CustomerServiceInterface
     {
         return [
             'id',
-            // 'code', 
             'email',
             'phone',
             'address',
             'name',
             'publish',
-            'customer_catalogue_id',
-            'source_id',
             'province_id',
             'district_id',
-            'ward_id'
-
+            'ward_id',
         ];
     }
 }

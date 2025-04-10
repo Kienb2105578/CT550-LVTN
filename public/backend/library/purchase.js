@@ -15,7 +15,7 @@
                 if (callback) callback(response);
             },
             error: function () {
-                alert("Lỗi khi lấy thông tin sản phẩm!");
+                toastr.error("Lỗi khi lấy thông tin sản phẩm!");
             },
         });
     };
@@ -32,7 +32,7 @@
                 }
             },
             error: function () {
-                alert("Lỗi khi tải thông tin đơn hàng!");
+                toastr.error("Lỗi khi tải thông tin đơn hàng!");
             },
         });
     };
@@ -143,9 +143,8 @@
 
         $("#product-info-container").append(html);
 
-        // Lắng nghe sự kiện nhập giá để tự động format số
         $(".price-input").on("input", function () {
-            let rawValue = $(this).val().replace(/\./g, ""); // Xóa dấu chấm
+            let rawValue = $(this).val().replace(/\./g, "");
             if (!isNaN(rawValue) && rawValue !== "") {
                 $(this).attr("data-raw-value", rawValue);
                 $(this).val(Number(rawValue).toLocaleString("vi-VN"));

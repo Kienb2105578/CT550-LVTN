@@ -4,7 +4,15 @@
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>{{ $config['seo']['index']['table'] }} </h5>
-                @include('backend.dashboard.component.toolbox', ['model' => $config['model']])
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+
             </div>
             <div class="ibox-content">
                 @include('backend.review.component.filter')

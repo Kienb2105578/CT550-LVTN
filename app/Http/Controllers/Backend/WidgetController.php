@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 use App\Services\Interfaces\WidgetServiceInterface  as WidgetService;
 use App\Repositories\Interfaces\WidgetRepositoryInterface as WidgetRepository;
-use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;
 
 use App\Http\Requests\Widget\StoreWidgetRequest;
 use App\Http\Requests\Widget\UpdateWidgetRequest;
@@ -19,17 +18,14 @@ class WidgetController extends Controller
 {
     protected $widgetService;
     protected $widgetRepository;
-    protected $languageRepository;
     protected $language;
 
     public function __construct(
         WidgetService $widgetService,
         WidgetRepository $widgetRepository,
-        LanguageRepository $languageRepository,
     ) {
         $this->widgetService = $widgetService;
         $this->widgetRepository = $widgetRepository;
-        $this->languageRepository = $languageRepository;
         $this->middleware(function ($request, $next) {
             $locale = app()->getLocale(); // vn en cn
             $this->language = 1;

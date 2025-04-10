@@ -8,8 +8,7 @@ use App\Services\Interfaces\MenuServiceInterface  as MenuService;
 use App\Repositories\Interfaces\MenuRepositoryInterface as MenuRepository;
 use App\Repositories\Interfaces\MenuCatalogueRepositoryInterface as MenuCatalogueRepository;
 use App\Services\Interfaces\MenuCatalogueServiceInterface as MenuCatalogueService;
-use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;
-use App\Models\Language;
+
 use App\Http\Requests\Menu\StoreMenuRequest;
 use App\Http\Requests\Menu\StoreMenuChildrenRequest;
 use App\Http\Requests\Menu\UpdateMenuRequest;
@@ -20,20 +19,17 @@ class MenuController extends Controller
     protected $menuRepository;
     protected $menuCatalogueRepository;
     protected $menuCatalogueService;
-    protected $languageRepository;
 
     public function __construct(
         MenuService $menuService,
         MenuRepository $menuRepository,
         MenuCatalogueRepository $menuCatalogueRepository,
         MenuCatalogueService $menuCatalogueService,
-        LanguageRepository $languageRepository,
     ) {
         $this->menuService = $menuService;
         $this->menuRepository = $menuRepository;
         $this->menuCatalogueRepository = $menuCatalogueRepository;
         $this->menuCatalogueService = $menuCatalogueService;
-        $this->languageRepository = $languageRepository;
         $this->middleware(function ($request, $next) {
             $locale = app()->getLocale(); // vn en cn
             $this->language = 1;

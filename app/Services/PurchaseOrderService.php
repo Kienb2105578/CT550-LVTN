@@ -148,7 +148,6 @@ class PurchaseOrderService extends BaseService implements PurchaseOrderServiceIn
     private function createPurchaseOrderDetails($purchaseOrderId, $payload)
     {
         foreach ($payload['quantity'] as $productId => $quantityData) {
-            // Trường hợp sản phẩm không có biến thể
             if (is_string($quantityData) || is_numeric($quantityData)) {
                 $quantity = (int) $quantityData;
                 $price = isset($payload['price'][$productId])
@@ -160,6 +159,7 @@ class PurchaseOrderService extends BaseService implements PurchaseOrderServiceIn
                 $data = [
                     'purchase_order_id' => $purchaseOrderId,
                     'product_id' => (int) $productId,
+                    'variant_id' => null,
                     'quantity' => $quantity,
                     'price' => (int) $price,
                     'subtotal' => $subtotal,
@@ -186,6 +186,7 @@ class PurchaseOrderService extends BaseService implements PurchaseOrderServiceIn
                         'purchase_order_id' => $purchaseOrderId,
                         'product_id' => (int) $productId,
                         'uuid' => $variant->uuid ?? null,
+                        'variant_id' => $variant->id,
                         'quantity' => (int) $quantity,
                         'price' => (int)$price,
                         'subtotal' => $subtotal,
@@ -200,15 +201,11 @@ class PurchaseOrderService extends BaseService implements PurchaseOrderServiceIn
     }
 
 
-
-
     private function updatePurchaseOrder($id, $request)
     {
         $payload = $request->only(['supplier_id', 'product_id', 'quantity', 'price', 'code', 'status']);
-
         $total = 0;
 
-        // Chuẩn hóa giá trị price thành số nguyên (không dấu chấm)
         foreach ($payload['price'] as $productId => &$priceData) {
             if (is_array($priceData)) {
                 foreach ($priceData as $variantId => &$variantPrice) {
@@ -300,30 +297,5 @@ class PurchaseOrderService extends BaseService implements PurchaseOrderServiceIn
         } catch (\Exception $e) {
             return response()->json(['error' => 'Không thể cập nhật đơn hàng'], 500);
         }
-    }
-
-
-    private function paginateSelect()
-    {
-        return [
-            'purchase_orders.id',
-            'purchase_orders.code',
-            'suppliers.name as supplier_name',
-            'purchase_orders.total',
-            'purchase_orders.status',
-            'purchase_orders.note',
-            'purchase_orders.created_at',
-        ];
-    }
-
-    private function payload()
-    {
-        return [
-            'code',
-            'supplier_id',
-            'total',
-            'status',
-            'note',
-        ];
     }
 }

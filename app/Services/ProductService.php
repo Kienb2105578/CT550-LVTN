@@ -284,9 +284,6 @@ class ProductService extends BaseService implements ProductServiceInterface
                     'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
                     'sku' => $val,
                     'price' => ($payload['variant']['price'][$key]) ? convert_price($payload['variant']['price'][$key]) : '',
-                    'barcode' => ($payload['variant']['barcode'][$key]) ?? '',
-                    'file_name' => ($payload['variant']['file_name'][$key]) ?? '',
-                    'file_url' => ($payload['variant']['file_url'][$key]) ?? '',
                     'album' => ($payload['variant']['album'][$key]) ?? '',
                     'user_id' => Auth::id(),
                 ];
@@ -401,8 +398,6 @@ class ProductService extends BaseService implements ProductServiceInterface
             'attributeCatalogue',
             'attribute',
             'variant',
-            'iframe',
-            'guarantee',
             'name',
             'description',
             'content',

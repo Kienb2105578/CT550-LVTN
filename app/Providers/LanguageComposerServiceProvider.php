@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
-use App\Repositories\Interfaces\LanguageRepositoryInterface  as LanguageRepository;
 
 class LanguageComposerServiceProvider extends ServiceProvider
 {
@@ -12,10 +11,7 @@ class LanguageComposerServiceProvider extends ServiceProvider
     /**
      * Register services.
      */
-    public function register(): void
-    {
-        $this->app->bind('App\Repositories\Interfaces\LanguageRepositoryInterface', 'App\Repositories\LanguageRepository');
-    }
+    public function register(): void {}
 
     /**
      * Bootstrap services.
@@ -23,8 +19,6 @@ class LanguageComposerServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('backend.dashboard.layout', function ($view) {
-            // $langugeRepository = $this->app->make(LanguageRepository::class);
-            // $languages = $langugeRepository->all();
             $languages = [
                 ['code' => 'vi', 'name' => 'Tiếng Việt'],
                 ['code' => 'en', 'name' => 'English']

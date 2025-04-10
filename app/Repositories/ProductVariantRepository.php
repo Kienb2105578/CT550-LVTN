@@ -32,7 +32,7 @@ class ProductVariantRepository extends BaseRepository implements ProductVariantR
 
     public function getVariantInfo($variantId)
     {
-        return $this->model->select('name', 'uuid')
+        return $this->model->select('name', 'uuid', 'id')
             ->where('id', $variantId)
             ->first();
     }

@@ -62,6 +62,7 @@
                         $description = $review->description;
                         $rating = generateStar($review->score);
                         $created_at = convertDateTime($review->created_at);
+                        $replies = json_decode($review->replies, true);
                     @endphp
                     <div class="review-block-item ">
                         <div class="review-general uk-clearfix">
@@ -73,6 +74,10 @@
                                 <div class="review-content">
                                     <div class="name uk-flex uk-flex-middle">
                                         <span>{{ $name }}</span>
+                                        <span class="review-buy">
+                                            <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                            Đã mua hàng tại {{ $system['homepage_brand'] }}
+                                        </span>
                                     </div>
                                     {!! $rating !!}
                                     <div class="description">
@@ -81,12 +86,43 @@
                                     <div class="review-toolbox">
                                         <div class="uk-flex uk-flex-middle">
                                             <div class="created_at">Ngày {{ $created_at }}</div>
-                                            {{-- <div class="review-reply" data-uk-modal="{target:'#review'}">Trả lời</div> --}}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        @if (!empty($replies))
+                            @foreach ($replies as $reply)
+                                <div class="review-block-item uk-clearfix reply-block">
+                                    <div class="review-avatar">
+                                        <img id="image_review"
+                                            src="{{ $system['homepage_logo'] ? asset($system['homepage_logo']) : 'frontend/resources/img/no_image.png' }}">
+                                    </div>
+                                    <div class="review-content-block">
+                                        <div class="review-content">
+                                            <div class="name uk-flex uk-flex-middle">
+                                                <span>Nhân Viên chăm sóc KH</span>
+
+                                            </div>
+                                            <div class="description">
+                                                {{ $reply['reply_text'] }}
+                                            </div>
+                                            <div class="review-toolbox">
+                                                <div class="uk-flex uk-flex-middle">
+                                                    @php
+                                                        $formattedDate = \Carbon\Carbon::parse(
+                                                            $reply['created_at'],
+                                                        )->format('Y-m-d H:i:s');
+                                                    @endphp
+                                                    <div class="created_at">Ngày {{ convertDateTime($formattedDate) }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
                     </div>
                 @endforeach
             @endif

@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 use App\Services\Interfaces\PromotionServiceInterface  as PromotionService;
 use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionRepository;
-use App\Repositories\Interfaces\LanguageRepositoryInterface as LanguageRepository;
 
 use App\Http\Requests\Promotion\StorePromotionRequest;
 use App\Http\Requests\Promotion\UpdatePromotionRequest;
@@ -19,17 +18,14 @@ class PromotionController extends Controller
 {
     protected $promotionService;
     protected $promotionRepository;
-    protected $languageRepository;
     protected $language;
 
     public function __construct(
         PromotionService $promotionService,
         PromotionRepository $promotionRepository,
-        LanguageRepository $languageRepository,
     ) {
         $this->promotionService = $promotionService;
         $this->promotionRepository = $promotionRepository;
-        $this->languageRepository = $languageRepository;
         $this->middleware(function ($request, $next) {
             $locale = app()->getLocale();
             $this->language = 1;

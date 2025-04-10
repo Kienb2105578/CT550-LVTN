@@ -14,7 +14,6 @@ use App\Http\ViewComposers\CategoryComposer;
 use App\Http\ViewComposers\CartComposer;
 use App\Http\ViewComposers\CustomerComposer;
 use App\Http\ViewComposers\ProductCatalogueComposer;
-use App\Models\Language;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,8 +26,6 @@ class AppServiceProvider extends ServiceProvider
         'App\Services\Interfaces\InventoryBatchServiceInterface' => 'App\Services\InventoryBatchService',
         'App\Services\Interfaces\StockMovementServiceInterface' => 'App\Services\StockMovementService',
         'App\Services\Interfaces\SupplierServiceInterface' => 'App\Services\SupplierService',
-        'App\Services\Interfaces\CustomerCatalogueServiceInterface' => 'App\Services\CustomerCatalogueService',
-        'App\Services\Interfaces\LanguageServiceInterface' => 'App\Services\LanguageService',
         'App\Services\Interfaces\PostCatalogueServiceInterface' => 'App\Services\PostCatalogueService',
         'App\Services\Interfaces\GenerateServiceInterface' => 'App\Services\GenerateService',
         'App\Services\Interfaces\PermissionServiceInterface' => 'App\Services\PermissionService',

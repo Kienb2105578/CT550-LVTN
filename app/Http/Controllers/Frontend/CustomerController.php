@@ -11,6 +11,7 @@ use App\Http\Requests\Customer\RecoverCustomerPasswordRequest;
 use App\Services\Interfaces\CustomerServiceInterface  as CustomerService;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface  as ProvinceRepository;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Support\Facades\Log;
 
 class CustomerController extends FrontendController
 {
@@ -96,13 +97,13 @@ class CustomerController extends FrontendController
         if (!Hash::check($request->password, $customer->password)) {
             return redirect()->back()->with('error', 'Mật khẩu hiện tại không chính xác.');
         }
-        // Thay đổi mật khẩu
         $customer->update([
             'password' => Hash::make($request->new_password),
         ]);
 
         return redirect()->route('customer.profile')->with('success', 'Mật khẩu đã được thay đổi thành công.');
     }
+
 
     public function logout()
     {
