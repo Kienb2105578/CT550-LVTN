@@ -38,23 +38,34 @@
 
                                                 @switch($item['type'])
                                                     @case('text')
-                                                        {!! renderSystemInput($name, $systems) !!}
+                                                        <input type="text" name="config[{{ $name }}]"
+                                                            value="{{ old($name, $systems[$name] ?? '') }}" class="form-control"
+                                                            placeholder="" autocomplete="off">
                                                     @break
 
                                                     @case('images')
-                                                        {!! renderSystemImages($name, $systems) !!}
+                                                        <input type="text" name="config[{{ $name }}]"
+                                                            value="{{ old($name, $systems[$name] ?? '') }}"
+                                                            class="form-control upload-image" placeholder="" autocomplete="off">
                                                     @break
 
                                                     @case('textarea')
-                                                        {!! renderSystemTextarea($name, $systems) !!}
+                                                        <textarea name="config[{{ $name }}]" class="form-control system-textarea">{{ old($name, $systems[$name] ?? '') }}</textarea>
                                                     @break
 
                                                     @case('select')
-                                                        {!! renderSystemSelect($item, $name, $systems) !!}
+                                                        <select name="config[{{ $name }}]" class="form-control">
+                                                            @foreach ($item['option'] as $key => $val)
+                                                                <option value="{{ $key }}"
+                                                                    {{ isset($systems[$name]) && $key == $systems[$name] ? 'selected' : '' }}>
+                                                                    {{ $val }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
                                                     @break
 
                                                     @case('editor')
-                                                        {!! renderSystemEditor($name, $systems) !!}
+                                                        <textarea name="config[{{ $name }}]" id="{{ $name }}" class="form-control system-textarea ck-editor">{{ old($name, $systems[$name] ?? '') }}</textarea>
                                                     @break
                                                 @endswitch
 

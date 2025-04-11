@@ -1,5 +1,84 @@
 <?php
 
+if (!function_exists('pre')) {
+    function pre($data = '')
+    {
+        echo '<pre>';
+        print_r($data);
+        echo '<pre>';
+        die();
+    }
+}
+
+
+/*
+*
+*   Phương thức thanh toán VnPay
+*
+*/
+
+
+if (!function_exists('vnpayConfig')) {
+    function vnpayConfig()
+    {
+        return [
+            'vnp_Url' => 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
+            'vnp_Returnurl' => write_url('return/vnpay'),
+            'vnp_TmnCode' => 'RLE42FCR',
+            'vnp_HashSecret' => 'OQPUUZRVSSJASOQVUQHHURHBXGDIMBTU',
+            'vnp_apiUrl' => 'http://sandbox.vnpayment.vn/merchant_webapi/merchant.html',
+            'apiUrl' => 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction'
+        ];
+    }
+}
+
+/*
+*
+*   Phương thức thanh toán momo
+*
+*/
+
+if (!function_exists('momoConfig')) {
+    function momoConfig()
+    {
+        return [
+            'partnerCode' => 'MOMOBKUN20180529',
+            'accessKey' => 'klm05TvNBzhg7h7j',
+            'secretKey' => 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa',
+        ];
+    }
+}
+
+
+if (!function_exists('execPostRequest')) {
+    function execPostRequest($url, $data)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data)
+            )
+        );
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        return $result;
+    }
+}
+
+/*
+*
+*   Hàm định dạng lại các biểu đồ trang Tổng Quan
+*
+*/
+
 if (!function_exists('convertRevenueChartData')) {
     function convertRevenueChartData($chartData, $data = 'monthly_revenue', $label = 'month', $text = 'Tháng')
     {
@@ -14,36 +93,11 @@ if (!function_exists('convertRevenueChartData')) {
     }
 }
 
-
-if (!function_exists('growHtml')) {
-    function growHtml($grow)
-    {
-        if ($grow > 0) {
-            return '<div class="stat-percent font-bold text-success">' . $grow . '% <i class="fa fa-level-up"></i></div>';
-        } else {
-            return '<div class="stat-percent font-bold text-danger">' . $grow . '% <i class="fa fa-level-down"></i></div>';
-        }
-    }
-}
-
-if (!function_exists('growth')) {
-    function growth($currentValue, $previousValue)
-    {
-        $divison = ($previousValue == 0) ? 1 : $previousValue;
-        $grow =  ($currentValue - $previousValue) / $divison * 100;
-        return number_format($grow, 1);
-    }
-}
-
-if (!function_exists('pre')) {
-    function pre($data = '')
-    {
-        echo '<pre>';
-        print_r($data);
-        echo '<pre>';
-        die();
-    }
-}
+/*
+*
+*   Phương thức hiện image ra frontend
+*
+*/
 
 if (!function_exists('image')) {
     function image($image)
@@ -59,6 +113,12 @@ if (!function_exists('image')) {
 }
 
 
+/*
+*
+*   Phương thức hiện Giá Price
+*
+*/
+
 if (!function_exists('convert_price')) {
     function convert_price(mixed $price = '', $flag = false)
     {
@@ -66,6 +126,12 @@ if (!function_exists('convert_price')) {
         return ($flag === false) ? str_replace('.', '', $price) : number_format($price, 0, ',', '.');
     }
 }
+
+/*
+*
+*   Phương thức Tính toán và hiển thị giá sản phẩm khi giảm
+*
+*/
 
 if (!function_exists('getPercent')) {
     function getPercent($product = null, $discountValue = 0)
@@ -116,6 +182,12 @@ if (!function_exists('getPrice')) {
     }
 }
 
+/*
+*
+*   Phương thức Tính toán và hiển thị giá biến thể kho có khuyến mãi
+*
+*/
+
 if (!function_exists('getVariantPrice')) {
     function getVariantPrice($variant, $variantPromotion)
     {
@@ -148,6 +220,11 @@ if (!function_exists('getVariantPrice')) {
     }
 }
 
+/*
+*
+*   Phương thức tính trung bình đánh giá (sao) và số lượng đánh giá của sản phẩm
+*
+*/
 
 if (!function_exists('getReview')) {
     function getReview($product = null)
@@ -167,7 +244,11 @@ if (!function_exists('getReview')) {
     }
 }
 
-
+/*
+*
+*   Phương thức chuyển đổi một mảng dữ liệu về dạng key-value theo cặp giá trị chỉ định
+*
+*/
 
 if (!function_exists('convert_array')) {
     function convert_array($system = null, $keyword = '', $value = '')
@@ -188,6 +269,12 @@ if (!function_exists('convert_array')) {
     }
 }
 
+/*
+*
+*   Phương thức chuyển đổi định dạng ngày giờ
+*
+*/
+
 if (!function_exists('convertDateTime')) {
     function convertDateTime(string $date = '', string $format = 'd/m/Y H:i', string $inputDateFormat = 'Y-m-d H:i:s')
     {
@@ -197,88 +284,11 @@ if (!function_exists('convertDateTime')) {
     }
 }
 
-if (!function_exists('renderDiscountInformation')) {
-    function renderDiscountInformation($promotion)
-    {
-        if ($promotion->method === 'product_and_quantity') {
-            $discountValue = $promotion->discountInformation['info']['discountValue'];
-            $discountType = ($promotion->discountInformation['info']['discountType'] == 'percent') ? '%' : 'đ';
-            return '<span class="label label-success">' . $discountValue . $discountType . ' </span>';
-        }
-        return  '<div><a href="' . route('promotion.edit', $promotion->id) . '">Xem chi tiết</a></div>';
-    }
-}
-
-if (!function_exists('renderSystemInput')) {
-    function renderSystemInput(string $name = '', $systems = null)
-    {
-        return '<input 
-            type="text"
-            name="config[' . $name . ']"
-            value="' . old($name, ($systems[$name]) ?? '') . '"
-            class="form-control"
-            placeholder=""
-            autocomplete="off"
-        >';
-    }
-}
-
-
-if (!function_exists('renderSystemImages')) {
-    function renderSystemImages(string $name = '', $systems = null)
-    {
-        return '<input 
-            type="text"
-            name="config[' . $name . ']"
-            value="' . old($name, ($systems[$name]) ?? '') . '"
-            class="form-control upload-image"
-            placeholder=""
-            autocomplete="off"
-        >';
-    }
-}
-
-
-if (!function_exists('renderSystemTextarea')) {
-    function renderSystemTextarea(string $name = '', $systems = null)
-    {
-        return '<textarea name="config[' . $name . ']" class="form-control system-textarea">' . old($name, ($systems[$name]) ?? '') . '</textarea>';
-    }
-}
-
-if (!function_exists('renderSystemEditor')) {
-    function renderSystemEditor(string $name = '', $systems = null)
-    {
-        return '<textarea name="config[' . $name . ']" id="' . $name . '" class="form-control system-textarea ck-editor">' . old($name, ($systems[$name]) ?? '') . '</textarea>';
-    }
-}
-
-if (!function_exists('renderSystemLink')) {
-    function renderSystemLink(array $item = [], $systems = null)
-    {
-        return (isset($item['link'])) ? '<a class="system-link" target="' . $item['link']['target'] . '" href="' . $item['link']['href'] . '">' . $item['link']['text'] . '</a>' : '';
-    }
-}
-
-if (!function_exists('renderSystemTitle')) {
-    function renderSystemTitle(array $item = [], $systems = null)
-    {
-        return (isset($item['title'])) ? '<span class="system-link text-danger">' . $item['title'] . '</span>' : '';
-    }
-}
-
-if (!function_exists('renderSystemSelect')) {
-    function renderSystemSelect(array $item, string $name = '', $systems = null)
-    {
-        $html = '<select name="config[' . $name . ']" class="form-control">';
-        foreach ($item['option'] as $key => $val) {
-            $html .= '<option ' . ((isset($systems[$name]) && $key == $systems[$name]) ? 'selected' : '') . ' value="' . $key . '">' . $val . '</option>';
-        }
-        $html .= '</select>';
-
-        return $html;
-    }
-}
+/*
+*
+*   Phương thức ghi URL đầy đủ với suffix và domain
+*
+*/
 
 if (!function_exists('write_url')) {
     function write_url($canonical = null, bool $fullDomain = true, $suffix = true)
@@ -292,19 +302,40 @@ if (!function_exists('write_url')) {
     }
 }
 
+/*
+*
+*   Phương thức tạo dữ liệu SEO từ model, hỗ trợ phân trang
+*
+*/
+
 if (!function_exists('seo')) {
     function seo($model = null, $page = 1)
     {
-        $canonical = ($page > 1) ? write_url($model->canonical, true, false) . '/trang-' . $page . config('apps.general.suffix') : write_url($model->canonical, true, true);
+        $canonical = ($page > 1)
+            ? write_url($model->canonical, true, false) . '/trang-' . $page . config('apps.general.suffix')
+            : write_url($model->canonical, true, true);
+
+        $description = $model->meta_description ?? (function ($str, $n = 168) {
+            $str = html_entity_decode($str);
+            $str = strip_tags($str);
+            return cutnchar($str, $n);
+        })($model->descipriont ?? '');
+
         return [
-            'meta_title' => ($model->meta_title) ?? $model->name,
-            'meta_keyword' => ($model->meta_keyword) ?? '',
-            'meta_description' => ($model->meta_description) ?? cut_string_and_decode($model->descipriont, 168),
+            'meta_title' => $model->meta_title ?? $model->name,
+            'meta_keyword' => $model->meta_keyword ?? '',
+            'meta_description' => $description,
             'meta_image' => $model->image,
             'canonical' => $canonical,
         ];
     }
 }
+
+/*
+*
+*   Phương thức đệ quy để phân cấp dữ liệu dạng cây (tree) theo parent_id
+*
+*/
 
 if (!function_exists('recursive')) {
     function recursive($data, $parentId = 0)
@@ -323,6 +354,12 @@ if (!function_exists('recursive')) {
         return $temp;
     }
 }
+
+/*
+*
+*   Phương thức dựng menu dạng cây (có dropdown) ở phía frontend
+*
+*/
 
 if (!function_exists('frontend_recursive_menu')) {
     function frontend_recursive_menu(array $data = [], int $parentId = 0, int $count = 1, $type = 'html')
@@ -352,6 +389,11 @@ if (!function_exists('frontend_recursive_menu')) {
     }
 }
 
+/*
+*
+*   Phương thức dựng giao diện menu dạng drag & drop (backend) dùng cho quản lý
+*
+*/
 
 if (!function_exists('recursive_menu')) {
     function recursive_menu($data)
@@ -382,26 +424,11 @@ if (!function_exists('recursive_menu')) {
     }
 }
 
-
-if (!function_exists('buildMenu')) {
-    function buildMenu($menus = null, $parent_id = 0, $prefix = '')
-    {
-        $output = [];
-        $count = 1;
-
-        if (count($menus)) {
-            foreach ($menus as $key => $val) {
-                if ($val->parent_id == $parent_id) {
-                    $val->position = $prefix . $count;
-                    $output[] = $val;
-                    $output = array_merge($output, buildMenu($menus, $val->id, $val->position . '.'));
-                    $count++;
-                }
-            }
-        }
-        return $output;
-    }
-}
+/*
+*
+*   Phương thức tự động load class theo namespace dựa trên tên model
+*
+*/
 
 if (!function_exists('loadClass')) {
     function loadClass(string $model = '', $folder = 'Repositories', $interface = 'Repository')
@@ -414,57 +441,11 @@ if (!function_exists('loadClass')) {
     }
 }
 
-if (!function_exists('convertArrayByKey')) {
-    function convertArrayByKey($object = null, $fields = [])
-    {
-        $temp = [];
-        foreach ($object as $key => $val) {
-            foreach ($fields as $field) {
-                if (is_array($object)) {
-                    $temp[$field][] = $val[$field];
-                } else {
-                    $extract = explode('.', $field);
-                    if (count($extract) == 2) {
-                        $temp[$extract[0]][] = $val->{$extract[0]};
-                    } else {
-                        $temp[$field][] = $val->{$field};
-                    }
-                }
-            }
-        }
-        return $temp;
-    }
-}
-
-if (!function_exists('renderQuickBuy')) {
-    function renderQuickBuy($product, string $canonical = '', string $name = '')
-    {
-
-        $class = 'btn-addCart';
-        $openModal = '';
-        if (isset($product->product_variants) && count($product->product_variants)) {
-            $class = '';
-            $canonical = '#popup';
-            $openModal = 'data-uk-modal';
-        }
-
-        $html = '<a href="' . $canonical . '" ' . $openModal . ' title="' . $name . '" class="' . $class . '">
-                <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g>
-                    <path d="M24.4941 3.36652H4.73614L4.69414 3.01552C4.60819 2.28593 4.25753 1.61325 3.70863 1.12499C3.15974 0.636739 2.45077 0.366858 1.71614 0.366516L0.494141 0.366516V2.36652H1.71614C1.96107 2.36655 2.19748 2.45647 2.38051 2.61923C2.56355 2.78199 2.68048 3.00626 2.70914 3.24952L4.29414 16.7175C4.38009 17.4471 4.73076 18.1198 5.27965 18.608C5.82855 19.0963 6.53751 19.3662 7.27214 19.3665H20.4941V17.3665H7.27214C7.02705 17.3665 6.79052 17.2764 6.60747 17.1134C6.42441 16.9505 6.30757 16.7259 6.27914 16.4825L6.14814 15.3665H22.3301L24.4941 3.36652ZM20.6581 13.3665H5.91314L4.97214 5.36652H22.1011L20.6581 13.3665Z" fill="#253D4E"></path>
-                    <path d="M7.49414 24.3665C8.59871 24.3665 9.49414 23.4711 9.49414 22.3665C9.49414 21.2619 8.59871 20.3665 7.49414 20.3665C6.38957 20.3665 5.49414 21.2619 5.49414 22.3665C5.49414 23.4711 6.38957 24.3665 7.49414 24.3665Z" fill="#253D4E"></path>
-                    <path d="M17.4941 24.3665C18.5987 24.3665 19.4941 23.4711 19.4941 22.3665C19.4941 21.2619 18.5987 20.3665 17.4941 20.3665C16.3896 20.3665 15.4941 21.2619 15.4941 22.3665C15.4941 23.4711 16.3896 24.3665 17.4941 24.3665Z" fill="#253D4E"></path>
-                    </g>
-                    <defs>
-                    <clipPath>
-                    <rect width="24" height="24" fill="white" transform="translate(0.494141 0.366516)"></rect>
-                    </clipPath>
-                    </defs>
-                </svg>
-        </a>';
-        return $html;
-    }
-}
+/*
+*
+*   Phương thức cắt chuỗi theo số ký tự giới hạn, giữ nguyên từ cuối
+*
+*/
 
 if (!function_exists('cutnchar')) {
     function cutnchar($str = NULL, $n = 320)
@@ -476,48 +457,11 @@ if (!function_exists('cutnchar')) {
     }
 }
 
-if (!function_exists('cut_string_and_decode')) {
-    function cut_string_and_decode($str = NULL, $n = 200)
-    {
-        $str = html_entity_decode($str);
-        $str = strip_tags($str);
-        $str = cutnchar($str, $n);
-        return $str;
-    }
-}
-
-if (!function_exists('categorySelectRaw')) {
-    function categorySelectRaw($table = 'products')
-    {
-        $rawQuery = "
-            (
-                SELECT COUNT(id) 
-                FROM {$table}s
-                JOIN {$table}_catalogue_{$table} as tb3 ON tb3.{$table}_id = {$table}s.id
-                WHERE tb3.{$table}_catalogue_id IN (
-                    SELECT id
-                    FROM {$table}_catalogues as parent_category
-                    WHERE lft >= (SELECT lft FROM {$table}_catalogues as pc WHERE pc.id = {$table}_catalogues.id)
-                    AND rgt <= (SELECT rgt FROM {$table}_catalogues as pc WHERE pc.id = {$table}_catalogues.id)
-                )
-            ) as {$table}s_count 
-        ";
-        return $rawQuery;
-    }
-}
-
-
-if (!function_exists('sortString')) {
-    function sortString($string = '')
-    {
-        $extract = explode(',', $string);
-        $extract = array_map('trim', $extract);
-        sort($extract, SORT_NUMERIC);
-        $newArray = implode(',', $extract);
-        return $newArray;
-    }
-}
-
+/*
+*
+*   Phương thức sắp xếp mảng attribute_id theo số thứ tự và nối chuỗi bằng dấu phẩy
+*
+*/
 
 if (!function_exists('sortAttributeId')) {
     function sortAttributeId(array $attributeId = [])
@@ -525,132 +469,5 @@ if (!function_exists('sortAttributeId')) {
         sort($attributeId, SORT_NUMERIC);
         $attributeId = implode(',', $attributeId);
         return $attributeId;
-    }
-}
-
-
-if (!function_exists('vnpayConfig')) {
-    function vnpayConfig()
-    {
-        return [
-            'vnp_Url' => 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
-            'vnp_Returnurl' => write_url('return/vnpay'),
-            'vnp_TmnCode' => 'RLE42FCR',
-            'vnp_HashSecret' => 'OQPUUZRVSSJASOQVUQHHURHBXGDIMBTU',
-            'vnp_apiUrl' => 'http://sandbox.vnpayment.vn/merchant_webapi/merchant.html',
-            'apiUrl' => 'https://sandbox.vnpayment.vn/merchant_webapi/api/transaction'
-        ];
-    }
-}
-
-if (!function_exists('momoConfig')) {
-    function momoConfig()
-    {
-        return [
-            'partnerCode' => 'MOMOBKUN20180529',
-            'accessKey' => 'klm05TvNBzhg7h7j',
-            'secretKey' => 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa',
-        ];
-    }
-}
-
-if (!function_exists('zaloConfig')) {
-    function zaloConfig()
-    {
-        return [
-            'appid' => '553',
-            'key1' => '9phuAOYhan4urywHTh0ndEXiV3pKHr5Q',
-            'key2' => 'Iyz2habzyr7AG8SgvoBCbKwKi3UzlLi3',
-        ];
-    }
-}
-
-if (!function_exists('execPostRequest')) {
-    function execPostRequest($url, $data)
-    {
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt(
-            $ch,
-            CURLOPT_HTTPHEADER,
-            array(
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($data)
-            )
-        );
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        $result = curl_exec($ch);
-        curl_close($ch);
-        return $result;
-    }
-}
-
-
-if (!function_exists('getReviewName')) {
-    function getReviewName($string)
-    {
-        $words = explode(' ', $string);
-        $initialize = '';
-        foreach ($words as $key => $val) {
-            $initialize .= strtoupper(substr($val, 0, 1));
-        }
-        return $initialize;
-    }
-}
-
-
-if (!function_exists('generateStar')) {
-    function generateStar($rating)
-    {
-        $rating = max(1, min(5, $rating));
-        $output = '<div class="review-star">';
-        for ($i = 1; $i <= $rating; $i++) {
-            $output .= '<i class="fa fa-star"></i>';
-        }
-        for ($i = $rating + 1; $i <= 5; $i++) {
-            $output .= '<i class="fa fa-star-o"></i>';
-        }
-        $output .= '</div>';
-        return $output;
-    }
-}
-
-
-if (!function_exists('convertCombineArray')) {
-    function convertCombineArray(mixed $data, $mix_1 = '')
-    {
-        $array = [];
-        foreach ($data as $key => $val) {
-            $array[$val->id] = (($mix_1 != '') ? $val->{$mix_1} : $val->code) . ' / ' . $val->phone;
-        }
-        return $array;
-    }
-}
-
-
-if (!function_exists('convertArray')) {
-    function convertArray($datas)
-    {
-        $id = [];
-        foreach ($datas as $data) {
-            $id[] = $data->id;
-        }
-        return $id;
-    }
-}
-
-if (!function_exists('convertToIdNameArray')) {
-    function convertToIdNameArray($customers)
-    {
-        $idNameArray = [];
-
-        foreach ($customers as $customer) {
-            $idNameArray[$customer['id']] = $customer['name'];
-        }
-
-        return $idNameArray;
     }
 }

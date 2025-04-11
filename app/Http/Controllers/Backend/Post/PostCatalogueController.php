@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Backend\Post;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\PostCatalogue;
+use App\Models\Post;
 
 use App\Services\Interfaces\PostCatalogueServiceInterface  as PostCatalogueService;
 use App\Repositories\Interfaces\PostCatalogueRepositoryInterface  as PostCatalogueRepository;
@@ -120,13 +122,21 @@ class PostCatalogueController extends Controller
     }
 
 
-    public function destroy(DeletePostCatalogueRequest $request, $id)
+    public function destroy($id)
     {
-        if ($this->postCatalogueService->destroy($id, $this->language)) {
+        if (PostCatalogue::isNodeCheck($id)) {
+            return redirect()->route('post.catalogue.index')->withErrors('Không thể xóa do vẫn còn danh mục con.');
+        }
+        if (Post::hasPosts($id)) {
+            return redirect()->route('post.catalogue.index')->withErrors('Không thể xóa do danh mục này vẫn còn bài viết.');
+        }
+        if ($this->postCatalogueService->destroy($id)) {
             return redirect()->route('post.catalogue.index')->with('success', 'Xóa bản ghi thành công');
         }
+
         return redirect()->route('post.catalogue.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
+
 
     private function configData()
     {

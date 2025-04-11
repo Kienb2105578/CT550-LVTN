@@ -32,7 +32,7 @@
 {{-- <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"> --}}
 {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> --}}
-<!-- <link href="backend/css/bootstrap.min.css" rel="stylesheet"> -->
+{{-- <link href="backend/css/bootstrap.min.css" rel="stylesheet"> --}}
 <link rel="stylesheet" href="{{ asset('assets/css/swiper-bundle.min.css') }}">
 <script src="{{ asset('assets/js/swiper-bundle.min.js') }}"></script>
 

@@ -25,7 +25,7 @@ class DeletePostCatalogueRequest extends FormRequest
         $id = $this->route('id');
 
         return [
-            '__dummy' => [new CheckPostCatalogueChildrenRule($id)],
+            'name' => [new CheckPostCatalogueChildrenRule($id)],
         ];
     }
 }

@@ -1,7 +1,7 @@
 <form action="{{ route('report.product') }}" method="get">
     <div class="wrapper wrapper-content report-product">
         @include('backend.dashboard.component.statistic')
-        <div class="row mb15">
+        <div class="row mb15 mt30">
             <div class="col-lg-6">
                 <div class="panel-head">
                     <div class="panel-title">Báo cáo doanh thu theo sản phẩm</div>

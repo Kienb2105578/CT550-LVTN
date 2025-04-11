@@ -60,7 +60,7 @@
                         $avatar = $review->customer->image;
                         $name = $review->fullname;
                         $description = $review->description;
-                        $rating = generateStar($review->score);
+                        $score = max(1, min(5, $review->score));
                         $created_at = convertDateTime($review->created_at);
                         $replies = json_decode($review->replies, true);
                     @endphp
@@ -79,7 +79,15 @@
                                             Đã mua hàng tại {{ $system['homepage_brand'] }}
                                         </span>
                                     </div>
-                                    {!! $rating !!}
+                                    <div class="review-star">
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            @if ($i <= $score)
+                                                <i class="fa fa-star"></i>
+                                            @else
+                                                <i class="fa fa-star-o"></i>
+                                            @endif
+                                        @endfor
+                                    </div>
                                     <div class="description">
                                         {{ $description }}
                                     </div>

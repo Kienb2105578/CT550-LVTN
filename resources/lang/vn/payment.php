@@ -7,6 +7,11 @@ return [
             'title' => 'Thanh toán khi nhận hàng (COD)'
         ],
         [
+            'name' => 'vnpay',
+            'image' => 'frontend/resources/core/img/vnpay.webp',
+            'title' => 'Thanh toán ví điện tử VNPAY'
+        ],
+        [
             'name' => 'momo',
             'image' => 'frontend/resources/core/img/momo-icon.webp',
             'title' => 'Thanh toán qua Ví Momo'

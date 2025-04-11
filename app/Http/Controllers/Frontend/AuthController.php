@@ -194,9 +194,11 @@ class AuthController extends FrontendController
         if (Auth::guard('customer')->attempt($credentials)) {
             $user = Auth::guard('customer')->user();
 
-            $request->session()->regenerate(); // 🔥 Reset session trước
-
-            // 🔥 Lưu giỏ hàng sau khi session đã ổn định
+            if ($user->publish != 2) {
+                Auth::guard('customer')->logout();
+                return redirect()->route('home.index')->with('error', 'Tài khoản chưa được duyệt hoặc bị khóa');
+            }
+            $request->session()->regenerate();
             $carts = Cart::instance('shopping')->content();
             $this->cartService->saveCartToDatabase($carts);
 

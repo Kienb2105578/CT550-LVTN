@@ -8,25 +8,6 @@ return [
             'route' => 'dashboard/index',
             'class' => 'special'
         ],
-        // [
-        //     'title' => 'Thống Kê',
-        //     'icon' => 'fa fa-money',
-        //     'name' => ['report'],
-        //     'subModule' => [
-        //         [
-        //             'title' => 'Theo Thời Gian',
-        //             'route' => 'report/time'
-        //         ],
-        //         [
-        //             'title' => 'Theo Sản Phẩm',
-        //             'route' => 'report/product'
-        //         ],
-        //         // [
-        //         //     'title' => 'Theo Nguồn Khách',
-        //         //     'route' => 'report/customer'
-        //         // ],
-        //     ]
-        // ],
         [
             'title' => 'QL Kho Hàng',
             'icon' => 'fa fa-archive',
@@ -99,10 +80,6 @@ return [
                     'title' => 'QL Khuyến Mại',
                     'route' => 'promotion/index'
                 ],
-                // [
-                //     'title' => 'QL Nguồn Khách',
-                //     'route' => 'source/index'
-                // ],
                 [
                     'title' => 'QL Banner & Slide',
                     'route' => 'slide/index'
@@ -157,10 +134,6 @@ return [
                     'title' => 'Phân Quyền',
                     'route' => 'user/catalogue/permission'
                 ],
-                // [
-                //     'title' => 'QL Nhóm Khách hàng',
-                //     'route' => 'customer/catalogue/index'
-                // ],
                 [
                     'title' => 'QL Khách hàng',
                     'route' => 'customer/index'

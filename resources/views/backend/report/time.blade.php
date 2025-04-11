@@ -1,7 +1,7 @@
 <form action="{{ route('report.time') }}" method="get">
     <div class="wrapper wrapper-content report-time">
         @include('backend.dashboard.component.statistic')
-        <div class="row mb15">
+        <div class="row mb15 mt30">
             <div class="col-lg-6">
                 <div class="panel-title">Báo cáo doanh thu theo thời gian</div>
                 <h4 class="heading-1"><span>Chọn khoảng thời gian:</span></h4>

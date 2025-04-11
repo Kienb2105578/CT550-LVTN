@@ -269,26 +269,36 @@ class ProductService extends BaseService implements ProductServiceInterface
         return $combines;
     }
 
+    private function sortString($string = ''): string
+    {
+        $extract = array_filter(array_map('trim', explode(',', $string)));
+        sort($extract, SORT_NUMERIC);
+        return implode(',', $extract);
+    }
+
     private function createVariantArray($payload, $product): array
     {
         $variant = [];
-        if (isset($payload['variant']['sku']) && count($payload['variant']['sku'])) {
-            foreach ($payload['variant']['sku'] as $key => $val) {
 
-                $vId = ($payload['productVariant']['id'][$key]) ?? '';
-                $productVariantId = sortString($vId);
-                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $payload['productVariant']['id'][$key]);
+        if (!empty($payload['variant']['sku'])) {
+            foreach ($payload['variant']['sku'] as $key => $sku) {
+                $variantIds = $payload['productVariant']['id'][$key] ?? '';
+                $sortedCode = $this->sortString($variantIds);
+
+                $uuid = Uuid::uuid5(Uuid::NAMESPACE_DNS, $product->id . ', ' . $variantIds);
+
                 $variant[] = [
                     'uuid' => $uuid,
-                    'code' => $productVariantId,
-                    'quantity' => ($payload['variant']['quantity'][$key]) ?? '',
-                    'sku' => $val,
-                    'price' => ($payload['variant']['price'][$key]) ? convert_price($payload['variant']['price'][$key]) : '',
-                    'album' => ($payload['variant']['album'][$key]) ?? '',
+                    'code' => $sortedCode,
+                    'quantity' => $payload['variant']['quantity'][$key] ?? '',
+                    'sku' => $sku,
+                    'price' => !empty($payload['variant']['price'][$key]) ? convert_price($payload['variant']['price'][$key]) : '',
+                    'album' => $payload['variant']['album'][$key] ?? '',
                     'user_id' => Auth::id(),
                 ];
             }
         }
+
         return $variant;
     }
 

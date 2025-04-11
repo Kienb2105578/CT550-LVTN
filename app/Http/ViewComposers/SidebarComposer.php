@@ -7,7 +7,7 @@ use App\Services\Interfaces\UserServiceInterface  as UserService;
 use App\Repositories\Interfaces\PermissionRepositoryInterface  as PermissionRepository;
 use Illuminate\Support\Facades\Auth;
 
-class LanguageComposer
+class SidebarComposer
 {
 
     protected $language;
@@ -38,11 +38,7 @@ class LanguageComposer
     }
     public function filterAccessibleMenus($permissions, $menus)
     {
-        // Lấy danh sách canonical từ danh sách quyền
         $allowedRoutes = collect($permissions)->pluck('canonical')->toArray();
-        //$allowedRoutes = $this->permissionRepository->getAllPermissions();
-
-        // Lọc menu mà user có quyền truy cập
         foreach ($menus as &$menu) {
             if (isset($menu['subModule'])) {
                 $menu['subModule'] = array_filter($menu['subModule'], function ($sub) use ($allowedRoutes) {

@@ -456,18 +456,18 @@ class OrderService extends BaseService implements OrderServiceInterface
         $previousMonth = ($month == 1) ? 12 : $month - 1;
         $previousYear = ($month == 1) ? $year - 1 : $year;
 
-
         $orderCurrentMonth = $this->orderRepository->getOrderByTime($month, $year);
         $orderPreviousMonth = $this->orderRepository->getOrderByTime($previousMonth, $previousYear);
         $orderIncomeMonth = $this->orderRepository->getOrderIncomeByTime($month, $year);
         $orderIncomeToday = $this->orderRepository->getOrderIncomeToday();
         $productTotal = $this->productRepository->getTotalProduct();
+
         return [
             'orderCurrentMonth' => $orderCurrentMonth,
             'orderPreviousMonth' => $orderPreviousMonth,
             'orderIncomeMonth' => $orderIncomeMonth,
             'productTotal' => $productTotal,
-            'grow' => growth($orderCurrentMonth, $orderPreviousMonth),
+            'grow' => $this->growth($orderCurrentMonth, $orderPreviousMonth),
             'totalOrders' => $this->orderRepository->getTotalOrders(),
             'cancleOrders' => $this->orderRepository->getCancleOrders(),
             'revenue' => $this->orderRepository->revenueOrders(),
@@ -475,6 +475,13 @@ class OrderService extends BaseService implements OrderServiceInterface
             'revenueChart' => convertRevenueChartData($this->orderRepository->revenueByYear($year)),
         ];
     }
+
+    private function growth($current, $previous)
+    {
+        $previous = ($previous == 0) ? 1 : $previous;
+        return number_format((($current - $previous) / $previous) * 100, 1);
+    }
+
 
     public function ajaxOrderChart($request)
     {

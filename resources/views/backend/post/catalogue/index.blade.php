@@ -19,3 +19,25 @@
         </div>
     </div>
 </div>
+<!-- toastr JS (nếu chưa có) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "timeOut": "2000",
+    };
+
+    @if ($errors->any())
+        toastr.error("{{ $errors->first() }}");
+    @endif
+
+    @if (session('success'))
+        toastr.success("{{ session('success') }}");
+    @endif
+
+    @if (session('error'))
+        toastr.error("{{ session('error') }}");
+    @endif
+</script>

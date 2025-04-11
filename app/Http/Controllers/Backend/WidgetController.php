@@ -99,22 +99,42 @@ class WidgetController extends Controller
         ];
     }
 
+    private function convertArrayByKey($object = null, $fields = [])
+    {
+        $temp = [];
+        foreach ($object as $val) {
+            foreach ($fields as $field) {
+                $extract = explode('.', $field);
+
+                if (count($extract) === 2) {
+                    $temp[$field][] = $val->{$extract[0]}[$extract[1]] ?? null;
+                } else {
+                    $temp[$field][] = is_array($val) ? ($val[$field] ?? null) : ($val->{$field} ?? null);
+                }
+            }
+        }
+        return $temp;
+    }
+
     public function edit($id)
     {
         $this->authorize('modules', 'widget.update');
+
         $widget = $this->widgetRepository->findById($id);
         $widget->description = $widget->description[$this->language];
+
         $modelClass = loadClass($widget->model);
-
-
-
         $menuItems = $this->menuItemAgrument(is_array($widget->model_id) ? $widget->model_id : []);
-        $widgetItem = convertArrayByKey($modelClass->findByCondition(...array_values($menuItems)), ['id', 'name.languages', 'image']);
-        $config = $this->config();
 
+        $items = $modelClass->findByCondition(...array_values($menuItems));
+        $widgetItem = $this->convertArrayByKey($items, ['id', 'name.languages', 'image']);
+
+        $config = $this->config();
         $config['seo'] = __('messages.widget');
         $config['method'] = 'edit';
+
         $template = 'backend.widget.store';
+
         return view('backend.dashboard.layout', compact(
             'template',
             'config',

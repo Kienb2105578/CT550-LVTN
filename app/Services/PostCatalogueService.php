@@ -122,7 +122,7 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         }
     }
 
-    public function destroy($id, $languageId)
+    public function destroy($id)
     {
         DB::beginTransaction();
         try {

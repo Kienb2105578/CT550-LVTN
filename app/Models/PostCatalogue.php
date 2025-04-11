@@ -43,14 +43,11 @@ class PostCatalogue extends Model
 
 
 
-    public static function isNodeCheck($id = 0)
+    public static function isNodeCheck($id)
     {
         $postCatalogue = PostCatalogue::find($id);
 
-        if ($postCatalogue->rgt - $postCatalogue->lft !== 1) {
-            return false;
-        }
-
-        return true;
+        if (!$postCatalogue) return false;
+        return ($postCatalogue->rgt - $postCatalogue->lft > 1);
     }
 }

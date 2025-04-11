@@ -17,6 +17,7 @@ class PurchaseOrder extends Model
         'total',
         'status',
         'note',
+        'user_id'
     ];
 
     protected $table = 'purchase_orders';
@@ -30,5 +31,10 @@ class PurchaseOrder extends Model
     public function purchase_order_details()
     {
         return $this->hasMany(PurchaseOrderDetail::class, 'purchase_order_id', 'id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

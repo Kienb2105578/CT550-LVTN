@@ -194,14 +194,12 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
     public function getOrdersByStatus($confirm = "", $payment = "", $delivery = "")
     {
-        // Lấy thông tin khách hàng đang đăng nhập
         $customer = Auth::guard('customer')->user();
 
         if (!$customer) {
             return response()->json(['error' => 'Chưa đăng nhập'], 401);
         }
 
-        // Query cơ bản
         $query = DB::table('orders')
             ->select(
                 'orders.id as order_id',
@@ -297,10 +295,10 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
                     sort($option['attribute']); // Sắp xếp tăng dần
                     $option_code = implode(',', $option['attribute']); // Ghép thành chuỗi "8,10" hoặc "10,8"
 
-                    // 🔥 Tìm variant_name từ bảng product_variants
+
                     $variant = DB::table('product_variants')
                         ->where('product_id', $product->product_id)
-                        ->where('code', $option_code) // So khớp với `code` trong `product_variants`
+                        ->where('code', $option_code)
                         ->first();
 
                     if ($variant) {
@@ -460,13 +458,13 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
     public function revenueOrders()
     {
-
-        return $this->model
-            ->join('order_product', 'order_product.order_id', '=', 'orders.id')
-            ->where('orders.payment', '=', 'paid')
-            ->where('orders.delivery', '=', 'success')
-            ->sum(DB::raw('order_product.price * order_product.qty'));
+        return DB::table('orders')
+            ->where('orders.payment', 'paid')
+            ->where('orders.delivery', 'success')
+            ->select(DB::raw('SUM(JSON_UNQUOTE(JSON_EXTRACT(orders.cart, "$.cartTotal"))) as revenue'))
+            ->value('revenue');
     }
+
 
     public function checkUserHasOrderForProduct($userId, $productId)
     {
@@ -486,35 +484,35 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
 
     public function revenueByYear($year)
     {
-        return $this->model->select(
-            DB::raw('
-                months.month, 
-                COALESCE(SUM(JSON_UNQUOTE(JSON_EXTRACT(orders.cart, "$.cartTotal"))), 0) as monthly_revenue
-            ')
-        )
-            ->from(DB::raw('(
-            SELECT 1 AS month
-                UNION SELECT 2
-                UNION SELECT 3
-                UNION SELECT 4
-                UNION SELECT 5
-                UNION SELECT 6
-                UNION SELECT 7
-                UNION SELECT 8
-                UNION SELECT 9
-                UNION SELECT 10
-                UNION SELECT 11
-                UNION SELECT 12
-        ) as months'))
+        return DB::table(DB::raw('
+        (SELECT 1 AS month
+         UNION SELECT 2
+         UNION SELECT 3
+         UNION SELECT 4
+         UNION SELECT 5
+         UNION SELECT 6
+         UNION SELECT 7
+         UNION SELECT 8
+         UNION SELECT 9
+         UNION SELECT 10
+         UNION SELECT 11
+         UNION SELECT 12) as months
+    '))
             ->leftJoin('orders', function ($join) use ($year) {
                 $join->on(DB::raw('months.month'), '=', DB::raw('MONTH(orders.created_at)'))
-                    ->where('orders.payment', '=', 'paid')
-                    ->where('orders.delivery', '=', 'success')
-                    ->where(DB::raw('YEAR(orders.created_at)'), '=', $year);
+                    ->where('orders.payment', 'paid')
+                    ->where('orders.delivery', 'success')
+                    ->whereYear('orders.created_at', $year);
             })
+            ->select(
+                DB::raw('months.month'),
+                DB::raw('COALESCE(SUM(JSON_UNQUOTE(JSON_EXTRACT(orders.cart, "$.cartTotal"))), 0) as monthly_revenue')
+            )
             ->groupBy('months.month')
+            ->orderBy('months.month')
             ->get();
     }
+
 
     public function revenue7Day()
     {

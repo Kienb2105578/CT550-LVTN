@@ -35,8 +35,23 @@
                         </td>
                         <td>
                             <div class="discount-information text-center">
-                                {!! renderDiscountInformation($promotion) !!}
+                                @if ($promotion->method === 'product_and_quantity')
+                                    @php
+                                        $discountValue = $promotion->discountInformation['info']['discountValue'] ?? 0;
+                                        $discountType =
+                                            ($promotion->discountInformation['info']['discountType'] ?? '') ===
+                                            'percent'
+                                                ? '%'
+                                                : 'đ';
+                                    @endphp
+                                    <span class="label label-success">{{ $discountValue }}{{ $discountType }}</span>
+                                @else
+                                    <div>
+                                        <a href="{{ route('promotion.edit', $promotion->id) }}">Xem chi tiết</a>
+                                    </div>
+                                @endif
                             </div>
+
                         </td>
 
                         <td>

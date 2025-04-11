@@ -11,7 +11,8 @@
                 <th>Nhà cung cấp</th>
                 <th class="text-center" style="width:11%">Tổng tiền</th>
                 <th class="text-center" style="width:10%">Trạng thái</th>
-                <th>Ghi chú</th>
+                <th class="text-center" style="width:12%">Nhân Viên</th>
+                <th class="text-center" style="width:12%">Chức vụ</th>
                 <th class="text-center" style="width:14%;">{{ __('messages.tableAction') }}</th>
             </tr>
         </thead>
@@ -34,7 +35,8 @@
                                 <span class="badge badge-danger">Đã hoàn trả</span>
                             @endif
                         </td>
-                        <td>{{ $purchaseOrder->note ?? 'Không có ghi chú' }}</td>
+                        <td>{{ $purchaseOrder->user_name }}</td>
+                        <td>{{ $purchaseOrder->user_catalogue_name }}</td>
                         <td class="text-center">
                             <a href="{{ route('purchase-order.edit', $purchaseOrder->id) }}"
                                 class="btn btn-info btn-outline">
@@ -65,7 +67,8 @@
                                     </div>
                                     <div class="modal-body">
                                         <p>Bạn có chắc chắn muốn xóa đơn mua hàng
-                                            <strong>{{ $purchaseOrder->code }}</strong> không?</p>
+                                            <strong>{{ $purchaseOrder->code }}</strong> không?
+                                        </p>
                                         <p><span class="text-danger">Lưu ý:</span> Thao tác này không thể hoàn tác.</p>
                                         <div class="form-group">
                                             <label>Mã phiếu nhập</label>

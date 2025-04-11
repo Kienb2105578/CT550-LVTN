@@ -9,7 +9,7 @@ use DateTime;
 use Carbon\Carbon;
 use App\Http\ViewComposers\SystemComposer;
 use App\Http\ViewComposers\MenuComposer;
-use App\Http\ViewComposers\LanguageComposer;
+use App\Http\ViewComposers\SidebarComposer;
 use App\Http\ViewComposers\CategoryComposer;
 use App\Http\ViewComposers\CartComposer;
 use App\Http\ViewComposers\CustomerComposer;
@@ -67,10 +67,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
 
-        $locale = app()->getLocale();
-        $language = 1; // vn en cn
-        $language = 'vn';
-
         Validator::extend('custom_date_format', function ($attribute, $value, $parameters, $validator) {
             return Datetime::createFromFormat('d/m/Y H:i', $value) !== false;
         });
@@ -83,22 +79,23 @@ class AppServiceProvider extends ServiceProvider
         });
 
 
+        $language = config('app.locale');
+
         view()->composer('*', function ($view) use ($language) {
             $composerClasses = [
                 MenuComposer::class,
-                LanguageComposer::class,
+                SidebarComposer::class,
                 CategoryComposer::class,
                 CartComposer::class,
                 CustomerComposer::class,
                 ProductCatalogueComposer::class,
             ];
 
-            foreach ($composerClasses as $key => $val) {
-                $composer = app()->make($val, ['language' => 1]);
+            foreach ($composerClasses as $val) {
+                $composer = app()->make($val, ['language' => $language]);
                 $composer->compose($view);
             }
         });
-
 
         Schema::defaultStringLength(191);
     }

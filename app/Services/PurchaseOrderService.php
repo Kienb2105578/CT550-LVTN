@@ -39,25 +39,34 @@ class PurchaseOrderService extends BaseService implements PurchaseOrderServiceIn
     {
         $condition['keyword'] = addslashes($request->input('keyword'));
         $condition['publish'] = $request->integer('publish');
+
         foreach (__('cart') as $key => $val) {
             $condition['dropdown'][$key] = $request->string($key);
         }
+
         $condition['created_at'] = $request->input('created_at');
-
-
         $perPage = $request->integer('perpage');
+
         $purchaseOrders = $this->purchaseOrderRepository->pagination(
-            ['purchase_orders.*', 'suppliers.name as supplier_name'],
+            [
+                'purchase_orders.*',
+                'suppliers.name as supplier_name',
+                'users.name as user_name',
+                'user_catalogues.name as user_catalogue_name'
+            ],
             $condition,
             $perPage,
             ['path' => 'purchase-order/index'],
             ['created_at', 'desc'],
             [
-                ['suppliers', 'suppliers.id', '=', 'purchase_orders.supplier_id']
+                ['suppliers', 'suppliers.id', '=', 'purchase_orders.supplier_id', 'left'],
+                ['users', 'users.id', '=', 'purchase_orders.user_id', 'left'],
+                ['user_catalogues', 'user_catalogues.id', '=', 'users.user_catalogue_id', 'left'],
             ]
         );
         return $purchaseOrders;
     }
+
 
     public function create($request)
     {
@@ -132,13 +141,13 @@ class PurchaseOrderService extends BaseService implements PurchaseOrderServiceIn
                 }
             }
         }
-
+        $payload['user_id'] = Auth::id();
         $payload['total'] = $total;
         $payload['status'] = 'pending';
 
         try {
             $purchaseOrder = $this->purchaseOrderRepository->create($payload);
-            $perchaseorderdetails = $this->createPurchaseOrderDetails($purchaseOrder->id, $payload);
+            $this->createPurchaseOrderDetails($purchaseOrder->id, $payload);
             return $purchaseOrder;
         } catch (\Exception $e) {
             return response()->json(['error' => 'Không thể tạo đơn hàng'], 500);
@@ -231,6 +240,7 @@ class PurchaseOrderService extends BaseService implements PurchaseOrderServiceIn
         }
 
         $payload['total'] = $total;
+        $payload['user_id'] = Auth::id();
 
         try {
             $purchaseOrder = $this->purchaseOrderRepository->update($id, $payload);
@@ -243,6 +253,7 @@ class PurchaseOrderService extends BaseService implements PurchaseOrderServiceIn
                     if (is_string($quantityData) || is_numeric($quantityData)) {
                         $batchId = DB::table('inventory_batches')->insertGetId([
                             'product_id'        => $productId,
+                            'user_id'           => Auth::id(),
                             'variant_id'        => null,
                             'purchase_order_id' => $id,
                             'price'             => $payload['price'][$productId] ?? 0,
@@ -267,6 +278,7 @@ class PurchaseOrderService extends BaseService implements PurchaseOrderServiceIn
                         foreach ($quantityData as $variantId => $quantity) {
                             $batchId = DB::table('inventory_batches')->insertGetId([
                                 'product_id'        => $productId,
+                                'user_id'           => Auth::id(),
                                 'variant_id'        => $variantId,
                                 'purchase_order_id' => $id,
                                 'initial_quantity'  => (int) $quantity,

@@ -37,7 +37,25 @@
                     <h3 class="font-bold no-margins">
                         Đơn hàng trong tháng
                     </h3>
-                    {!! growHtml($orderStatistic['grow']) !!}
+
+                    @php
+                        $grow = $orderStatistic['grow'];
+                    @endphp
+
+                    @if ($grow > 0)
+                        <div class="stat-percent font-bold text-success">
+                            {{ $grow }}% <i class="fa fa-level-up"></i>
+                        </div>
+                    @elseif ($grow < 0)
+                        <div class="stat-percent font-bold text-danger">
+                            {{ $grow }}% <i class="fa fa-level-down"></i>
+                        </div>
+                    @else
+                        <div class="stat-percent font-bold text-muted">
+                            0% <i class="fa fa-minus"></i>
+                        </div>
+                    @endif
+
                     <small>Tăng trưởng với tháng trước</small>
                 </div>
                 <div class="flot-chart">
