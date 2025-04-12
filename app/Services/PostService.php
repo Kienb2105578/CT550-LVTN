@@ -28,11 +28,13 @@ class PostService extends BaseService implements PostServiceInterface
         $this->controllerName = 'PostController';
     }
 
-    private function whereRaw($request, $languageId, $postCatalogue = null)
+    private function whereRaw($request, $postCatalogue)
     {
         $rawCondition = [];
         if ($request->integer('post_catalogue_id') > 0 || !is_null($postCatalogue)) {
-            $catId = ($request->integer('post_catalogue_id') > 0) ? $request->integer('post_catalogue_id') : $postCatalogue->id;
+            $catId = ($request->integer('post_catalogue_id') > 0)
+                ? $request->integer('post_catalogue_id')
+                : ($postCatalogue?->id ?? 0);
             $rawCondition['whereRaw'] = [
                 [
                     'tb3.post_catalogue_id IN (
@@ -49,7 +51,7 @@ class PostService extends BaseService implements PostServiceInterface
     }
 
 
-    public function paginate($request = null, $languageId, $postCatalogue = null, $page = 1, $extend = [])
+    public function paginate($request = null, $postCatalogue = null, $page = 1, $extend = [])
     {
         $perPage = (!is_null($postCatalogue))  ? 15 : 20;
         $condition = [
@@ -65,7 +67,7 @@ class PostService extends BaseService implements PostServiceInterface
 
         $orderBy = ['posts.id', 'DESC'];
         $relations = ['post_catalogues'];
-        $rawQuery = $this->whereRaw($request, $languageId, $postCatalogue);
+        $rawQuery = $this->whereRaw($request, $postCatalogue);
 
         $joins = [
             ['post_catalogue_post as tb3', 'posts.id', '=', 'tb3.post_id'],
@@ -84,40 +86,34 @@ class PostService extends BaseService implements PostServiceInterface
         return $posts;
     }
 
-    public function create($request, $languageId)
+    public function create($request)
     {
         DB::beginTransaction();
         try {
             $post = $this->createPost($request);
             if ($post->id > 0) {
-                // $this->updateLanguageForPost($post, $request, $languageId);
                 $this->updateCatalogueForPost($post, $request);
-                $this->createRouter($post, $request, $this->controllerName, $languageId);
+                $this->createRouter($post, $request, $this->controllerName);
             }
             DB::commit();
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }
 
-    public function update($id, $request, $languageId)
+    public function update($id, $request)
     {
         DB::beginTransaction();
         try {
             $post = $this->postRepository->findById($id);
             if ($this->uploadPost($post, $request)) {
-                //$this->updateLanguageForPost($post, $request, $languageId);
                 $this->updateCatalogueForPost($post, $request);
                 $this->updateRouter(
                     $post,
                     $request,
                     $this->controllerName,
-                    1
                 );
             }
             DB::commit();

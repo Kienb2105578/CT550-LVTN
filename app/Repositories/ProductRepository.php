@@ -46,7 +46,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         )
             ->with([
                 'product_catalogues',
-                'product_variants' => function ($query) use ($language_id) {
+                'product_variants' => function ($query) {
                     $query->with(['attributes']);
                 },
                 'reviews'
@@ -110,7 +110,13 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     }
 
 
-    public function getProductById(int $id = 0, $language_id = 0, $condition = [])
+    /**
+     *
+     *   Phương thức lấy thông tin sản phẩm theo ID
+     *   Bao gồm thông tin danh mục, biến thể, thuộc tính và đánh giá
+     *
+     */
+    public function getProductById(int $id = 0)
     {
         return $this->model->select([
             'products.id',
@@ -136,7 +142,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             ->where('products.publish', '=', 2)
             ->whereNull('products.deleted_at')
             ->with([
-                'product_variants' => function ($query) use ($language_id) {
+                'product_variants' => function ($query) {
                     $query->with(['attributes']);
                 },
                 'reviews'
@@ -154,7 +160,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     }
 
 
-    public function getPopularProducts($language_id = 0)
+    public function getPopularProducts()
     {
         return $this->model->select(
             [
@@ -181,7 +187,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             ->leftJoin('reviews', 'products.id', '=', 'reviews.product_id') // Đảm bảo kết nối với bảng reviews
             ->with([
                 'product_catalogues',
-                'product_variants' => function ($query) use ($language_id) {
+                'product_variants' => function ($query) {
                     $query->with(['attributes']);
                 },
                 'reviews'

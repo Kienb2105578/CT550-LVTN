@@ -11,7 +11,7 @@ use App\Services\Interfaces\MenuCatalogueServiceInterface as MenuCatalogueServic
 
 use App\Http\Requests\Menu\StoreMenuRequest;
 use App\Http\Requests\Menu\StoreMenuChildrenRequest;
-use App\Http\Requests\Menu\UpdateMenuRequest;
+
 
 class MenuController extends Controller
 {
@@ -31,8 +31,6 @@ class MenuController extends Controller
         $this->menuCatalogueRepository = $menuCatalogueRepository;
         $this->menuCatalogueService = $menuCatalogueService;
         $this->middleware(function ($request, $next) {
-            $locale = app()->getLocale(); // vn en cn
-            $this->language = 1;
             return $next($request);
         });
     }
@@ -40,7 +38,7 @@ class MenuController extends Controller
     public function index(Request $request)
     {
         $this->authorize('modules', 'menu.index');
-        $menuCatalogues = $this->menuCatalogueService->paginate($request, 1);
+        $menuCatalogues = $this->menuCatalogueService->paginate($request);
 
         $config = [
             'js' => [
@@ -79,7 +77,7 @@ class MenuController extends Controller
 
     public function store(StoreMenuRequest $request)
     {
-        if ($this->menuService->save($request, $this->language)) {
+        if ($this->menuService->save($request)) {
             $menuCatalogueId = $request->input('menu_catalogue_id');
             return redirect()->route('menu.edit', ['id' => $menuCatalogueId])->with('success', 'Cập nhật bản ghi thành công');
         }
@@ -89,8 +87,6 @@ class MenuController extends Controller
     public function edit($id)
     {
         $this->authorize('modules', 'menu.update');
-        $language = $this->language;
-
         $menus = $this->menuRepository->findByCondition([
             ['menu_catalogue_id', '=', $id]
         ], TRUE, [], ['order', 'DESC']);
@@ -114,7 +110,6 @@ class MenuController extends Controller
     public function editMenu($id)
     {
         $this->authorize('modules', 'menu.update');
-        $language = $this->language;
         $menus = $this->menuRepository->findByCondition([
             ['menu_catalogue_id', '=', $id],
             ['parent_id', '=', 0],
@@ -149,9 +144,8 @@ class MenuController extends Controller
     public function children($id)
     {
         $this->authorize('modules', 'menu.create');
-        $language = $this->language;
         $menuBread = $this->menuRepository->findById($id, ['*'], []);
-        $menuList = $this->menuService->getAndConvertMenu($menuBread, $this->language);
+        $menuList = $this->menuService->getAndConvertMenu($menuBread);
         $config = $this->config();
         $config['seo'] = __('messages.menu');
         $config['method'] = 'children';
@@ -168,7 +162,7 @@ class MenuController extends Controller
     public function saveChildren(StoreMenuChildrenRequest $request, $id)
     {
         $menu = $this->menuRepository->findById($id);
-        if ($this->menuService->saveChildren($request, $this->language, $menu)) {
+        if ($this->menuService->saveChildren($request, $menu)) {
             return redirect()->route('menu.edit', ['id' => $menu->menu_catalogue_id])->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('menu.edit', ['id' => $menu->menu_catalogue_id])->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');

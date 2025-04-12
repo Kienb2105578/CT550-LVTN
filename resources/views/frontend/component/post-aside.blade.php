@@ -15,12 +15,13 @@
                     @endphp
 
                     @if ($post->publish == 2)
-                        <div class="aside-post-item uk-clearfix">
-                            <a href="{{ $canonical }}" class="image img-cover"><img src="{{ $image }}"
-                                    alt="{{ $name }}"></a>
+                        <div class="aside-post-item clearfix d-flex mb-3">
+                            <a href="{{ $canonical }}" class="image img-cover me-3">
+                                <img src="{{ $image }}" alt="{{ $name }}" class="img-fluid">
+                            </a>
                             <div class="info">
-                                <h3 class="title" style="text-align: justify; font-size: 13px;"><a
-                                        href="{{ $canonical }}" title="{{ $name }}">{{ $name }}</a>
+                                <h3 class="title" style="text-align: justify; font-size: 13px;">
+                                    <a href="{{ $canonical }}" title="{{ $name }}">{{ $name }}</a>
                                 </h3>
                             </div>
                         </div>
@@ -29,4 +30,5 @@
             </div>
         </div>
     </aside>
+
 @endif

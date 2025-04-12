@@ -143,15 +143,11 @@ return [
         [
             'title' => 'Cấu hình chung',
             'icon' => 'fa fa-cogs',
-            'name' => ['system', 'widget', 'menu'],
+            'name' => ['system', 'menu'],
             'subModule' => [
                 [
                     'title' => 'Cài đặt Menu',
                     'route' => 'menu/index'
-                ],
-                [
-                    'title' => 'Quản lý Widget',
-                    'route' => 'widget/index'
                 ],
                 [
                     'title' => 'Cấu hình hệ thống',

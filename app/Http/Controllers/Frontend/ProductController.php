@@ -3,18 +3,13 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\FrontendController;
-use App\Models\Cart as ModelsCart;
-use Illuminate\Http\Request;
 use App\Repositories\Interfaces\ProductCatalogueRepositoryInterface as ProductCatalogueRepository;
 use App\Services\Interfaces\ProductCatalogueServiceInterface as ProductCatalogueService;
 use App\Services\Interfaces\ProductServiceInterface as ProductService;
 use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
 use App\Repositories\Interfaces\ReviewRepositoryInterface as ReviewRepository;
-use App\Services\Interfaces\WidgetServiceInterface  as WidgetService;
 use App\Repositories\Interfaces\OrderRepositoryInterface  as OrderRepository;
-use App\Models\System;
 use Illuminate\Support\Facades\Http;
-use Cart;
 use Illuminate\Support\Facades\Log;
 
 class ProductController extends FrontendController
@@ -26,7 +21,6 @@ class ProductController extends FrontendController
     protected $productService;
     protected $productRepository;
     protected $reviewRepository;
-    protected $widgetService;
     protected $orderRepository;
 
     public function __construct(
@@ -35,7 +29,6 @@ class ProductController extends FrontendController
         ProductService $productService,
         ProductRepository $productRepository,
         ReviewRepository $reviewRepository,
-        WidgetService $widgetService,
         OrderRepository $orderRepository
     ) {
         $this->productCatalogueRepository = $productCatalogueRepository;
@@ -43,7 +36,6 @@ class ProductController extends FrontendController
         $this->productService = $productService;
         $this->productRepository = $productRepository;
         $this->reviewRepository = $reviewRepository;
-        $this->widgetService = $widgetService;
         $this->orderRepository = $orderRepository;
         parent::__construct();
     }
@@ -88,11 +80,6 @@ class ProductController extends FrontendController
             $product_recommend = $this->productService->combineProductAndPromotion($productId, $product_recommend);
         }
 
-        $widgets = $this->widgetService->getWidget([
-            ['keyword' => 'products-hl', 'promotion' => true],
-        ], $this->language);
-
-        $widgets['products-hl']->object = $this->productRepository->widgetProductTotalQuantity($widgets['products-hl']->object);
         $productCatalogue->products = $this->productRepository->updateProductTotalQuantity($productCatalogue->products);
         $product_recommend = $this->productRepository->updateProductTotalQuantity($product_recommend);
         $config = $this->config();
@@ -105,7 +92,6 @@ class ProductController extends FrontendController
             'breadcrumb',
             'productCatalogue',
             'product',
-            'widgets',
             'order_product',
             'product_recommend'
         ));

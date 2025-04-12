@@ -50,16 +50,4 @@ class SidebarComposer
             return !empty($menu['subModule']);
         });
     }
-
-    private function agrument()
-    {
-        return [
-            'condition' => [
-                config('apps.general.defaultPublish')
-            ],
-            'flag' => true,
-            'relation' => [],
-            'orderBy' => ['current', 'desc']
-        ];
-    }
 }

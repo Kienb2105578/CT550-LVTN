@@ -97,6 +97,9 @@
 
                         </div>
                     </div>
+                    <script>
+                        const orderDetailUrl = "{{ route('my-order.detail', ['id' => 'ORDER_ID']) }}";
+                    </script>
 
                     <!-- Danh sách sản phẩm -->
                     <div class="order-items row "

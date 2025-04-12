@@ -139,10 +139,6 @@ class AuthController extends FrontendController
     {
         $email = base64_decode($request->query('email'));
         $token = $request->query('token');
-
-
-
-
         $resetRecord = DB::table('customer_password_resets')
             ->where('email', $email)
             ->where('token', $token)
@@ -174,7 +170,8 @@ class AuthController extends FrontendController
 
     public function changePassword(Request $request)
     {
-        $email = base64_decode(rtrim(urldecode($request->getQueryString('email')), '='));
+        // $email = base64_decode(rtrim(urldecode($request->getQueryString('email')), '='));
+        $email = $request->query('email');
         $customer = Customer::where('email', $email)->first();
 
         if ($this->customerService->update($customer->id, $request)) {

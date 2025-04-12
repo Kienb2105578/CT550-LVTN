@@ -10,22 +10,18 @@ use App\Repositories\Interfaces\PostRepositoryInterface  as PostRepository;
 use App\Http\Requests\Post\StorePostRequest;
 use App\Http\Requests\Post\UpdatePostRequest;
 use App\Classes\Nestedsetbie;
-use App\Models\Language;
 
 class PostController extends Controller
 {
     protected $postService;
     protected $postRepository;
-    protected $languageRepository;
-    protected $language;
+    protected $nestedset;
 
     public function __construct(
         PostService $postService,
         PostRepository $postRepository,
     ) {
         $this->middleware(function ($request, $next) {
-            $locale = app()->getLocale(); // vn en cn
-            $this->language = 1;
             $this->initialize();
             return $next($request);
         });
@@ -46,7 +42,7 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $this->authorize('modules', 'post.index');
-        $posts = $this->postService->paginate($request, $this->language);
+        $posts = $this->postService->paginate($request);
         $posts = $this->postRepository->addPostCatalogueNamesToPosts($posts);
         $config = [
             'js' => [
@@ -87,7 +83,7 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request)
     {
-        if ($this->postService->create($request, $this->language)) {
+        if ($this->postService->create($request)) {
             return redirect()->route('post.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('post.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
@@ -96,7 +92,7 @@ class PostController extends Controller
     public function edit($id)
     {
         $this->authorize('modules', 'post.update');
-        $post = $this->postRepository->getPostById($id, $this->language);
+        $post = $this->postRepository->getPostById($id);
         $config = $this->configData();
         $config['seo'] = __('messages.post');
         $config['method'] = 'edit';
@@ -114,7 +110,7 @@ class PostController extends Controller
 
     public function update($id, UpdatePostRequest $request)
     {
-        if ($this->postService->update($id, $request, $this->language)) {
+        if ($this->postService->update($id, $request)) {
             return redirect()->route('post.index')->with('success', 'Cập nhật bản ghi thành công');
         }
         return redirect()->route('post.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');

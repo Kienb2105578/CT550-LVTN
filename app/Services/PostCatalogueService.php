@@ -39,15 +39,10 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         $this->postCatalogueRepository = $postCatalogueRepository;
         $this->routerRepository = $routerRepository;
         $this->postRepository = $postRepository;
-        // $this->nestedset = new Nestedsetbie([
-        //     'table' => 'post_catalogues',
-        //     'foreignkey' => 'post_catalogue_id',
-        //     'language_id' =>   ,
-        // ]);
     }
 
 
-    public function paginate($request, $languageId)
+    public function paginate($request)
     {
         $perPage = $request->integer('perpage');
         $condition = [
@@ -67,18 +62,16 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
         return $postCatalogues;
     }
 
-    public function create($request, $languageId)
+    public function create($request)
     {
         DB::beginTransaction();
         try {
             $postCatalogue = $this->createCatalogue($request);
             if ($postCatalogue->id > 0) {
-                //$this->updateLanguageForCatalogue($postCatalogue, $request, $languageId);
-                $this->createRouter($postCatalogue, $request, $this->controllerName, $languageId);
+                $this->createRouter($postCatalogue, $request, $this->controllerName);
                 $this->nestedset = new Nestedsetbie([
                     'table' => 'post_catalogues',
                     'foreignkey' => 'post_catalogue_id',
-                    'language_id' => $languageId,
                 ]);
                 $this->nestedset->Get();
                 $arrSet = $this->nestedset->Set();
@@ -103,7 +96,6 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
                     $postCatalogue,
                     $request,
                     $this->controllerName,
-                    1
                 );
                 $this->nestedset = new Nestedsetbie([
                     'table' => 'post_catalogues',

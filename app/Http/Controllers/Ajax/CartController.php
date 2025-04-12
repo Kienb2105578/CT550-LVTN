@@ -13,7 +13,6 @@ class CartController extends FrontendController
 {
     protected $cartService;
     protected $productRepository;
-    protected $language;
 
     public function __construct(
         CartService $cartService,
@@ -26,7 +25,7 @@ class CartController extends FrontendController
 
     public function create(Request $request)
     {
-        $flag = $this->cartService->createCart($request, $this->language);
+        $flag = $this->cartService->createCart($request);
 
         $user = Auth::guard('customer')->user();
         if ($user) {

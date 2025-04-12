@@ -11,14 +11,11 @@ use App\Repositories\Interfaces\PromotionRepositoryInterface as PromotionReposit
 use App\Http\Requests\Promotion\StorePromotionRequest;
 use App\Http\Requests\Promotion\UpdatePromotionRequest;
 
-use App\Models\Language;
-use Illuminate\Support\Collection;
 
 class PromotionController extends Controller
 {
     protected $promotionService;
     protected $promotionRepository;
-    protected $language;
 
     public function __construct(
         PromotionService $promotionService,
@@ -27,8 +24,6 @@ class PromotionController extends Controller
         $this->promotionService = $promotionService;
         $this->promotionRepository = $promotionRepository;
         $this->middleware(function ($request, $next) {
-            $locale = app()->getLocale();
-            $this->language = 1;
             return $next($request);
         });
     }
@@ -73,7 +68,7 @@ class PromotionController extends Controller
 
     public function store(StorePromotionRequest $request)
     {
-        if ($this->promotionService->create($request, $this->language)) {
+        if ($this->promotionService->create($request)) {
             return redirect()->route('promotion.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('promotion.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
@@ -98,7 +93,7 @@ class PromotionController extends Controller
 
     public function update($id, UpdatePromotionRequest $request)
     {
-        if ($this->promotionService->update($id, $request, $this->language)) {
+        if ($this->promotionService->update($id, $request)) {
             return redirect()->route('promotion.index')->with('success', 'Cập nhật bản ghi thành công');
         }
         return redirect()->route('promotion.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');

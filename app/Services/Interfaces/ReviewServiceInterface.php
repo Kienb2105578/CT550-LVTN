@@ -8,5 +8,5 @@ namespace App\Services\Interfaces;
  */
 interface ReviewServiceInterface
 {
-    
+    public function paginate($request);
 }

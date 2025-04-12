@@ -6,13 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\OrderRepositoryInterface  as OrderRepository;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
+
 
 
 class DashboardController extends Controller
 {
 
-    protected $language;
     protected $orderRepository;
 
     public function __construct(
@@ -20,8 +19,6 @@ class DashboardController extends Controller
     ) {
         $this->orderRepository = $orderRepository;
         $this->middleware(function ($request, $next) {
-            $locale = app()->getLocale(); // vn en cn
-            $this->language = 1;
             return $next($request);
         });
     }

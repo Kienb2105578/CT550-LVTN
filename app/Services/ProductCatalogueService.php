@@ -49,7 +49,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         $this->productRepository = $productRepository;
     }
 
-    public function paginate($request, $languageId)
+    public function paginate($request)
     {
         $perPage = $request->integer('perpage');
         $condition = [
@@ -68,18 +68,16 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         return $productCatalogues;
     }
 
-    public function create($request, $languageId)
+    public function create($request)
     {
         DB::beginTransaction();
         try {
             $productCatalogue = $this->createCatalogue($request);
             if ($productCatalogue->id > 0) {
-                //$this->updateLanguageForCatalogue($productCatalogue, $request, $languageId);
-                $this->createRouter($productCatalogue, $request, $this->controllerName, $languageId);
+                $this->createRouter($productCatalogue, $request, $this->controllerName);
                 $this->nestedset = new Nestedsetbie([
                     'table' => 'product_catalogues',
                     'foreignkey' => 'product_catalogue_id',
-                    'language_id' =>  $languageId,
                 ]);
                 $this->nestedset();
             }
@@ -94,24 +92,21 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         }
     }
 
-    public function update($id, $request, $languageId)
+    public function update($id, $request)
     {
         DB::beginTransaction();
         try {
             $productCatalogue = $this->productCatalogueRepository->findById($id);
             $flag = $this->updateCatalogue($productCatalogue, $request);
             if ($flag == TRUE) {
-                //$this->updateLanguageForCatalogue($productCatalogue, $request, $languageId);
                 $this->updateRouter(
                     $productCatalogue,
                     $request,
                     $this->controllerName,
-                    $languageId
                 );
                 $this->nestedset = new Nestedsetbie([
                     'table' => 'product_catalogues',
                     'foreignkey' => 'product_catalogue_id',
-                    'language_id' =>  $languageId,
                 ]);
                 $this->nestedset();
             }
@@ -126,7 +121,7 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         }
     }
 
-    public function destroy($id, $languageId)
+    public function destroy($id)
     {
         DB::beginTransaction();
         try {
@@ -138,14 +133,12 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             $this->nestedset = new Nestedsetbie([
                 'table' => 'product_catalogues',
                 'foreignkey' => 'product_catalogue_id',
-                'language_id' =>  $languageId,
             ]);
             $this->nestedset();
             DB::commit();
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
             echo $e->getMessage();
             die();
             return false;

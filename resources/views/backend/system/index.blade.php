@@ -32,8 +32,19 @@
                                             <div class="form-row">
                                                 <label for="" class="uk-flex uk-flex-space-between">
                                                     <span>{{ $item['label'] }}</span>
-                                                    {!! renderSystemLink($item) !!}
-                                                    {!! renderSystemTitle($item) !!}
+                                                    @if (isset($item['link']))
+                                                        <a class="system-link" target="{{ $item['link']['target'] }}"
+                                                            href="{{ $item['link']['href'] }}">
+                                                            {{ $item['link']['text'] }}
+                                                        </a>
+                                                    @endif
+
+                                                    @if (isset($item['title']))
+                                                        <span class="system-link text-danger">
+                                                            {{ $item['title'] }}
+                                                        </span>
+                                                    @endif
+
                                                 </label>
 
                                                 @switch($item['type'])

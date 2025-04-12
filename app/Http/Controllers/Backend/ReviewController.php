@@ -8,9 +8,6 @@ use Illuminate\Http\Request;
 use App\Services\Interfaces\ReviewServiceInterface  as ReviewService;
 use App\Repositories\Interfaces\ReviewRepositoryInterface as ReviewRepository;
 use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
-use App\Http\Requests\Review\StoreReviewRequest;
-use App\Http\Requests\Review\UpdateReviewRequest;
-use App\Models\Review;
 
 class ReviewController extends Controller
 {

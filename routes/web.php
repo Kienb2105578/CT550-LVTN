@@ -1,11 +1,24 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\AuthenticateMiddleware;
-use App\Http\Controllers\Backend\User\AuthController;
-use App\Http\Controllers\Backend\DashboardController;
+
 
 use App\Http\Controllers\Ajax\DashboardController as AjaxDashboardController;
+use App\Http\Controllers\Ajax\ChatbotController as AjaxChatbotController;
+use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
+use App\Http\Controllers\Ajax\MenuController as AjaxMenuController;
+use App\Http\Controllers\Ajax\SlideController as AjaxSlideController;
+use App\Http\Controllers\Ajax\ProductController as AjaxProductController;
+use App\Http\Controllers\Ajax\CartController as AjaxCartController;
+use App\Http\Controllers\Ajax\OrderController as AjaxOrderController;
+use App\Http\Controllers\Ajax\ReviewController as AjaxReviewController;
+use App\Http\Controllers\Ajax\StockController as AjaxStockController;
+use App\Http\Controllers\Ajax\PurchaseOrderController as AjaxPurchaseOrderController;
+use App\Http\Controllers\Ajax\CustomerController as AjaxCustomerController;
+use App\Http\Controllers\Ajax\LocationController;
+
+use App\Http\Controllers\Backend\User\AuthController;
+use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\User\UserController;
 use App\Http\Controllers\Backend\User\UserCatalogueController;
 use App\Http\Controllers\Backend\User\PermissionController;
@@ -15,150 +28,38 @@ use App\Http\Controllers\Backend\Post\PostCatalogueController;
 use App\Http\Controllers\Backend\Post\PostController;
 use App\Http\Controllers\Backend\MenuController;
 use App\Http\Controllers\Backend\SlideController;
-use App\Http\Controllers\Backend\WidgetController;
 use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Backend\OrderController;
 use App\Http\Controllers\Backend\PurchaseOrderController;
 use App\Http\Controllers\Backend\StockController;
 use App\Http\Controllers\Backend\Promotion\PromotionController;
 use App\Http\Controllers\Backend\ReviewController;
-use App\Http\Controllers\Ajax\LocationController;
-use App\Http\Controllers\Ajax\ChatbotController as AjaxChatbotController;
-use App\Http\Controllers\Ajax\AttributeController as AjaxAttributeController;
-use App\Http\Controllers\Ajax\MenuController as AjaxMenuController;
-use App\Http\Controllers\Ajax\SlideController as AjaxSlideController;
-use App\Http\Controllers\Ajax\ProductController as AjaxProductController;
-use App\Http\Controllers\Ajax\SourceController as AjaxSourceController;
-use App\Http\Controllers\Ajax\CartController as AjaxCartController;
-use App\Http\Controllers\Ajax\OrderController as AjaxOrderController;
-use App\Http\Controllers\Ajax\ReviewController as AjaxReviewController;
-use App\Http\Controllers\Ajax\PostController as AjaxPostController;
-use App\Http\Controllers\Ajax\StockController as AjaxStockController;
-use App\Http\Controllers\Ajax\PurchaseOrderController as AjaxPurchaseOrderController;
 use App\Http\Controllers\Backend\Product\ProductCatalogueController;
 use App\Http\Controllers\Backend\Product\ProductController;
 use App\Http\Controllers\Backend\Attribute\AttributeCatalogueController;
 use App\Http\Controllers\Backend\Attribute\AttributeController;
 use App\Http\Controllers\Backend\SystemController;
+
+
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\RouterController;
 use App\Http\Controllers\Frontend\CartController;
-use App\Http\Controllers\Frontend\Payment\VnpayController;
-use App\Http\Controllers\Frontend\Payment\MomoController;
-use App\Http\Controllers\Frontend\Payment\PaypalController;
 use App\Http\Controllers\Frontend\ContactController as FeContactController;
 use App\Http\Controllers\Frontend\AuthController as FeAuthController;
 use App\Http\Controllers\Frontend\CustomerController as FeCustomerController;
 use App\Http\Controllers\Frontend\PostController as FePostController;
-
 use App\Http\Controllers\Frontend\ProductCatalogueController as FeProductCatalogueController;
-use App\Http\Controllers\Ajax\CustomerController as AjaxCustomerController;
 use App\Http\Controllers\Frontend\MyOrder\MyOrderController;
 
-//@@useController@@
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+use App\Http\Controllers\Frontend\Payment\VnpayController;
+use App\Http\Controllers\Frontend\Payment\MomoController;
+use App\Http\Controllers\Frontend\Payment\PaypalController;
+
 
 Route::group(['middleware' => 'license'], function () {
 
-   /* FRONTEND ROUTES  */
-   Route::get('/', [HomeController::class, 'index'])->name('home.index');
-
-   Route::get('/don-hang-cua-toi', [MyOrderController::class, 'index'])->name('my-order.index');
-   Route::get('/don-hang-cua-toi/{id}', [MyOrderController::class, 'detail'])->name('my-order.detail')->where(['id' => '[0-9]+']);
-   Route::delete('/don-hang-cua-toi/{id}/huy', [MyOrderController::class, 'cancel'])->name('my-order.cancel')->where(['id' => '[0-9]+']);
-
-
-   Route::get('tim-kiem' . config('apps.general.suffix'), [FeProductCatalogueController::class, 'search'])->name('product.catalogue.search');
-   Route::get('lien-he' . config('apps.general.suffix'), [FeContactController::class, 'index'])->name('fe.contact.index');
-   Route::get('bai-viet' . config('apps.general.suffix'), [FePostController::class, 'main'])->name('post.main');
-   Route::get('san-pham' . config('apps.general.suffix'), [FeProductCatalogueController::class, 'main'])->name('product.catalogue.main');
-   Route::post('tim-kiem-bang-anh' . config('apps.general.suffix'), [FeProductCatalogueController::class, 'searchProductByImage'])->name('product.catalogue.searchProductByImage');
-
-
-   /* CUSTOMER  */
-   Route::get('customer/login' . config('apps.general.suffix'), [FeAuthController::class, 'index'])->name('fe.auth.login');
-   Route::get('customer/check/login' . config('apps.general.suffix'), [FeAuthController::class, 'login'])->name('fe.auth.dologin');
-
-   Route::get('customer/password/forgot' . config('apps.general.suffix'), [FeAuthController::class, 'forgotCustomerPassword'])->name('forgot.customer.password');
-   Route::get('customer/password/email' . config('apps.general.suffix'), [FeAuthController::class, 'verifyCustomerEmail'])->name('customer.password.email');
-   Route::get('customer/register' . config('apps.general.suffix'), [FeAuthController::class, 'register'])->name('customer.register');
-   Route::post('customer/reg' . config('apps.general.suffix'), [FeAuthController::class, 'registerAccount'])->name('customer.reg');
-
-
-   Route::get('customer/password/update' . config('apps.general.suffix'), [FeAuthController::class, 'updatePassword'])->name('customer.update.password');
-   Route::post('customer/password/change' . config('apps.general.suffix'), [FeAuthController::class, 'changePassword'])->name('customer.password.reset');
-
-   Route::group(['middleware' => ['customer']], function () {
-      Route::get('customer/profile' . config('apps.general.suffix'), [FeCustomerController::class, 'profile'])->name('customer.profile');
-      Route::post('customer/profile/update' . config('apps.general.suffix'), [FeCustomerController::class, 'updateProfile'])->name('customer.profile.update');
-      Route::get('customer/password/reset' . config('apps.general.suffix'), [FeCustomerController::class, 'passwordForgot'])->name('customer.password.change');
-      Route::post('customer/password/recovery' . config('apps.general.suffix'), [FeCustomerController::class, 'recovery'])->name('customer.password.recovery');
-      Route::get('customer/logout' . config('apps.general.suffix'), [FeCustomerController::class, 'logout'])->name('customer.logout');
-      Route::get('customer/construction' . config('apps.general.suffix'), [FeCustomerController::class, 'construction'])->name('customer.construction');
-      Route::get('customer/construction/{id}/product' . config('apps.general.suffix'), [FeCustomerController::class, 'constructionProduct'])->name('customer.construction.product')->where(['id' => '[0-9]+']);
-      Route::get('customer/warranty/check' . config('apps.general.suffix'), [FeCustomerController::class, 'warranty'])->name('customer.check.warranty');
-      Route::post('customer/warranty/active', [FeCustomerController::class, 'active'])->name('customer.active.warranty');
-   });
-
-   Route::get('danh-sach-yeu-thich' . config('apps.general.suffix'), [FeProductCatalogueController::class, 'wishlist'])->name('product.catalogue.wishlist');
-   Route::get('thanh-toan' . config('apps.general.suffix'), [CartController::class, 'checkout'])->name('cart.checkout');
-   Route::get('{canonical}' . config('apps.general.suffix'), [RouterController::class, 'index'])->name('router.index')->where('canonical', '[a-zA-Z0-9-]+');
-   Route::get('{canonical}/trang-{page}' . config('apps.general.suffix'), [RouterController::class, 'page'])->name('router.page')->where('canonical', '[a-zA-Z0-9-]+')->where('page', '[0-9]+');
-   Route::post('cart/create', [CartController::class, 'store'])->name('cart.store');
-   Route::get('cart/{code}/success' . config('apps.general.suffix'), [CartController::class, 'success'])->name('cart.success')->where(['code' => '[0-9]+']);
-
-   /* FRONTEND SYSTEM */
-
-
-   Route::get('ajax/post/video', [AjaxPostController::class, 'video'])->name('post.video');
-   Route::post('ajax/product/wishlist', [AjaxProductController::class, 'wishlist'])->name('product.wishlist');
-
-   Route::post('ajax/chatbot/create', [AjaxChatbotController::class, 'create'])->name('ajax.chatbot.create');
-   Route::get('/ajax/get-gemini-key', [AjaxChatbotController::class, 'getGeminiKey']);
-
-
-   /* VNPAY */
-   Route::get('return/vnpay' . config('apps.general.suffix'), [VnpayController::class, 'vnpay_return'])->name('vnpay.momo_return');
-   Route::get('return/vnpay_ipn' . config('apps.general.suffix'), [VnpayController::class, 'vnpay_ipn'])->name('vnpay.vnpay_ipn');
-
-   Route::get('return/momo' . config('apps.general.suffix'), [MomoController::class, 'momo_return'])->name('momo.momo_return');
-   Route::get('return/ipn' . config('apps.general.suffix'), [MomoController::class, 'momo_ipn'])->name('momo.momo_ipn');
-
-   Route::get('paypal/success' . config('apps.general.suffix'), [PaypalController::class, 'success'])->name('paypal.success');
-   Route::get('paypal/cancel' . config('apps.general.suffix'), [PaypalController::class, 'cancel'])->name('paypal.cancel');
-
-
-   /* FRONTEND AJAX ROUTE */
-   Route::post('ajax/review/create', [AjaxReviewController::class, 'create'])->name('ajax.review.create');
-   Route::post('ajax/review/reply', [AjaxReviewController::class, 'reply'])->name('ajax.review.reply');
-   Route::get('ajax/product/loadVariant', [AjaxProductController::class, 'loadVariant'])->name('ajax.loadVariant');
-   Route::get('ajax/product/filter', [AjaxProductController::class, 'filter'])->name('ajax.filter');
-   Route::post('ajax/cart/create', [AjaxCartController::class, 'create'])->name('ajax.cart.create');
-   Route::post('ajax/cart/update', [AjaxCartController::class, 'update'])->name('ajax.cart.update');
-   Route::post('ajax/cart/change-mini-cart', [AjaxCartController::class, 'changeMinyCartQuantity'])->name('ajax.cart.change-mini-cart');
-   Route::post('ajax/cart/delete', [AjaxCartController::class, 'delete'])->name('ajax.cart.delete');
-   Route::get('ajax/location/getLocation', [LocationController::class, 'getLocation'])->name('ajax.location.index');
-   Route::post('ajax/order/update-cancle', [AjaxOrderController::class, 'updateCancle'])->name('ajax.order.update-cancle');
-   Route::post('ajax/order/update-return', [AjaxOrderController::class, 'updateReturn'])->name('ajax.order.update-return');
-   Route::post('ajax/order/getMyOrder', [AjaxOrderController::class, 'getMyOrder'])->name('ajax.order.getMyOrder');
-   Route::get('ajax/dashboard/findModelObject', [AjaxDashboardController::class, 'findModelObject'])->name('ajax.dashboard.findModelObject');
-
-   Route::post('ajax/product/checkQuantity', [AjaxProductController::class, 'checkQuantity'])->name('ajax.checkQuantity');
-   Route::post('ajax/product/checkQuantityCart', [AjaxProductController::class, 'checkQuantityCart'])->name('ajax.checkQuantityCart');
-
    /* BACKEND ROUTES */
-
-
    Route::group(['middleware' => ['admin', 'locale', 'backend_default_locale']], function () {
       Route::get('dashboard/index', [DashboardController::class, 'index'])->name('dashboard.index');
       Route::get('/error', function () {
@@ -285,17 +186,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::delete('{id}/destroy', [SlideController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('slide.destroy');
       });
 
-      Route::group(['prefix' => 'widget'], function () {
-         Route::get('index', [WidgetController::class, 'index'])->name('widget.index');
-         Route::get('create', [WidgetController::class, 'create'])->name('widget.create');
-         Route::post('store', [WidgetController::class, 'store'])->name('widget.store');
-         Route::get('{id}/edit', [WidgetController::class, 'edit'])->where(['id' => '[0-9]+'])->name('widget.edit');
-         Route::post('{id}/update', [WidgetController::class, 'update'])->where(['id' => '[0-9]+'])->name('widget.update');
-         Route::delete('{id}/destroy', [WidgetController::class, 'destroy'])->where(['id' => '[0-9]+'])->name('widget.destroy');
-      });
-
-
-
       Route::group(['prefix' => 'promotion'], function () {
          Route::get('index', [PromotionController::class, 'index'])->name('promotion.index');
          Route::get('create', [PromotionController::class, 'create'])->name('promotion.create');
@@ -359,7 +249,6 @@ Route::group(['middleware' => 'license'], function () {
          Route::get('product', [ReportController::class, 'product'])->name('report.product');
          Route::get('exportFileProduct', [ReportController::class, 'exportFileProduct'])->name('report.exportFileProduct');
          Route::get('exportFileTime', [ReportController::class, 'exportFileTime'])->name('report.exportFileTime');
-         Route::get('customer', [ReportController::class, 'customer'])->name('report.customer');
       });
 
       /* AJAX */
@@ -409,6 +298,81 @@ Route::group(['middleware' => 'license'], function () {
    Route::get('admin', [AuthController::class, 'index'])->name('auth.admin')->middleware('login');
    Route::get('logout', [AuthController::class, 'logout'])->name('auth.logout');
    Route::post('login', [AuthController::class, 'login'])->name('auth.login');
+
+
+
+   /* FRONTEND ROUTES  */
+   Route::get('/', [HomeController::class, 'index'])->name('home.index');
+
+   Route::get('tim-kiem' . config('apps.general.suffix'), [FeProductCatalogueController::class, 'search'])->name('product.catalogue.search');
+   Route::get('lien-he' . config('apps.general.suffix'), [FeContactController::class, 'index'])->name('fe.contact.index');
+   Route::get('bai-viet' . config('apps.general.suffix'), [FePostController::class, 'main'])->name('post.main');
+   Route::get('san-pham' . config('apps.general.suffix'), [FeProductCatalogueController::class, 'main'])->name('product.catalogue.main');
+   Route::post('tim-kiem-bang-anh' . config('apps.general.suffix'), [FeProductCatalogueController::class, 'searchProductByImage'])->name('product.catalogue.searchProductByImage');
+
+   /* CUSTOMER  */
+   Route::get('customer/login' . config('apps.general.suffix'), [FeAuthController::class, 'index'])->name('fe.auth.login');
+   Route::get('customer/check/login' . config('apps.general.suffix'), [FeAuthController::class, 'login'])->name('fe.auth.dologin');
+
+   Route::get('customer/password/forgot' . config('apps.general.suffix'), [FeAuthController::class, 'forgotCustomerPassword'])->name('forgot.customer.password');
+   Route::get('customer/password/email' . config('apps.general.suffix'), [FeAuthController::class, 'verifyCustomerEmail'])->name('customer.password.email');
+   Route::get('customer/register' . config('apps.general.suffix'), [FeAuthController::class, 'register'])->name('customer.register');
+   Route::post('customer/reg' . config('apps.general.suffix'), [FeAuthController::class, 'registerAccount'])->name('customer.reg');
+
+   Route::get('customer/password/update' . config('apps.general.suffix'), [FeAuthController::class, 'updatePassword'])->name('customer.update.password');
+   Route::post('customer/password/change' . config('apps.general.suffix'), [FeAuthController::class, 'changePassword'])->name('customer.password.reset');
+
+   Route::get('/don-hang-cua-toi', [MyOrderController::class, 'index'])->name('my-order.index');
+   Route::get('/don-hang-cua-toi/{id}', [MyOrderController::class, 'detail'])->name('my-order.detail')->where(['id' => '[0-9]+']);
+   Route::delete('/don-hang-cua-toi/{id}/huy', [MyOrderController::class, 'cancel'])->name('my-order.cancel')->where(['id' => '[0-9]+']);
+
+   Route::group(['middleware' => ['customer']], function () {
+      Route::get('customer/profile' . config('apps.general.suffix'), [FeCustomerController::class, 'profile'])->name('customer.profile');
+      Route::post('customer/profile/update' . config('apps.general.suffix'), [FeCustomerController::class, 'updateProfile'])->name('customer.profile.update');
+      Route::get('customer/password/reset' . config('apps.general.suffix'), [FeCustomerController::class, 'passwordForgot'])->name('customer.password.change');
+      Route::post('customer/password/recovery' . config('apps.general.suffix'), [FeCustomerController::class, 'recovery'])->name('customer.password.recovery');
+      Route::get('customer/logout' . config('apps.general.suffix'), [FeCustomerController::class, 'logout'])->name('customer.logout');
+   });
+
+   Route::get('thanh-toan' . config('apps.general.suffix'), [CartController::class, 'checkout'])->name('cart.checkout');
+   Route::get('{canonical}' . config('apps.general.suffix'), [RouterController::class, 'index'])->name('router.index')->where('canonical', '[a-zA-Z0-9-]+');
+   Route::get('{canonical}/trang-{page}' . config('apps.general.suffix'), [RouterController::class, 'page'])->name('router.page')->where('canonical', '[a-zA-Z0-9-]+')->where('page', '[0-9]+');
+   Route::post('cart/create', [CartController::class, 'store'])->name('cart.store');
+   Route::get('cart/{code}/success' . config('apps.general.suffix'), [CartController::class, 'success'])->name('cart.success')->where(['code' => '[0-9]+']);
+
+   /* FRONTEND SYSTEM */
+   Route::post('ajax/chatbot/create', [AjaxChatbotController::class, 'create'])->name('ajax.chatbot.create');
+   Route::get('/ajax/get-gemini-key', [AjaxChatbotController::class, 'getGeminiKey']);
+
+
+   /* VNPAY */
+   Route::get('return/vnpay' . config('apps.general.suffix'), [VnpayController::class, 'vnpay_return'])->name('vnpay.momo_return');
+   Route::get('return/vnpay_ipn' . config('apps.general.suffix'), [VnpayController::class, 'vnpay_ipn'])->name('vnpay.vnpay_ipn');
+
+   Route::get('return/momo' . config('apps.general.suffix'), [MomoController::class, 'momo_return'])->name('momo.momo_return');
+   Route::get('return/ipn' . config('apps.general.suffix'), [MomoController::class, 'momo_ipn'])->name('momo.momo_ipn');
+
+   Route::get('paypal/success' . config('apps.general.suffix'), [PaypalController::class, 'success'])->name('paypal.success');
+   Route::get('paypal/cancel' . config('apps.general.suffix'), [PaypalController::class, 'cancel'])->name('paypal.cancel');
+
+
+   /* FRONTEND AJAX ROUTE */
+   Route::post('ajax/review/create', [AjaxReviewController::class, 'create'])->name('ajax.review.create');
+   Route::post('ajax/review/reply', [AjaxReviewController::class, 'reply'])->name('ajax.review.reply');
+   Route::get('ajax/product/loadVariant', [AjaxProductController::class, 'loadVariant'])->name('ajax.loadVariant');
+   Route::get('ajax/product/filter', [AjaxProductController::class, 'filter'])->name('ajax.filter');
+   Route::post('ajax/cart/create', [AjaxCartController::class, 'create'])->name('ajax.cart.create');
+   Route::post('ajax/cart/update', [AjaxCartController::class, 'update'])->name('ajax.cart.update');
+   Route::post('ajax/cart/change-mini-cart', [AjaxCartController::class, 'changeMinyCartQuantity'])->name('ajax.cart.change-mini-cart');
+   Route::post('ajax/cart/delete', [AjaxCartController::class, 'delete'])->name('ajax.cart.delete');
+   Route::get('ajax/location/getLocation', [LocationController::class, 'getLocation'])->name('ajax.location.index');
+   Route::post('ajax/order/update-cancle', [AjaxOrderController::class, 'updateCancle'])->name('ajax.order.update-cancle');
+   Route::post('ajax/order/update-return', [AjaxOrderController::class, 'updateReturn'])->name('ajax.order.update-return');
+   Route::post('ajax/order/getMyOrder', [AjaxOrderController::class, 'getMyOrder'])->name('ajax.order.getMyOrder');
+   Route::get('ajax/dashboard/findModelObject', [AjaxDashboardController::class, 'findModelObject'])->name('ajax.dashboard.findModelObject');
+
+   Route::post('ajax/product/checkQuantity', [AjaxProductController::class, 'checkQuantity'])->name('ajax.checkQuantity');
+   Route::post('ajax/product/checkQuantityCart', [AjaxProductController::class, 'checkQuantityCart'])->name('ajax.checkQuantityCart');
 });
 
 

@@ -248,11 +248,9 @@ class InventoryBatchRepository extends BaseRepository implements InventoryBatchR
 
     public function getReport($catalogue_id, $startDate, $endDate)
     {
-        // Chuyển đổi ngày từ d/m/Y thành định dạng chuẩn
         $startDate = Carbon::createFromFormat('d/m/Y', $startDate)->startOfDay()->toDateTimeString();
         $endDate = Carbon::createFromFormat('d/m/Y', $endDate)->endOfDay()->toDateTimeString();
 
-        // Lấy dữ liệu sản phẩm
         $products = DB::table('products')
             ->where('product_catalogue_id', $catalogue_id)
             ->whereNull('deleted_at')
@@ -269,7 +267,6 @@ class InventoryBatchRepository extends BaseRepository implements InventoryBatchR
                 $variants = collect([(object) ['id' => null, 'name' => $product->name]]);
             }
 
-            // Lấy lô mới nhất để lấy giá và số lượng
             $latestBatch = DB::table('inventory_batches')
                 ->where('product_id', $product->id)
                 ->orderBy('created_at', 'desc')

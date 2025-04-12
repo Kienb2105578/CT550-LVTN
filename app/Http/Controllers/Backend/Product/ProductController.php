@@ -12,16 +12,14 @@ use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface  as Attrib
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Classes\Nestedsetbie;
-use App\Models\Language;
 
 class ProductController extends Controller
 {
     protected $productService;
     protected $productRepository;
-    protected $languageRepository;
-    protected $language;
     protected $attributeCatalogue;
     protected $attributeRepository;
+    protected $nestedset;
 
     public function __construct(
         ProductService $productService,
@@ -30,8 +28,6 @@ class ProductController extends Controller
         AttributeRepository $attributeRepository,
     ) {
         $this->middleware(function ($request, $next) {
-            $locale = app()->getLocale();
-            $this->language = 1;
             $this->initialize();
             return $next($request);
         });
@@ -48,14 +44,13 @@ class ProductController extends Controller
         $this->nestedset = new Nestedsetbie([
             'table' => 'product_catalogues',
             'foreignkey' => 'product_catalogue_id',
-            'language_id' =>  $this->language,
         ]);
     }
 
     public function index(Request $request)
     {
         $this->authorize('modules', 'product.index');
-        $products = $this->productService->paginate($request, $this->language);
+        $products = $this->productService->paginate($request);
         $products = $this->productRepository->addProductCatalogueNamesToProducts($products);
         $config = [
             'js' => [
@@ -82,7 +77,7 @@ class ProductController extends Controller
     public function create()
     {
         $this->authorize('modules', 'product.create');
-        $attributeCatalogue = $this->attributeCatalogue->getAll($this->language);
+        $attributeCatalogue = $this->attributeCatalogue->getAll();
         $config = $this->configData();
         $config['seo'] = __('messages.product');
         $config['method'] = 'create';
@@ -98,7 +93,7 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request)
     {
-        if ($this->productService->create($request, $this->language)) {
+        if ($this->productService->create($request)) {
             return redirect()->route('product.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('product.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
@@ -107,8 +102,8 @@ class ProductController extends Controller
     public function edit($id, Request $request)
     {
         $this->authorize('modules', 'product.update');
-        $product = $this->productRepository->getProductById($id, $this->language);
-        $attributeCatalogue = $this->attributeCatalogue->getAll($this->language);
+        $product = $this->productRepository->getProductById($id);
+        $attributeCatalogue = $this->attributeCatalogue->getAll();
         $queryUrl = $request->getQueryString();
         $config = $this->configData();
         $config['seo'] = __('messages.product');
@@ -130,7 +125,7 @@ class ProductController extends Controller
     public function update($id, UpdateProductRequest $request)
     {
         $queryUrl = base64_decode($request->getQueryString());
-        if ($this->productService->update($id, $request, $this->language)) {
+        if ($this->productService->update($id, $request)) {
             return redirect()->route('product.index', $queryUrl)->with('success', 'Cập nhật bản ghi thành công');
         }
         return redirect()->route('product.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
@@ -138,7 +133,7 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        if ($this->productService->destroy($id, $this->language)) {
+        if ($this->productService->destroy($id)) {
             return redirect()->route('product.index')->with('success', 'Xóa bản ghi thành công');
         }
         return redirect()->route('product.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');

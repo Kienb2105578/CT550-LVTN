@@ -16,9 +16,7 @@ class SystemRepository extends BaseRepository implements SystemRepositoryInterfa
 
     public function __construct(
         System $model
-    ){
+    ) {
         $this->model = $model;
     }
-
-
 }

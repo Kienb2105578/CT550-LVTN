@@ -8,5 +8,5 @@ namespace App\Services\Interfaces;
  */
 interface SystemServiceInterface
 {
-   
+    public function save($request);
 }

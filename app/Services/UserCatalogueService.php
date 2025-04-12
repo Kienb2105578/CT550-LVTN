@@ -59,9 +59,6 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }
@@ -78,9 +75,6 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }
@@ -95,9 +89,6 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }
@@ -113,9 +104,6 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
             DB::commit();
             return true;
         } catch (\Exception $e) {
-            DB::rollBack();
-            echo $e->getMessage();
-            die();
             return false;
         }
     }
@@ -137,9 +125,6 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }
@@ -161,12 +146,8 @@ class UserCatalogueService extends BaseService implements UserCatalogueServiceIn
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
-        //Mục đích là đưa được dữ liệu vào bên trong bảng user_catalogue_permission
     }
 
 

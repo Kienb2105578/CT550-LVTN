@@ -9,9 +9,6 @@ use App\Services\Interfaces\AttributeCatalogueServiceInterface  as AttributeCata
 use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface  as AttributeCatalogueRepository;
 use App\Http\Requests\Attribute\StoreAttributeCatalogueRequest;
 use App\Http\Requests\Attribute\UpdateAttributeCatalogueRequest;
-use App\Http\Requests\Attribute\DeleteAttributeCatalogueRequest;
-use Auth;
-use Illuminate\Support\Facades\App;
 
 class AttributeCatalogueController extends Controller
 {
@@ -19,15 +16,12 @@ class AttributeCatalogueController extends Controller
     protected $attributeCatalogueService;
     protected $attributeCatalogueRepository;
     protected $nestedset;
-    protected $language;
 
     public function __construct(
         AttributeCatalogueService $attributeCatalogueService,
         AttributeCatalogueRepository $attributeCatalogueRepository
     ) {
         $this->middleware(function ($request, $next) {
-            $locale = app()->getLocale();
-            $this->language = 1;
             return $next($request);
         });
 
@@ -39,7 +33,7 @@ class AttributeCatalogueController extends Controller
     public function index(Request $request)
     {
         $this->authorize('modules', 'attribute.catalogue.index');
-        $attributeCatalogues = $this->attributeCatalogueService->paginate($request, $this->language);
+        $attributeCatalogues = $this->attributeCatalogueService->paginate($request);
         $config = [
             'js' => [
                 'backend/js/plugins/switchery/switchery.js',
@@ -75,7 +69,7 @@ class AttributeCatalogueController extends Controller
 
     public function store(StoreAttributeCatalogueRequest $request)
     {
-        if ($this->attributeCatalogueService->create($request, $this->language)) {
+        if ($this->attributeCatalogueService->create($request)) {
             return redirect()->route('attribute.catalogue.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('attribute.catalogue.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
@@ -101,7 +95,7 @@ class AttributeCatalogueController extends Controller
     public function update($id, UpdateAttributeCatalogueRequest $request)
     {
         $queryUrl = base64_decode($request->getQueryString());
-        if ($this->attributeCatalogueService->update($id, $request, $this->language)) {
+        if ($this->attributeCatalogueService->update($id, $request)) {
             return redirect()->route('attribute.catalogue.index', $queryUrl)->with('success', 'Cập nhật bản ghi thành công');
         }
         return redirect()->route('attribute.catalogue.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
@@ -111,7 +105,7 @@ class AttributeCatalogueController extends Controller
     {
         $this->authorize('modules', 'attribute.catalogue.destroy');
         $config['seo'] = __('messages.attributeCatalogue');
-        $attributeCatalogue = $this->attributeCatalogueRepository->getAttributeCatalogueById($id, $this->language);
+        $attributeCatalogue = $this->attributeCatalogueRepository->getAttributeCatalogueById($id);
         $template = 'backend.attribute.catalogue.delete';
         return view('backend.dashboard.layout', compact(
             'template',
@@ -120,9 +114,9 @@ class AttributeCatalogueController extends Controller
         ));
     }
 
-    public function destroy(DeleteAttributeCatalogueRequest $request, $id)
+    public function destroy($id)
     {
-        if ($this->attributeCatalogueService->destroy($id, $this->language)) {
+        if ($this->attributeCatalogueService->destroy($id)) {
             return redirect()->route('attribute.catalogue.index')->with('success', 'Xóa bản ghi thành công');
         }
         return redirect()->route('attribute.catalogue.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');

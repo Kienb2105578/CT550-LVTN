@@ -37,7 +37,7 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
         $this->routerRepository = $routerRepository;
     }
 
-    public function paginate($request, $languageId)
+    public function paginate($request)
     {
         $perPage = $request->integer('perpage');
         $condition = [
@@ -55,13 +55,13 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
         return $attributeCatalogues;
     }
 
-    public function create($request, $languageId)
+    public function create($request)
     {
         DB::beginTransaction();
         try {
             $attributeCatalogue = $this->createCatalogue($request);
             if ($attributeCatalogue->id > 0) {
-                $this->createRouter($attributeCatalogue, $request, $this->controllerName, $languageId);
+                $this->createRouter($attributeCatalogue, $request, $this->controllerName);
             }
             DB::commit();
             return true;
@@ -73,19 +73,17 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
         }
     }
 
-    public function update($id, $request, $languageId)
+    public function update($id, $request)
     {
         DB::beginTransaction();
         try {
             $attributeCatalogue = $this->attributeCatalogueRepository->findById($id);
             $flag = $this->updateCatalogue($attributeCatalogue, $request);
             if ($flag == TRUE) {
-                //$this->updateLanguageForCatalogue($attributeCatalogue, $request, $languageId);
                 $this->updateRouter(
                     $attributeCatalogue,
                     $request,
                     $this->controllerName,
-                    $languageId
                 );
             }
             DB::commit();
@@ -99,17 +97,15 @@ class AttributeCatalogueService extends BaseService implements AttributeCatalogu
         }
     }
 
-    public function destroy($id, $request, $languageId)
+    public function destroy($id)
     {
         DB::beginTransaction();
         try {
-            $attributeCatalogue = $this->attributeCatalogueRepository->delete($id);
+            $this->attributeCatalogueRepository->delete($id);
             DB::commit();
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
             die();
             return false;
         }

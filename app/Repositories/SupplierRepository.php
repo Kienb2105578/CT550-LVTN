@@ -37,7 +37,6 @@ class SupplierRepository extends BaseRepository implements SupplierRepositoryInt
         array $extend = [],
         array $orderBy = ['id', 'DESC']
     ) {
-        // 1️⃣ Lấy danh sách nhà cung cấp
         $suppliers = $this->model->select($column)
             ->whereNull('deleted_at')
             ->where(function ($query) use ($condition) {
@@ -52,12 +51,11 @@ class SupplierRepository extends BaseRepository implements SupplierRepositoryInt
             ->withQueryString()
             ->withPath(env('APP_URL') . ($extend['path'] ?? ''));
 
-        // 2️⃣ Lấy danh sách tỉnh, huyện, xã
-        $provinces = DB::table('provinces')->pluck('name', 'code'); // ['02' => 'Hà Giang']
-        $districts = DB::table('districts')->pluck('name', 'code'); // ['026' => 'Đồng Văn']
-        $wards = DB::table('wards')->pluck('name', 'code'); // ['00718' => 'Má Lé']
+        $provinces = DB::table('provinces')->pluck('name', 'code');
+        $districts = DB::table('districts')->pluck('name', 'code');
+        $wards = DB::table('wards')->pluck('name', 'code');
 
-        // 3️⃣ Gán lại tên tỉnh, huyện, xã bằng PHP
+
         $suppliers->getCollection()->transform(function ($supplier) use ($provinces, $districts, $wards) {
             $supplier->province_name = $provinces[$supplier->province_id] ?? null;
             $supplier->district_name = $districts[$supplier->district_id] ?? null;

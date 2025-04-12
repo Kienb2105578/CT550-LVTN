@@ -5,11 +5,11 @@
     var _token = $('meta[name="csrf-token"]').attr("content");
 
     HT.getMyOrder = () => {
-        $(".nav-link").on("click", function (e) {
+        $(".order-tab").on("click", function (e) {
             e.preventDefault();
 
             // Thêm class active cho tab được chọn
-            $(".nav-link").removeClass("active");
+            $(".order-tab").removeClass("active");
             $(this).addClass("active");
 
             // Lấy thông tin trạng thái từ thuộc tính data
@@ -69,38 +69,37 @@
                                         totalPrice += productTotal;
 
                                         html += `
-                    <div class="order-item">
-                        <img class="order-image" src="${
-                            product.product_image
-                        }" alt="Product image">
-                        <div class="item-details">
-                            <div class="item-name">${product.product_name}</div>
-                            ${
-                                product.variant_name
-                                    ? `<div class="item-category">Phân loại hàng: ${product.variant_name}</div>`
-                                    : ""
-                            }
-                            <div class="item-quantity">x${product.qty}</div>
-                        </div>
-                        <div class="item-price">
-                            <div class="text-danger">
-                                ${
-                                    product.price !== product.priceOriginal
-                                        ? `<span class="cart-price-old mr10">${new Intl.NumberFormat(
-                                              "vi-VN"
-                                          ).format(
-                                              product.priceOriginal *
-                                                  product.qty
-                                          )}đ</span>`
-                                        : ""
-                                }
-                                <span class="cart-price-sale">${new Intl.NumberFormat(
-                                    "vi-VN"
-                                ).format(productTotal)}đ</span>
-                            </div>
-                        </div>
+            <div class="order-item">
+                <img class="order-image" src="${
+                    product.product_image
+                }" alt="Product image">
+                <div class="item-details">
+                    <div class="item-name">${product.product_name}</div>
+                    ${
+                        product.variant_name
+                            ? `<div class="item-category">Phân loại hàng: ${product.variant_name}</div>`
+                            : ""
+                    }
+                    <div class="item-quantity">x${product.qty}</div>
+                </div>
+                <div class="item-price">
+                    <div class="text-danger">
+                        ${
+                            product.price !== product.priceOriginal
+                                ? `<span class="cart-price-old mr10">${new Intl.NumberFormat(
+                                      "vi-VN"
+                                  ).format(
+                                      product.priceOriginal * product.qty
+                                  )}đ</span>`
+                                : ""
+                        }
+                        <span class="cart-price-sale">${new Intl.NumberFormat(
+                            "vi-VN"
+                        ).format(productTotal)}đ</span>
                     </div>
-                `;
+                </div>
+            </div>
+        `;
                                     }
                                 );
 
@@ -110,22 +109,22 @@
                                 );
 
                                 html += `
-                <div class="order-footer">
-                    <div class="total-price">
-                        Thành tiền: ₫${new Intl.NumberFormat("vi-VN").format(
-                            totalPrice
-                        )}
-                    </div>
-                    <div>
-                        ${
-                            order.order_id
-                                ? ` <a href="${detailUrl}" class="btn btn-outline-secondary">Chi tiết</a>`
-                                : "<p>Không có mã đơn hàng hợp lệ.</p>"
-                        }
-                    </div>
-                </div>
-                <hr>
-            `;
+        <div class="order-footer">
+            <div class="total-price">
+                Thành tiền: ₫${new Intl.NumberFormat("vi-VN").format(
+                    totalPrice
+                )}
+            </div>
+            <div>
+                ${
+                    order.order_id
+                        ? ` <a href="${detailUrl}" class="btn btn-outline-secondary">Chi tiết</a>`
+                        : "<p>Không có mã đơn hàng hợp lệ.</p>"
+                }
+            </div>
+        </div>
+        <hr>
+    `;
 
                                 html += "</div>";
                             }

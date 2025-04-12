@@ -32,7 +32,13 @@
 {{-- <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"> --}}
 {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> --}}
+
 {{-- <link href="backend/css/bootstrap.min.css" rel="stylesheet"> --}}
+
+<link href="{{ asset('frontend/bootstrap-5.3.3-dist/css/bootstrap.min.css') }}" rel="stylesheet">
+<script src="{{ asset('frontend/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js') }}"></script>
+
+
 <link rel="stylesheet" href="{{ asset('assets/css/swiper-bundle.min.css') }}">
 <script src="{{ asset('assets/js/swiper-bundle.min.js') }}"></script>
 
@@ -40,7 +46,6 @@
     $coreCss = [
         'backend/css/plugins/toastr/toastr.min.css',
         'frontend/resources/fonts/font-awesome-4.7.0/css/font-awesome.min.css',
-        'frontend/resources/uikit/css/uikit.modify.css',
         'frontend/resources/library/css/library.css',
         'frontend/resources/plugins/wow/css/libs/animate.css',
         'frontend/core/plugins/jquery-nice-select-1.1.0/css/nice-select.css',

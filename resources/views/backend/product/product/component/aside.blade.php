@@ -86,23 +86,6 @@
                 </div>
             </div>
         </div>
-        {{-- <div class="form-row mb20">
-            <label for="" class="control-label text-left">Thời gian BH</label>
-            <div class="guarantee">
-                <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                    <input type="text" name="guarantee" value="{{ old('guarantee', $product->guarantee ?? null) }}"
-                        class="text-right form-control int" placeholder="" autocomplete="off"
-                        style="margin-right:10px;">
-                    <select class="setupSelect2" name="" id="">
-                        <option value="month">tháng</option>
-                    </select>
-                </div>
-            </div>
-        </div> --}}
-        {{-- <div class="form-row">
-            <label for="">Mã Nhúng</label>
-            <textarea type="text" name="code" class="form-control" style="height:168px;">{{ old('iframe', $product->iframe ?? '') }}</textarea>
-        </div> --}}
     </div>
 </div>
 <div class="ibox w">

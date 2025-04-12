@@ -13,9 +13,5 @@ class Controller extends BaseController
 
     protected $language;
 
-    public function __construct(){
-        
-    }
-
-    
+    public function __construct() {}
 }

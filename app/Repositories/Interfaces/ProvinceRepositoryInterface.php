@@ -8,5 +8,5 @@ namespace App\Repositories\Interfaces;
  */
 interface ProvinceRepositoryInterface
 {
-    
+    public function all(array $relation = [], string $selectRaw = '');
 }

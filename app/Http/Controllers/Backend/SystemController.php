@@ -14,7 +14,6 @@ class SystemController extends Controller
     protected $systemLibrary;
     protected $systemService;
     protected $systemRepository;
-    protected $language;
 
     public function __construct(
         System $systemLibrary,
@@ -23,8 +22,6 @@ class SystemController extends Controller
 
     ) {
         $this->middleware(function ($request, $next) {
-            $locale = app()->getLocale();
-            $this->language = 1;
             return $next($request);
         });
         $this->systemLibrary = $systemLibrary;
@@ -36,12 +33,7 @@ class SystemController extends Controller
     {
 
         $systemConfig = $this->systemLibrary->config();
-        $systems = convert_array($this->systemRepository->findByCondition(
-            [
-                ['language_id', '=', $this->language]
-            ],
-            TRUE
-        ), 'keyword', 'content');
+        $systems = convert_array($this->systemRepository->all(), 'keyword', 'content');
 
         $config = $this->config();
         $config['seo'] = __('messages.system');
@@ -56,42 +48,12 @@ class SystemController extends Controller
 
     public function store(Request $request)
     {
-        if ($this->systemService->save($request, $this->language)) {
+        if ($this->systemService->save($request)) {
             return redirect()->route('system.index')->with('success', 'Cập nhật bản ghi thành công');
         }
         return redirect()->route('system.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
-    public function translate($languageId = 0)
-    {
-
-        $systemConfig = $this->systemLibrary->config();
-        $systems = convert_array($this->systemRepository->findByCondition(
-            [
-                ['language_id', '=', $languageId]
-            ],
-            TRUE
-        ), 'keyword', 'content');
-        $config = $this->config();
-        $config['seo'] = __('messages.system');
-        $config['method'] = 'translate';
-        $template = 'backend.system.index';
-        return view('backend.dashboard.layout', compact(
-            'template',
-            'config',
-            'systemConfig',
-            'languageId',
-            'systems',
-        ));
-    }
-
-    public function saveTranslate(Request $request, $languageId)
-    {
-        if ($this->systemService->save($request, $languageId)) {
-            return redirect()->route('system.translate', ['languageId' => $languageId])->with('success', 'Cập nhật bản ghi thành công');
-        }
-        return redirect()->route('system.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
-    }
 
     private function config()
     {

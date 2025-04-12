@@ -17,7 +17,11 @@ interface PostCatalogueRepositoryInterface
         array $join = [],
         array $relations = [],
         array $rawQuery = [],
-        // int $currentPage = 1,
-
+    );
+    public function getPostCatalogueById(int $id = 0);
+    public function findById(
+        int $modelId,
+        array $column = ['*'],
+        array $relation = [],
     );
 }

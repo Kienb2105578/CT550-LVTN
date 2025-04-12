@@ -7,29 +7,23 @@ use Illuminate\Http\Request;
 use App\Repositories\Interfaces\PostCatalogueRepositoryInterface as PostCatalogueRepository;
 use App\Services\Interfaces\PostCatalogueServiceInterface as PostCatalogueService;
 use App\Services\Interfaces\PostServiceInterface as PostService;
-use App\Services\Interfaces\WidgetServiceInterface as WidgetService;
-use App\Models\System;
-use Gloudemans\Shoppingcart\Facades\Cart;
+
 
 class PostCatalogueController extends FrontendController
 {
-    protected $language;
     protected $system;
     protected $postCatalogueRepository;
     protected $postCatalogueService;
     protected $postService;
-    protected $widgetService;
 
     public function __construct(
         PostCatalogueRepository $postCatalogueRepository,
         PostCatalogueService $postCatalogueService,
         PostService $postService,
-        WidgetService $widgetService,
     ) {
         $this->postCatalogueRepository = $postCatalogueRepository;
         $this->postCatalogueService = $postCatalogueService;
         $this->postService = $postService;
-        $this->widgetService = $widgetService;
         parent::__construct();
     }
 
@@ -40,38 +34,20 @@ class PostCatalogueController extends FrontendController
         $breadcrumb = $this->postCatalogueRepository->breadcrumb($postCatalogue, 1);
         $posts = $this->postService->paginate(
             $request,
-            1,
             $postCatalogue,
             $page,
             ['path' => $postCatalogue->canonical],
         );
 
-        $widgets = $this->widgetService->getWidget([
-            ['keyword' => 'post-catalogue-value', 'object' => true],
-            ['keyword' => 'vision', 'object' => true],
-            ['keyword' => 'post-catalogue-why', 'object' => true],
-            ['keyword' => 'staff', 'object' => true],
-        ], 1);
         $template = 'frontend.post.catalogue.index';
-        $config = $this->config();
         $system = $this->system;
         $seo = seo($postCatalogue, $page);
         return view($template, compact(
-            'config',
             'seo',
             'system',
             'breadcrumb',
             'postCatalogue',
             'posts',
-            'widgets',
         ));
-    }
-
-
-    private function config()
-    {
-        return [
-            'language' => $this->language,
-        ];
     }
 }

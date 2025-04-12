@@ -18,7 +18,7 @@
 
                 <div class="d-flex justify-content-start align-items-center" style="">
                     <button type="submit" class="btn-login">Đăng nhập</button>
-                    <a class="d-block" style="margin-left: 160px" href="{{ route('forgot.customer.password') }}">Quên mật
+                    <a class="d-block" style="margin-left: 130px" href="{{ route('forgot.customer.password') }}">Quên mật
                         khẩu</a>
                 </div>
 
@@ -35,13 +35,4 @@
         </div>
         <div class="col-4"></div>
     </div>
-@endsection
-
-
-@section('css')
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
 @endsection

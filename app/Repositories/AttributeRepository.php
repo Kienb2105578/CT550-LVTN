@@ -45,7 +45,7 @@ class AttributeRepository extends BaseRepository implements AttributeRepositoryI
     public function searchAttributes(string $keyword = '', array $option = [])
     {
         $query = $this->model
-            ->select(['attributes.id', 'attributes.name', 'attributes.attribute_catalogue_id']) // Chọn cột trực tiếp
+            ->select(['attributes.id', 'attributes.name', 'attributes.attribute_catalogue_id'])
             ->where('attributes.attribute_catalogue_id', $option['attributeCatalogueId'])
             ->where('attributes.name', 'like', '%' . $keyword . '%');
 

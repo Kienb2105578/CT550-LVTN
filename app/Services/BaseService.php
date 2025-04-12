@@ -52,30 +52,28 @@ class BaseService implements BaseServiceInterface
         $this->nestedset->Action();
     }
 
-    public function formatRouterPayload($model, $request, $controllerName, $languageId)
+    public function formatRouterPayload($model, $request, $controllerName)
     {
         $router = [
             'canonical' => Str::slug($request->input('canonical')),
             'module_id' => $model->id,
-            'language_id' => $languageId,
             'controllers' => 'App\Http\Controllers\Frontend\\' . $controllerName . '',
         ];
         return $router;
     }
 
-    public function createRouter($model, $request, $controllerName, $languageId)
+    public function createRouter($model, $request, $controllerName)
     {
-        $router = $this->formatRouterPayload($model, $request, $controllerName, 1);
+        $router = $this->formatRouterPayload($model, $request, $controllerName);
         $this->routerRepository->create($router);
     }
 
 
-    public function updateRouter($model, $request, $controllerName, $languageId)
+    public function updateRouter($model, $request, $controllerName)
     {
-        $payload = $this->formatRouterPayload($model, $request, $controllerName, $languageId);
+        $payload = $this->formatRouterPayload($model, $request, $controllerName);
         $condition = [
             ['module_id', '=', $model->id],
-            ['language_id', '=', $languageId],
             ['controllers', '=', 'App\Http\Controllers\Frontend\\' . $controllerName],
         ];
         $router = $this->routerRepository->findByCondition($condition);

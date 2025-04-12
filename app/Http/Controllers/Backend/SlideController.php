@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Services\Interfaces\SlideServiceInterface  as SlideService;
 use App\Repositories\Interfaces\SlideRepositoryInterface as SlideRepository;
-use App\Models\Language;
+use Illuminate\Support\Facades\Log;
 use App\Http\Requests\Slide\StoreSlideRequest;
 use App\Http\Requests\Slide\UpdateSlideRequest;
 
@@ -15,7 +15,6 @@ class SlideController extends Controller
 {
     protected $slideService;
     protected $slideRepository;
-    protected $language;
 
     public function __construct(
         SlideService $slideService,
@@ -24,8 +23,6 @@ class SlideController extends Controller
         $this->slideService = $slideService;
         $this->slideRepository = $slideRepository;
         $this->middleware(function ($request, $next) {
-            $locale = app()->getLocale(); // vn en cn
-            $this->language = 1;
             return $next($request);
         });
     }
@@ -34,7 +31,6 @@ class SlideController extends Controller
     {
         $this->authorize('modules', 'slide.index');
         $slides = $this->slideService->paginate($request);
-        // dd($slides);
 
         $config = [
             'js' => [
@@ -49,8 +45,6 @@ class SlideController extends Controller
             'model' => 'Slide'
         ];
         $config['seo'] = __('messages.slide');
-        $config['language'] = $this->language;
-        // $template = 'backend.slide.slide.index';
         $template = 'backend.slide.index';
         return view('backend.dashboard.layout', compact(
             'template',
@@ -74,7 +68,7 @@ class SlideController extends Controller
 
     public function store(StoreSlideRequest $request)
     {
-        if ($this->slideService->create($request, $this->language)) {
+        if ($this->slideService->create($request)) {
             return redirect()->route('slide.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('slide.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
@@ -84,9 +78,7 @@ class SlideController extends Controller
     {
         $this->authorize('modules', 'slide.edit');
         $slide = $this->slideRepository->findById($id);
-        $slideItem = $this->slideService->converSlideArray($slide->item[$this->language]);
-
-
+        $slideItem = $this->slideService->converSlideArray($slide->item);
         $config = $this->config();
         $config['seo'] = __('messages.slide');
         $config['method'] = 'edit';
@@ -101,7 +93,7 @@ class SlideController extends Controller
 
     public function update($id, UpdateSlideRequest $request)
     {
-        if ($this->slideService->update($id, $request, $this->language)) {
+        if ($this->slideService->update($id, $request)) {
             return redirect()->route('slide.index')->with('success', 'Cập nhật bản ghi thành công');
         }
         return redirect()->route('slide.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');

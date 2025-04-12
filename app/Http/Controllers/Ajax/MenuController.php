@@ -8,7 +8,6 @@ use App\Repositories\Interfaces\MenuCatalogueRepositoryInterface  as MenuCatalog
 use App\Services\Interfaces\MenuCatalogueServiceInterface  as MenuCatalogueService;
 use App\Services\Interfaces\MenuServiceInterface  as MenuService;
 use App\Repositories\Interfaces\MenuRepositoryInterface  as MenuRepository;
-use App\Models\Language;
 use App\Http\Requests\Menu\StoreMenuCatalogueRequest;
 
 
@@ -18,7 +17,6 @@ class MenuController extends Controller
     protected $menuCatalogueService;
     protected $menuService;
     protected $menuRepository;
-    protected $language;
 
     public function __construct(
         MenuCatalogueRepository $menuCatalogueRepository,
@@ -31,8 +29,6 @@ class MenuController extends Controller
         $this->menuService = $menuService;
         $this->menuRepository = $menuRepository;
         $this->middleware(function ($request, $next) {
-            $locale = app()->getLocale(); // vn en cn
-            $this->language = 1;
             return $next($request);
         });
     }
@@ -58,12 +54,12 @@ class MenuController extends Controller
         $json = json_decode($request->string('json'), TRUE);
         $menuCatalogueId = $request->integer('menu_catalogue_id');
 
-        $flag = $this->menuService->dragUpdate($json, $menuCatalogueId, $this->language);
+        $flag = $this->menuService->dragUpdate($json, $menuCatalogueId);
     }
 
     public function deleteMenu(Request $request)
     {
         $id = $request->input('menu_id');
-        $this->menuService->destroyMenu($id, $this->language);
+        $this->menuService->destroyMenu($id);
     }
 }

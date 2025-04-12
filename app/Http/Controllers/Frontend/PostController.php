@@ -35,7 +35,6 @@ class PostController extends FrontendController
     public function main($id, $page = 1)
     {
         $posts = $this->postRepository->getAllPosts();
-        $config = $this->config();
         $system = $this->system;
         $seo = [
             'meta_title' => 'Bài Viết',
@@ -45,7 +44,6 @@ class PostController extends FrontendController
             'canonical' => route('post.main')
         ];
         return view('frontend.post.post.main', compact(
-            'config',
             'seo',
             'system',
             'posts',
@@ -54,27 +52,19 @@ class PostController extends FrontendController
 
     public function index($id, $request)
     {
-        $language = $this->language;
-        $post = $this->postRepository->getPostById($id, $this->language, config('apps.general.defaultPublish'));
-        if (is_null($post)) {
-            abort(404);
-        }
-        $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($post->post_catalogue_id, $this->language);
-        $breadcrumb = $this->postCatalogueRepository->breadcrumb($postCatalogue, $this->language);
-
+        $post = $this->postRepository->getPostById($id);
+        $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($post->post_catalogue_id);
+        $breadcrumb = $this->postCatalogueRepository->breadcrumb($postCatalogue, 1);
 
         $asidePost = $this->postService->paginate(
             $request,
-            $this->language,
             $postCatalogue,
             1,
             ['path' => $postCatalogue->canonical],
         );
-        $config = $this->config();
         $system = $this->system;
         $seo = seo($post);
         return view('frontend.post.post.index', compact(
-            'config',
             'seo',
             'system',
             'breadcrumb',
@@ -82,12 +72,5 @@ class PostController extends FrontendController
             'post',
             'asidePost',
         ));
-    }
-
-    private function config()
-    {
-        return [
-            'language' => $this->language,
-        ];
     }
 }

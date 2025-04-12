@@ -200,7 +200,7 @@ class BaseRepository implements BaseRepositoryInterface
         return $results;
     }
 
-    public function findObjectByCategoryIds($catIds, $model, $language)
+    public function findObjectByCategoryIds($catIds, $model)
     {
         $query = $this->model->newQuery();
         $this->model->select(
@@ -208,15 +208,7 @@ class BaseRepository implements BaseRepositoryInterface
         )
             ->where(
                 [config('apps.general.defaultPublish')]
-            )
-            ->with('languages', function ($query) use ($language) {
-                $query->where('language_id', $language);
-            })
-            ->with($model . '_catalogues', function ($query) use ($language) {
-                $query->with('languages', function ($query) use ($language) {
-                    $query->where('language_id', $language);
-                });
-            });
+            );
 
         if ($model === 'product') {
             $query->with('product_variants');

@@ -7,9 +7,7 @@ use Illuminate\Http\Request;
 use App\Repositories\Interfaces\ProductCatalogueRepositoryInterface as ProductCatalogueRepository;
 use App\Services\Interfaces\ProductCatalogueServiceInterface as ProductCatalogueService;
 use App\Services\Interfaces\ProductServiceInterface as ProductService;
-use App\Services\Interfaces\WidgetServiceInterface as WidgetService;
 use App\Repositories\Interfaces\ProductRepositoryInterface as ProductRepository;
-use App\Models\System;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Product;
@@ -22,7 +20,6 @@ class ProductCatalogueController extends FrontendController
     protected $productCatalogueRepository;
     protected $productCatalogueService;
     protected $productService;
-    protected $widgetService;
     protected $productRepository;
 
     public function __construct(
@@ -30,12 +27,10 @@ class ProductCatalogueController extends FrontendController
         ProductCatalogueService $productCatalogueService,
         ProductService $productService,
         ProductRepository $productRepository,
-        WidgetService $widgetService,
     ) {
         $this->productCatalogueRepository = $productCatalogueRepository;
         $this->productCatalogueService = $productCatalogueService;
         $this->productService = $productService;
-        $this->widgetService = $widgetService;
         $this->productRepository = $productRepository;
         parent::__construct();
     }
@@ -51,7 +46,6 @@ class ProductCatalogueController extends FrontendController
 
         $products = $this->productService->paginate(
             $request,
-            1,
             $productCatalogue,
             $page,
             ['path' => $productCatalogue->canonical],
@@ -62,12 +56,6 @@ class ProductCatalogueController extends FrontendController
             $products = $this->productService->combineProductAndPromotion($productId, $products);
         }
 
-        $widgets = $this->widgetService->getWidget([
-            ['keyword' => 'products-hl', 'promotion' => true],
-        ], 1);
-
-
-        $widgets['products-hl']->object = $this->productRepository->widgetProductTotalQuantity($widgets['products-hl']->object);
         $products = $this->productRepository->updateProductTotalQuantity($products);
 
         $config = $this->config();
@@ -81,7 +69,6 @@ class ProductCatalogueController extends FrontendController
             'productCatalogue',
             'products',
             'filters',
-            'widgets',
         ));
     }
 

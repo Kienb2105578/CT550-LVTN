@@ -10,16 +10,13 @@ use App\Repositories\Interfaces\AttributeRepositoryInterface  as AttributeReposi
 use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface  as AttributeCatalogueRepository;
 use App\Http\Requests\Attribute\StoreAttributeRequest;
 use App\Http\Requests\Attribute\UpdateAttributeRequest;
-use App\Classes\Nestedsetbie;
-use App\Models\Language;
-use Attribute;
+
 
 class AttributeController extends Controller
 {
     protected $attributeService;
     protected $attributeRepository;
     protected $attributeCatalogueRepository;
-    protected $language;
 
     public function __construct(
         AttributeService $attributeService,
@@ -27,8 +24,6 @@ class AttributeController extends Controller
         AttributeCatalogueRepository $attributeCatalogueRepository,
     ) {
         $this->middleware(function ($request, $next) {
-            $locale = app()->getLocale();
-            $this->language = 1;
             return $next($request);
         });
         $this->attributeCatalogueRepository = $attributeCatalogueRepository;
@@ -39,7 +34,7 @@ class AttributeController extends Controller
     public function index(Request $request)
     {
         $this->authorize('modules', 'attribute.index');
-        $attributes = $this->attributeService->paginate($request, $this->language);
+        $attributes = $this->attributeService->paginate($request);
         $attributes = $this->attributeRepository->addAttributeCatalogueNamesToAttributes($attributes);
         $config = [
             'js' => [
@@ -80,7 +75,7 @@ class AttributeController extends Controller
 
     public function store(StoreAttributeRequest $request)
     {
-        if ($this->attributeService->create($request, $this->language)) {
+        if ($this->attributeService->create($request)) {
             return redirect()->route('attribute.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('attribute.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
@@ -110,7 +105,7 @@ class AttributeController extends Controller
     public function update($id, UpdateAttributeRequest $request)
     {
         $queryUrl = base64_decode($request->getQueryString());
-        if ($this->attributeService->update($id, $request, $this->language)) {
+        if ($this->attributeService->update($id, $request)) {
             return redirect()->route('attribute.index', $queryUrl)->with('success', 'Cập nhật bản ghi thành công');
         }
         return redirect()->route('attribute.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
@@ -131,7 +126,7 @@ class AttributeController extends Controller
 
     public function destroy($id)
     {
-        if ($this->attributeService->destroy($id, $this->language)) {
+        if ($this->attributeService->destroy($id)) {
             return redirect()->route('attribute.index')->with('success', 'Xóa bản ghi thành công');
         }
         return redirect()->route('attribute.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');

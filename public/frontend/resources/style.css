@@ -1236,8 +1236,8 @@ body {
     }
     .search-mobile button {
         padding: 0;
-        line-height: 34px;
-        height: 34px;
+        line-height: 38px;
+        height: 38px;
         background: linear-gradient(to right, #b9b9b9, #a0acb9);
         border: 0;
         color: #313030;
@@ -1247,6 +1247,7 @@ body {
         margin-bottom: 0px;
         position: absolute;
         cursor: pointer;
+        border-radius: 0 !important;
     }
     .panel-main-slide {
         padding-top: 12px;
@@ -1878,12 +1879,12 @@ a.ui-button:active,
 }
 .btn-login {
     background: linear-gradient(to right, #003366, #3399ff);
-    color: #fff;
-    font-weight: 600;
+    color: #fff !important;
+    font-weight: 600 !important;
     text-transform: uppercase;
-    padding: 10px 25px;
-    border: 1px;
-    border-radius: 6px;
+    padding: 10px 25px !important;
+    border: 1px !important;
+    border-radius: 6px !important;
 }
 .btn-login:hover {
     background: linear-gradient(to right, #022140, #0459a9);
@@ -1902,6 +1903,17 @@ a.ui-button:active,
     top: 4px;
     right: 4px;
     cursor: pointer;
+}
+
+.cart-product-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2em;
+    height: calc(1.2em * 3);
+    min-height: calc(1.2em * 3);
 }
 
 .pc-header .lower {
@@ -2011,7 +2023,7 @@ a.ui-button:active,
     border-top: 1px dotted #333333;
     width: 100%;
     position: absolute;
-    top: 20px;
+    top: 35px;
     z-index: 1;
 }
 .style-head-product::before {
@@ -2030,7 +2042,7 @@ a.ui-button:active,
     z-index: 3;
     background: white;
     box-shadow: 20px 0 0 white, -20px 0 0 white;
-    font-size: 18px;
+    font-size: 20px;
     text-transform: uppercase;
 }
 #style-title:hover {
@@ -2066,7 +2078,7 @@ a.btn.btn-readmode {
     position: relative;
     overflow: hidden;
     margin-top: 0px;
-    padding: 8px 20px;
+    padding: 4px 20px;
 }
 .btn.btn-readmode {
     outline: none;
@@ -2110,8 +2122,8 @@ a.btn.btn-readmode {
     padding: 10px;
 }
 .product-item .title > * {
-    font-size: 13px;
-    color: #060606;
+    font-size: 14px;
+    color: #060606 !important;
     line-height: 20px;
     text-transform: uppercase;
     font-weight: 400;
@@ -2120,9 +2132,9 @@ a.btn.btn-readmode {
     color: #bebebe;
 }
 .product-item .title > *:hover {
-    font-size: 13px;
-    color: #056fda;
-    font-weight: 400;
+    font-size: 14px;
+    color: #056fda !important;
+    font-weight: 500;
 }
 .product-item .title {
     /* height: 42px; */
@@ -2141,6 +2153,10 @@ a.btn.btn-readmode {
     font-weight: 700;
     text-decoration: line-through;
 }
+.price-old {
+    flex-shrink: 0;
+}
+
 .price-old .percent {
     text-decoration: none;
 }
@@ -2149,20 +2165,40 @@ a.btn.btn-readmode {
 }
 .product-item .percent {
     position: absolute;
-    padding: 5px 10px;
+    padding: 5px 10px !important;
     background: linear-gradient(to right, #cc0000, #ff3300);
     color: #fff;
     right: -1px;
     top: -1px;
     border-radius: 0 5px 0 5px;
-    -webkit-border-radius: 0 5px 0 5px;
-    -moz-border-radius: 0 5px 0 5px;
-    font-size: 14px;
-    font-weight: 800;
-    z-index: 9999;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    z-index: 1000;
     display: inline-block;
+
+    /* ✅ Chống co giãn */
+    flex-shrink: 0 !important;
+    width: max-content !important;
+    min-width: unset !important;
+    max-width: unset !important;
+    transform: none !important;
+    scale: 1 !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+}
+@media (max-width: 575px) {
+    .percent-value {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        font-size: 14px !important;
+        padding: 5px 10px !important;
+    }
 }
 
+.percent-value {
+    font-size: 13px;
+}
 .heading-2 {
     text-align: center;
     margin: 0;

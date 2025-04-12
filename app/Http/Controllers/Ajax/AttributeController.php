@@ -5,21 +5,17 @@ namespace App\Http\Controllers\Ajax;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\AttributeRepositoryInterface  as AttributeRepository;
-use App\Models\Language;
 use Illuminate\Support\Facades\Log;
 
 class AttributeController extends Controller
 {
     protected $attributeRepository;
-    protected $language;
 
     public function __construct(
         AttributeRepository $attributeRepository
     ) {
         $this->attributeRepository = $attributeRepository;
         $this->middleware(function ($request, $next) {
-            $locale = app()->getLocale(); // vn en cn
-            $this->language = 1;
             return $next($request);
         });
     }
@@ -28,7 +24,7 @@ class AttributeController extends Controller
     {
 
         $payload = $request->input();
-        $attributes = $this->attributeRepository->searchAttributes($payload['search'], $payload['option'], $this->language);
+        $attributes = $this->attributeRepository->searchAttributes($payload['search'], $payload['option']);
 
         $attributeMapped = $attributes->map(function ($attribute) {
             return [

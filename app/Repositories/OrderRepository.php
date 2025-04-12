@@ -236,7 +236,6 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             ->leftJoin('order_product', 'order_product.order_id', '=', 'orders.id')
             ->leftJoin('products', 'products.id', '=', 'order_product.product_id');
 
-        // Nếu có giá trị truyền vào thì lọc theo trạng thái
         if (!empty($confirm)) {
             $query->where('orders.confirm', $confirm);
         }

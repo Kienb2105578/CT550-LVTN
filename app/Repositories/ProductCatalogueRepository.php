@@ -25,6 +25,10 @@ class ProductCatalogueRepository extends BaseRepository implements ProductCatalo
     {
         $query = $this->model->newQuery();
 
+        if (!empty($relation)) {
+            $query->with($relation);
+        }
+
         if (!empty($selectRaw)) {
             $query->selectRaw($selectRaw);
         } else {
@@ -33,6 +37,7 @@ class ProductCatalogueRepository extends BaseRepository implements ProductCatalo
 
         return $query->get();
     }
+
     public function breadcrumb($model, $language)
     {
         return $this->findByCondition([

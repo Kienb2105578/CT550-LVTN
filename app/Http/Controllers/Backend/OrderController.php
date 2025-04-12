@@ -63,7 +63,7 @@ class OrderController extends Controller
 
     public function detail(Request $request, $id)
     {
-        $order = $this->orderRepository->getOrderById($id, ['products']);
+        $order = $this->orderRepository->getOrderById($id);
         $order = $this->orderService->getOrderItemImage($order);
         $provinces = $this->provinceRepository->all();
         $config = [
@@ -105,7 +105,7 @@ class OrderController extends Controller
 
     public function store(StoreOrderRequest $request)
     {
-        if ($this->orderService->create($request, 1)) {
+        if ($this->orderService->create($request)) {
             return redirect()->route('order.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('order.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
@@ -113,7 +113,7 @@ class OrderController extends Controller
 
     public function exportPdf($id)
     {
-        $order = $this->orderRepository->getOrderById($id, ['products']);
+        $order = $this->orderRepository->getOrderById($id);
         $order = $this->orderService->getOrderItemImage($order);
         $provinces = $this->provinceRepository->all();
 
@@ -129,10 +129,16 @@ class OrderController extends Controller
         return $pdf->stream("invoice_{$id}.pdf");
     }
 
+    /**
+     * 
+     * Chưa Dùng
+     * 
+     */
+
     public function exportMultiplePdf(Request $request)
     {
         $orderIds = $request->input('order_ids');
-        $orders = $this->orderRepository->getOrdersByIds($orderIds, ['products']);
+        $orders = $this->orderRepository->getOrderById($orderIds);
 
         foreach ($orders as $order) {
             $order = $this->orderService->getOrderItemImage($order);

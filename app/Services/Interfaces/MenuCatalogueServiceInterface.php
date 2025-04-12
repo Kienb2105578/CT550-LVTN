@@ -8,5 +8,8 @@ namespace App\Services\Interfaces;
  */
 interface MenuCatalogueServiceInterface
 {
-    
+    public function paginate($request);
+    public function create($request);
+    // public function update($id, $request);
+    // public function destroy($id);
 }

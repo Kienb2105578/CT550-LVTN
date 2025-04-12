@@ -8,5 +8,10 @@ namespace App\Repositories\Interfaces;
  */
 interface PermissionRepositoryInterface
 {
-    
+    public function findById(
+        int $modelId,
+        array $column = ['*'],
+        array $relation = [],
+    );
+    public function all(array $relation = [], string $selectRaw = '');
 }

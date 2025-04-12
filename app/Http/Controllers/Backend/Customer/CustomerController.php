@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use App\Services\Interfaces\CustomerServiceInterface  as CustomerService;
 use App\Repositories\Interfaces\ProvinceRepositoryInterface  as ProvinceRepository;
 use App\Repositories\Interfaces\CustomerRepositoryInterface as CustomerRepository;
-use App\Repositories\Interfaces\SourceRepositoryInterface as SourceRepository;
 
 use App\Http\Requests\Customer\StoreCustomerRequest;
 use App\Http\Requests\Customer\UpdateCustomerRequest;

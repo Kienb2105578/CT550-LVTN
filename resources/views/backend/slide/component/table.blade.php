@@ -23,7 +23,7 @@
                         <td>{{ $slide->keyword }}</td>
                         <td>
                             <div class="sortui ui-sortable table-slide clearfix">
-                                @foreach ($slide->item[$config['language']] as $item)
+                                @foreach ($slide->item as $item)
                                     <li class="ui-state-default">
                                         <span class="image img-cover"><img src="{{ image($item['image']) }}"
                                                 alt=""></span>
@@ -75,7 +75,8 @@
                                     </div>
                                     <div class="modal-body">
                                         <p>Bạn có chắc chắn muốn xóa Slide có tên là
-                                            <strong>{{ $slide->name }}</strong> không?</p>
+                                            <strong>{{ $slide->name }}</strong> không?
+                                        </p>
                                         <p><span class="text-danger">Lưu ý:</span> Thao tác này không thể hoàn tác.</p>
                                         <div class="form-group">
                                             <label for="" class="control-label text-left">Tên Slide</label>

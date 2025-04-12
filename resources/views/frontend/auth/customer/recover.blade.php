@@ -4,7 +4,7 @@
     $rawEmail = request()->query('email');
     $email = base64_encode($rawEmail);
 @endphp
-<div class="uk-container uk-container-center">
+<div class="container">
     <table cellspacing="0" border="0" cellpadding="0" style="margin-bottom: 200px" width="100%" bgcolor="#f2f3f8"
         style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
         <tr>
@@ -47,7 +47,7 @@
                                 </tr>
                             </table>
                         </td>
-                    <tr>
+                    </tr> <!-- Sửa lỗi thiếu thẻ đóng tr ở đây -->
                 </table>
             </td>
         </tr>

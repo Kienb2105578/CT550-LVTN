@@ -51,41 +51,9 @@ class MenuCatalogueService extends BaseService implements MenuCatalogueServiceIn
             ];
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }
-
-    // public function update($id, $request){
-    //     DB::beginTransaction();
-    //     try{
-
-    //         DB::commit();
-    //         return true;
-    //     }catch(\Exception $e ){
-    //         DB::rollBack();
-    //         // Log::error($e->getMessage());
-    //         echo $e->getMessage();die();
-    //         return false;
-    //     }
-    // }
-
-    // public function destroy($id){
-    //     DB::beginTransaction();
-    //     try{
-
-
-    //         DB::commit();
-    //         return true;
-    //     }catch(\Exception $e ){
-    //         DB::rollBack();
-    //         // Log::error($e->getMessage());
-    //         // echo $e->getMessage();die();
-    //         return false;
-    //     }
-    // }
 
     private function paginateSelect()
     {

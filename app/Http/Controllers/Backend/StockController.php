@@ -10,8 +10,6 @@ use App\Services\Interfaces\StockMovementServiceInterface  as StockMovementServi
 use App\Repositories\Interfaces\InventoryBatchRepositoryInterface  as InventoryBatchRepository;
 use App\Repositories\Interfaces\ProductRepositoryInterface  as ProductRepository;
 use App\Http\Requests\Stock\StoreStockTakingRequest;
-use CKSource\CKFinder\Command\Proxy;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 use Barryvdh\DomPDF\Facade\Pdf as PDF;

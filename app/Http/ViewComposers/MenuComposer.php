@@ -41,8 +41,6 @@ class MenuComposer
 
     private function agrument($language)
     {
-
-
         return [
             'condition' => [
                 config('apps.general.defaultPublish')

@@ -11,11 +11,7 @@ use App\Services\Interfaces\PostCatalogueServiceInterface  as PostCatalogueServi
 use App\Repositories\Interfaces\PostCatalogueRepositoryInterface  as PostCatalogueRepository;
 use App\Http\Requests\Post\StorePostCatalogueRequest;
 use App\Http\Requests\Post\UpdatePostCatalogueRequest;
-use App\Http\Requests\Post\DeletePostCatalogueRequest;
 use App\Classes\Nestedsetbie;
-use Auth;
-use App\Models\Language;
-use Illuminate\Support\Facades\App;
 
 class PostCatalogueController extends Controller
 {
@@ -23,15 +19,12 @@ class PostCatalogueController extends Controller
     protected $postCatalogueService;
     protected $postCatalogueRepository;
     protected $nestedset;
-    protected $language;
 
     public function __construct(
         PostCatalogueService $postCatalogueService,
         PostCatalogueRepository $postCatalogueRepository
     ) {
         $this->middleware(function ($request, $next) {
-            $locale = app()->getLocale();
-            $this->language = 1;
             $this->initialize();
             return $next($request);
         });
@@ -52,7 +45,7 @@ class PostCatalogueController extends Controller
     public function index(Request $request)
     {
         $this->authorize('modules', 'post.catalogue.index');
-        $postCatalogues = $this->postCatalogueService->paginate($request, $this->language);
+        $postCatalogues = $this->postCatalogueService->paginate($request);
         $config = [
             'js' => [
                 'backend/js/plugins/switchery/switchery.js',
@@ -90,7 +83,7 @@ class PostCatalogueController extends Controller
 
     public function store(StorePostCatalogueRequest $request)
     {
-        if ($this->postCatalogueService->create($request, $this->language)) {
+        if ($this->postCatalogueService->create($request)) {
             return redirect()->route('post.catalogue.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('post.catalogue.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
@@ -99,7 +92,7 @@ class PostCatalogueController extends Controller
     public function edit($id)
     {
         $this->authorize('modules', 'post.catalogue.update');
-        $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($id, $this->language);
+        $postCatalogue = $this->postCatalogueRepository->getPostCatalogueById($id);
         $config = $this->configData();
         $config['seo'] = __('messages.postCatalogue');
         $config['method'] = 'edit';
@@ -115,7 +108,7 @@ class PostCatalogueController extends Controller
 
     public function update($id, UpdatePostCatalogueRequest $request)
     {
-        if ($this->postCatalogueService->update($id, $request, $this->language)) {
+        if ($this->postCatalogueService->update($id, $request)) {
             return redirect()->route('post.catalogue.index')->with('success', 'Cập nhật bản ghi thành công');
         }
         return redirect()->route('post.catalogue.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');

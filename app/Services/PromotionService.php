@@ -74,7 +74,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
         return $payload;
     }
 
-    public function create($request, $languageId)
+    public function create($request)
     {
         DB::beginTransaction();
         try {
@@ -95,7 +95,7 @@ class PromotionService extends BaseService implements PromotionServiceInterface
         }
     }
 
-    public function update($id, $request, $languageId)
+    public function update($id, $request)
     {
         DB::beginTransaction();
         try {

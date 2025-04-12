@@ -8,5 +8,5 @@ namespace App\Repositories\Interfaces;
  */
 interface ReviewRepositoryInterface
 {
-    
+    public function delete(int $id);
 }

@@ -44,7 +44,7 @@
 
 
                     <div class="d-flex justify-content-start align-items-center" style="">
-                        <button type="submit" class="btn-main">Đổi mật khẩu</button>
+                        <button type="submit" class="btn-login">Đổi mật khẩu</button>
 
                     </div>
 

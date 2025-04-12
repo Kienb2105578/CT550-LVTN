@@ -1,17 +1,15 @@
-<div id="header" class="pc-header uk-visible-large" data-uk-sticky style="background: #fff">
+<div id="header" class="pc-header d-none d-lg-block sticky-top" style="background: #fff">
     <div class="upper">
-        <div class="uk-container uk-container-center ">
-            <div class="uk-flex uk-flex-between uk-flex-middle">
-                <!-- Tên công ty sát bên trái -->
-                <div class="company-name uk-text-left uk-width-1-2">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="company-name text-start w-50">
                     {{ $system['homepage_company'] }}
                 </div>
 
-                <!-- Phần đăng nhập/đăng xuất sát bên phải -->
-                <div class="uk-text-right uk-width-1-2">
+                <div class="text-end w-50">
                     @if (auth()->guard('customer')->check())
-                        <div class="header-cart uk-text-right uk-flex uk-flex-right">
-                            <div class="uk-flex uk-flex-middle">
+                        <div class="header-cart d-flex justify-content-end">
+                            <div class="d-flex align-items-center">
                                 <a href="{{ route('customer.profile') }}" class="register_login  vector">
                                     {{ auth()->guard('customer')->user()->name }}
                                 </a>
@@ -22,8 +20,8 @@
                             </div>
                         </div>
                     @else
-                        <div class="header-cart uk-text-right uk-flex uk-flex-right">
-                            <div class="uk-flex uk-flex-middle">
+                        <div class="header-cart d-flex justify-content-end">
+                            <div class="d-flex align-items-center">
                                 <a href="{{ route('customer.register') }}" class="register_login vector">
                                     Đăng Ký
                                 </a>
@@ -39,54 +37,36 @@
     </div>
 
     <div class="middle">
-        <div class="uk-container uk-container-center">
-            <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                <div class="logo">
-                    <a href="/"><img src="{{ $system['homepage_favicon'] }}" alt="Logo"></a>
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="logo d-flex align-items-center">
+                    <a href="/">
+                        <img src="{{ $system['homepage_favicon'] }}" alt="Logo" class="img-fluid">
+                    </a>
                 </div>
-                <style>
-                    .input-text {
-                        flex-grow: 1;
-                        padding: 10px 40px 10px 10px;
-                        border: 1px solid #ccc;
-                        border-radius: 25px;
-                        outline: none;
-                    }
-
-                    #voice-search {
-                        position: absolute;
-                        right: 130px;
-                        font-size: 18px;
-                        cursor: pointer;
-                        color: #333;
-                        text-align: center;
-                        padding: 13px;
-                    }
-                </style>
                 <div class="header-search">
-                    <form action="{{ write_url('tim-kiem') }}" class="uk-form form" style="margin-bottom: 0;">
+                    <form action="{{ write_url('tim-kiem') }}" class="form" style="margin-bottom: 0;">
                         <input type="text" name="keyword" placeholder="Nhập từ khóa" value=""
                             class="input-text">
-                        {{-- <i id="voice-search" aria-hidden="true" class="fa fa-microphone voice-icon"></i> --}}
                         <button type="submit" value="" name="">
-                            Tìm kiếm <i class="fa fa-search"></i>
+                            Tìm kiếm
                         </button>
                     </form>
-
                 </div>
+
                 <form action="{{ route('product.catalogue.searchProductByImage') }}" method="POST"
                     enctype="multipart/form-data" class="d-inline-block">
                     @csrf
                     <input type="file" name="image" id="image_product" style="display: none;"
                         onchange="this.form.submit()">
-                    <button type="button" class="btn-login" style="font-size: 11px;"
+                    <button type="button" class="btn-login btn btn-sm"
                         onclick="document.getElementById('image_product').click()">Tìm ảnh</button>
                 </form>
 
                 <div class="header-toolbox">
-                    <div class="uk-flex uk-flex-middle">
+                    <div class="d-flex align-items-center">
                         <div class="header-cart">
-                            <div class="uk-flex uk-flex-middle">
+                            <div class="d-flex align-items-center">
                                 <div class="cart-mini" onmouseover="showCartPopup()" onmouseleave="hideCartPopup()">
                                     <img src="frontend/resources/img/shopping-bag.png" alt="cart image"
                                         style="margin-bottom: 10px;">
@@ -113,9 +93,6 @@
                                                                     <span
                                                                         class="cart-price-sale">{{ convert_price($cart->price * $cart->qty, true) }}đ</span>
                                                                 </div>
-                                                                {{-- <div class="cart-item-remove"
-                                                                    data-row-id="{{ $cart->rowId ?? $cart->cartId . '_' . $cart->productId . ($cart->uuid ? '_' . $cart->uuid : '') }}">
-                                                                    ✕</div> --}}
                                                             </div>
                                                         </div>
                                                     @endforeach
@@ -134,289 +111,148 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <style>
-                                    .cart-popup {
-                                        display: none;
-                                        position: absolute;
-                                        top: 40px;
-                                        right: 0;
-                                        background: #fff;
-                                        border: 1px solid #ddd;
-                                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                                        width: 400px;
-                                        padding: 10px;
-                                        z-index: 1000;
-                                    }
-
-                                    .cart-popup .cart-list {
-                                        margin-top: 12px;
-                                    }
-
-                                    .cart-mini:hover .cart-popup {
-                                        display: block;
-                                    }
-
-                                    .cart-popup .cart-item .cart-item-image {
-                                        position: relative;
-                                        margin-right: 10px;
-                                    }
-
-
-                                    .cart-popup .cart-item {
-                                        display: flex;
-                                        align-items: center;
-                                        padding: 10px;
-                                        border-bottom: 1px solid #eee;
-                                    }
-
-                                    .header-cart .cart-popup .cart-item-image img {
-                                        width: 50px;
-                                        height: 50px;
-                                        object-fit: cover;
-                                        border-radius: 5px;
-                                        border: 1px solid gray;
-                                    }
-
-                                    .cart-popup .cart-item-number {
-                                        background: red;
-                                        color: #fff;
-                                        border-radius: 50%;
-                                        width: 20px;
-                                        height: 20px;
-                                        font-size: 12px;
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: center;
-                                        position: absolute;
-                                        top: -5px;
-                                        right: -5px;
-                                    }
-
-                                    .cart-popup .cart-item-info .title {
-                                        font-size: 13px;
-                                        white-space: nowrap;
-                                        overflow: hidden;
-                                        text-overflow: ellipsis;
-                                        max-width: 280px;
-                                        display: block;
-                                    }
-
-
-                                    .cart-popup .cart-item-info {
-                                        margin-right: 15px;
-                                    }
-
-                                    .cart-popup .cart-item-remove {
-                                        display: flex;
-                                        align-items: center;
-                                        justify-content: center;
-                                        width: 25px;
-                                        height: 25px;
-                                        background-color: #f5f5f5;
-                                        border-radius: 50%;
-                                        font-size: 16px;
-                                        cursor: pointer;
-                                    }
-
-                                    .cart-popup .checkout-btn {
-                                        width: 40%;
-                                        padding: 10px;
-                                        background: linear-gradient(to right, #003366, #3399ff);
-                                        color: white;
-                                        text-align: center;
-                                        border: none;
-                                        cursor: pointer;
-                                        font-size: 16px;
-                                        border-radius: 10px;
-                                        margin: 15px;
-                                        display: block;
-                                        margin-left: auto;
-                                        font-weight: 600;
-                                    }
-
-                                    .cart-popup .checkout-btn:hover {
-                                        background: #003366
-                                    }
-
-                                    /* Mũi tên trên popup */
-                                    .cart-popup::before {
-                                        content: "";
-                                        position: absolute;
-                                        top: -10px;
-                                        right: 20px;
-                                        border-width: 10px;
-                                        border-style: solid;
-                                        border-color: transparent transparent white transparent;
-                                    }
-
-                                    /* Căn giữa nếu giỏ hàng trống */
-                                    .cart-popup .cart-empty {
-                                        display: flex;
-                                        flex-direction: column;
-                                        align-items: center;
-                                        justify-content: center;
-                                    }
-
-                                    .cart-popup .cart-empty img {
-                                        width: 80px;
-                                        margin-bottom: 10px;
-                                    }
-
-                                    .empty-cart-message {
-                                        display: flex;
-                                        flex-direction: column;
-                                        justify-content: center;
-                                        align-items: center;
-                                        text-align: center;
-                                        height: 100%;
-                                    }
-
-                                    .empty-cart-message img {
-                                        max-width: 100px;
-                                        margin-bottom: 10px;
-                                        height: 70px;
-                                    }
-                                </style>
-
-                                <script>
-                                    function showCartPopup() {
-                                        document.getElementById("cartPopup").style.display = "block";
-                                    }
-
-                                    function hideCartPopup() {
-                                        document.getElementById("cartPopup").style.display = "none";
-                                    }
-                                </script>
-
-
-
                             </div>
                         </div>
-                        <style>
-                            .cart-mini {
-                                position: relative;
-                            }
 
-                            .cart-total-quantity {
-                                position: absolute;
-                                top: 5px;
-                                right: -7px;
-                                background-color: #ff4c4c;
-                                color: white;
-                                font-size: 12px;
-                                font-weight: bold;
-                                border-radius: 50%;
-                                width: 18px;
-                                height: 18px;
-                                text-align: center;
-                                line-height: 18px;
-                            }
-                        </style>
-                        <div style="padding-left: 100px;">
-                            <div class="uk-flex uk-flex-middle">
-                            </div>
+                        <div class="ms-5">
+                            <div class="d-flex align-items-center"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="lower">
-        <div class="uk-container uk-container-center">
-            <div class="uk-grid uk-grid-medium uk-flex uk-flex-center uk-flex-middle">
-                <div class=" uk-text-center">
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+                <div class="text-center">
                     @include('frontend.component.navigation')
                 </div>
             </div>
         </div>
     </div>
-
-
 </div>
-
-
-
-</div>
-<div class="mobile-header uk-hidden-large">
-    <div class="mobile-upper">
-        <div class="uk-container uk-container-center">
-            <div class="uk-flex uk-flex-middle uk-flex-space-between">
+{{-- Mobile Header --}}
+<div class="mobile-header d-block d-lg-none bg-white border-bottom">
+    <div class="mobile-upper py-2">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between">
+                {{-- Logo --}}
                 <div class="mobile-logo">
                     <a href="." title="{{ $system['seo_meta_title'] }}">
-                        <img src="{{ $system['homepage_logo'] }}" alt="Mobile Logo">
+                        <img src="{{ $system['homepage_logo'] }}" alt="Mobile Logo" style="max-height: 40px;">
                     </a>
                 </div>
+
+                {{-- Widget --}}
                 <div class="mobile-widget">
-                    <div class="uk-flex uk-flex-middle">
+                    <div class="d-flex align-items-center gap-3">
+                        {{-- Tài khoản --}}
                         @if (auth()->guard('customer')->check())
-                            <a href="{{ route('customer.profile') }}" class="btn btn-addCart">
-                                <div style="font-size: 28px; color: #111;" class="fa fa-user"></div>
+                            <a href="{{ route('customer.profile') }}" class="btn btn-link p-0">
+                                <i class="fa fa-user" style="font-size: 28px; color: #111;"></i>
                             </a>
                         @else
-                            <a href="{{ route('fe.auth.login') }}" class="btn btn-addCart">
-                                <div style="font-size: 28px; color: #111;" class="fa fa-user"></div>
+                            <a href="{{ route('fe.auth.login') }}" class="btn btn-link p-0">
+                                <i class="fa fa-user" style="font-size: 28px; color: #111;"></i>
                             </a>
                         @endif
-                        <a href="{{ write_url('thanh-toan') }}" class="btn btn-addCart">
-                            <div class="cart-mini" onmouseover="showCartPopup()" onmouseleave="hideCartPopup()">
-                                <img src="frontend/resources/img/shopping-bag.png" alt="cart image"
-                                    style="width:28px; height: 28px; top: 5px">
-                                <span id="cartTotalItem" class="cart-total-quantity">{{ $countMiniCart ?? 0 }}</span>
-                            </div>
+
+                        {{-- Giỏ hàng --}}
+                        <a href="{{ write_url('thanh-toan') }}" class="btn btn-link p-0 position-relative">
+                            <img src="{{ asset('frontend/resources/img/shopping-bag.png') }}" alt="Cart"
+                                style="width:28px; height:28px;">
+                            <span id="cartTotalItem"
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ $countMiniCart ?? 0 }}
+                            </span>
                         </a>
 
-                        <a href="#mobileCanvas" class="mobile-menu-button" data-uk-offcanvas>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"
-                                preserveAspectRatio="none" viewBox="0 0 1536 1896.0833" class=""
-                                fill="rgb(218,34,41)">
-                                <path
-                                    d="M1536 1344v128q0 26-19 45t-45 19H64q-26 0-45-19t-19-45v-128q0-26 19-45t45-19h1408q26 0 45 19t19 45zm0-512v128q0 26-19 45t-45 19H64q-26 0-45-19T0 960V832q0-26 19-45t45-19h1408q26 0 45 19t19 45zm0-512v128q0 26-19 45t-45 19H64q-26 0-45-19T0 448V320q0-26 19-45t45-19h1408q26 0 45 19t19 45z">
+                        {{-- Button mở menu --}}
+                        <button class="btn p-0 border-0" type="button" data-bs-toggle="offcanvas"
+                            data-bs-target="#mobileCanvas" aria-controls="mobileCanvas">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                viewBox="0 0 1536 1896.0833" fill="rgb(218,34,41)">
+                                <path d="M1536 1344v128q0 26-19 45t-45 19H64q-26
+                                    0-45-19t-19-45v-128q0-26 19-45t45-19h1408q26
+                                    0 45 19t19 45zm0-512v128q0 26-19 45t-45
+                                    19H64q-26 0-45-19T0 960V832q0-26 19-45t45-19h1408q26
+                                    0 45 19t19 45zm0-512v128q0 26-19 45t-45
+                                    19H64q-26 0-45-19T0 448V320q0-26 19-45t45-19h1408q26
+                                    0 45 19t19 45z">
                                 </path>
                             </svg>
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="search-mobile">
-        <form action="{{ write_url('tim-kiem') }}" class="uk-form form mobile-form">
-            <div class="form-row">
-                <input type="text" name="keyword" value="" class="input-text" placeholder="Nhập từ khóa">
-                <button type="submit" value="" name="btn-search">
-                    Tìm kiếm <i class="fa fa-search"></i>
-                </button>
-            </div>
-        </form>
+
+    {{-- Search form --}}
+    <div class="search-mobile py-2 border-top">
+        <div class="container">
+            <form action="{{ write_url('tim-kiem') }}" class="d-flex flex-column w-100">
+                <div class="d-flex justify-content-end">
+                    <button type="submit" name="btn-search" class="btn btn-outline-primary">
+                        Tìm kiếm
+                    </button>
+                </div>
+                <div>
+                    <input type="text" name="keyword" value="" class="form-control"
+                        placeholder="Nhập từ khóa" style="border-radius: 0 !important">
+                </div>
+            </form>
+        </div>
     </div>
+
+
 </div>
-<div id="mobileCanvas" class="uk-offcanvas offcanvas">
-    <div class="uk-offcanvas-bar">
+
+<!-- Offcanvas menu dùng Bootstrap 5 -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="mobileCanvas" aria-labelledby="mobileCanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="mobileCanvasLabel">Danh mục</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
         @if (isset($menu['mobile']))
-            <ul class="l1 uk-nav uk-nav-offcanvas uk-nav uk-nav-parent-icon" data-uk-nav>
+            <ul class="list-group list-group-flush">
                 @foreach ($menu['mobile'] as $key => $val)
                     @php
                         $name = $val['item']->name;
                         $canonical = write_url($val['item']->canonical, true, true);
+                        $hasChildren = isset($val['children']) && is_array($val['children']) && count($val['children']);
                     @endphp
-                    <li class="l1 {{ count($val['children']) ? 'uk-parent uk-position-relative' : '' }}">
-                        <?php echo isset($val['children']) && is_array($val['children']) && count($val['children']) ? '<a href="#" title="" class="dropicon"></a>' : ''; ?>
-                        <a href="{{ $canonical }}" title="{{ $name }}"
-                            class="l1">{{ $name }}</a>
-                        @if (count($val['children']))
-                            <ul class="l2 uk-nav-sub">
-                                @foreach ($val['children'] as $keyItem => $valItem)
-                                    @php
-                                        $name_2 = $valItem['item']->name;
-                                        $canonical_2 = write_url($valItem['item']->canonical, true, true);
-                                    @endphp
-                                    <li class="l2">
-                                        <a href="{{ $canonical_2 }}" title="{{ $name_2 }}"
-                                            class="l2">{{ $name_2 }}</a>
-                                    </li>
-                                @endforeach
-                            </ul>
+
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{{ $canonical }}" class="text-decoration-none">{{ $name }}</a>
+                            @if ($hasChildren)
+                                <button class="btn btn-sm btn-link p-0" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse-{{ $key }}" aria-expanded="false"
+                                    aria-controls="collapse-{{ $key }}">
+                                    <i class="fa fa-chevron-down"></i>
+                                </button>
+                            @endif
+                        </div>
+
+                        @if ($hasChildren)
+                            <div class="collapse mt-2" id="collapse-{{ $key }}">
+                                <ul class="list-group list-group-flush ps-3">
+                                    @foreach ($val['children'] as $keyItem => $valItem)
+                                        @php
+                                            $name_2 = $valItem['item']->name;
+                                            $canonical_2 = write_url($valItem['item']->canonical, true, true);
+                                        @endphp
+                                        <li class="list-group-item">
+                                            <a href="{{ $canonical_2 }}"
+                                                class="text-decoration-none">{{ $name_2 }}</a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         @endif
                     </li>
                 @endforeach
@@ -424,3 +260,160 @@
         @endif
     </div>
 </div>
+
+
+
+<style>
+    @media (min-width: 992px) {
+        .col-lg-2-4 {
+            flex: 0 0 auto;
+            width: 20%;
+        }
+    }
+</style>
+<style>
+    .input-text {
+        flex-grow: 1;
+        padding: 10px 40px 10px 10px;
+        border: 1px solid #ccc;
+        outline: none;
+    }
+
+    #voice-search {
+        position: absolute;
+        right: 130px;
+        font-size: 18px;
+        cursor: pointer;
+        color: #333;
+        text-align: center;
+        padding: 13px;
+    }
+
+    .cart-popup {
+        display: none;
+        position: absolute;
+        top: 40px;
+        right: 0;
+        background: #fff;
+        border: 1px solid #ddd;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 400px;
+        padding: 10px;
+        z-index: 1000;
+    }
+
+    .cart-popup::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        right: 20px;
+        border-width: 10px;
+        border-style: solid;
+        border-color: transparent transparent white transparent;
+    }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .cart-item-image {
+        position: relative;
+        margin-right: 10px;
+    }
+
+    .cart-item-image img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 5px;
+        border: 1px solid gray;
+    }
+
+    .cart-item-number {
+        background: red;
+        color: #fff;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: -5px;
+        right: -5px;
+    }
+
+    .cart-item-info .title {
+        font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 280px;
+        display: block;
+    }
+
+    .checkout-btn {
+        width: 40%;
+        padding: 10px;
+        background: linear-gradient(to right, #003366, #3399ff);
+        color: white;
+        text-align: center;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 10px;
+        margin: 15px auto 0;
+        font-weight: 600;
+    }
+
+    .checkout-btn:hover {
+        background: #003366;
+    }
+
+    .cart-mini {
+        position: relative;
+    }
+
+    .cart-total-quantity {
+        position: absolute;
+        top: 5px;
+        right: -7px;
+        background-color: #ff4c4c;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        text-align: center;
+        line-height: 18px;
+    }
+
+    .empty-cart-message {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        height: 100%;
+    }
+
+    .empty-cart-message img {
+        max-width: 100px;
+        margin-bottom: 10px;
+        height: 70px;
+    }
+</style>
+<script>
+    function showCartPopup() {
+        document.getElementById("cartPopup").style.display = "block";
+    }
+
+    function hideCartPopup() {
+        document.getElementById("cartPopup").style.display = "none";
+    }
+</script>

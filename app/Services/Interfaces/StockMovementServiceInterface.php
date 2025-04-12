@@ -9,4 +9,5 @@ namespace App\Services\Interfaces;
 interface StockMovementServiceInterface
 {
     public function paginate($request);
+    public function create($request);
 }

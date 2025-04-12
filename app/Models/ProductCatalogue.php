@@ -47,10 +47,7 @@ class ProductCatalogue extends Model
     {
         $productCatalogue = ProductCatalogue::find($id);
 
-        if ($productCatalogue->rgt - $productCatalogue->lft !== 1) {
-            return false;
-        }
-
-        return true;
+        if (!$productCatalogue) return false;
+        return ($productCatalogue->rgt - $productCatalogue->lft > 1);
     }
 }

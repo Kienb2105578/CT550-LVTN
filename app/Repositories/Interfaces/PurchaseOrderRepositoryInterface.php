@@ -9,4 +9,5 @@ namespace App\Repositories\Interfaces;
 interface PurchaseOrderRepositoryInterface
 {
     public function update(int $id = 0, array $payload = []);
+    public function getPurchaseOrderById($id);
 }

@@ -82,10 +82,6 @@ class CartRepository extends BaseRepository implements CartRepositoryInterface
             'price'      => $result->price
         ] : null;
 
-        // Log thông tin
-        Log::info('Thông tin giỏ hàng:', ['cart' => $cart]);
-        Log::info('Thông tin sản phẩm trong giỏ hàng:', ['product' => $product]);
-
         return [
             'cart' => $cart,
             'product' => $product

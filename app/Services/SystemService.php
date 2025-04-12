@@ -24,7 +24,7 @@ class SystemService implements SystemServiceInterface
     }
 
 
-    public function save($request, $languageId)
+    public function save($request)
     {
         DB::beginTransaction();
         try {
@@ -36,10 +36,9 @@ class SystemService implements SystemServiceInterface
                     $payload = [
                         'keyword' => $key,
                         'content' => $val,
-                        'language_id' => $languageId,
                         'user_id' => Auth::id(),
                     ];
-                    $condition = ['keyword' => $key, 'language_id' => $languageId];
+                    $condition = ['keyword' => $key];
                     $this->systemRepository->updateOrInsert($payload, $condition);
                 }
             }
@@ -47,9 +46,6 @@ class SystemService implements SystemServiceInterface
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }

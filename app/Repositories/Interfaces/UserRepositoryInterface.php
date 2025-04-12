@@ -9,4 +9,10 @@ namespace App\Repositories\Interfaces;
 interface UserRepositoryInterface
 {
     public function find($id);
+    public function getUserByEmail(string $email);
+    public function findById(
+        int $modelId,
+        array $column = ['*'],
+        array $relation = [],
+    );
 }

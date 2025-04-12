@@ -148,6 +148,39 @@ if (!function_exists('getPromotionPrice')) {
 }
 
 
+// if (!function_exists('getPrice')) {
+//     function getPrice($product = null)
+//     {
+//         $result = [
+//             'price' => $product->price,
+//             'priceSale' => 0,
+//             'percent' => 0,
+//             'html' => ''
+//         ];
+
+//         if ($product->price == 0) {
+
+//             $result['html'] .= '<div class="price mt10">';
+//             $result['html'] .= '<div class="price-sale">Liên Hệ</div>';
+//             $result['html'] .= '</div>';
+//             return $result;
+//         }
+
+//         if (isset($product->promotions) && isset($product->promotions->discountType)) {
+//             $result['percent'] = getPercent($product, $product->promotions->discount);
+//             if ($product->promotions->discountValue > 0) {
+//                 $result['priceSale'] = getPromotionPrice($product->price, $product->promotions->discount);
+//             }
+//         }
+//         $result['html'] .= '<div class="price uk-flex uk-flex-middle mt10">';
+//         $result['html'] .= '<div class="price-sale">' . (($result['priceSale'] > 0) ? convert_price($result['priceSale'], true) : convert_price($result['price'], true)) . 'đ</div>';
+//         if ($result['priceSale'] > 0) {
+//             $result['html'] .= '<div class="price-old uk-flex uk-flex-middle">' . convert_price($result['price'], true) . 'đ <div class="percent"><div class="percent-value">-' . $result['percent'] . '%</div></div></div>';
+//         }
+//         $result['html'] .= '</div>';
+//         return $result;
+//     }
+// }
 if (!function_exists('getPrice')) {
     function getPrice($product = null)
     {
@@ -159,8 +192,7 @@ if (!function_exists('getPrice')) {
         ];
 
         if ($product->price == 0) {
-
-            $result['html'] .= '<div class="price mt10">';
+            $result['html'] .= '<div class="price mt-2">';
             $result['html'] .= '<div class="price-sale">Liên Hệ</div>';
             $result['html'] .= '</div>';
             return $result;
@@ -172,11 +204,18 @@ if (!function_exists('getPrice')) {
                 $result['priceSale'] = getPromotionPrice($product->price, $product->promotions->discount);
             }
         }
-        $result['html'] .= '<div class="price uk-flex uk-flex-middle mt10">';
-        $result['html'] .= '<div class="price-sale">' . (($result['priceSale'] > 0) ? convert_price($result['priceSale'], true) : convert_price($result['price'], true)) . 'đ</div>';
+
+        $result['html'] .= '<div class="price d-flex align-items-center mt-2">';
+        $result['html'] .= '<div class="price-sale me-2">' .
+            (($result['priceSale'] > 0) ? convert_price($result['priceSale'], true) : convert_price($result['price'], true)) . 'đ</div>';
+
         if ($result['priceSale'] > 0) {
-            $result['html'] .= '<div class="price-old uk-flex uk-flex-middle">' . convert_price($result['price'], true) . 'đ <div class="percent"><div class="percent-value">-' . $result['percent'] . '%</div></div></div>';
+            $result['html'] .= '<div class="price-old d-flex align-items-center text-muted text-decoration-line-through me-2">';
+            $result['html'] .= convert_price($result['price'], true) . 'đ';
+            $result['html'] .= '<div class="percent ms-2"><span class="percent-value badge">-' . $result['percent'] . '%</span></div>';
+            $result['html'] .= '</div>';
         }
+
         $result['html'] .= '</div>';
         return $result;
     }
@@ -361,26 +400,56 @@ if (!function_exists('recursive')) {
 *
 */
 
+// if (!function_exists('frontend_recursive_menu')) {
+//     function frontend_recursive_menu(array $data = [], int $parentId = 0, int $count = 1, $type = 'html')
+//     {
+//         $html = '';
+//         if (isset($data) && !is_null($data) && count($data)) {
+//             if ($type == 'html') {
+//                 foreach ($data as $key => $val) {
+//                     $name = $val['item']->name;
+//                     $canonical = write_url($val['item']->canonical, true, true);
+//                     $ulClass = ($count >= 1) ? 'menu-level__' . ($count + 1) : '';
+//                     $html .= '<li class="' . (($count == 1 && count($val['children'])) ? 'children' : '') . '">';
+//                     $html .= '<a href="' . (($name == 'Trang chủ') ? '.' : $canonical) . '" title="' . $name . '">' . $name . '</a>';
+//                     if (count($val['children'])) {
+//                         $html .= '<div class="dropdown-menu">';
+//                         $html .= '<ul class="uk-list uk-clearfix menu-style ' . $ulClass . '">';
+//                         $html .= frontend_recursive_menu($val['children'], $val['item']->parent_id,  $count + 1, $type);
+//                         $html .= '</ul>';
+//                         $html .= '</div>';
+//                     }
+//                     $html .= '</li>';
+//                 }
+//                 return $html;
+//             }
+//         }
+//         return $data;
+//     }
+// }
 if (!function_exists('frontend_recursive_menu')) {
     function frontend_recursive_menu(array $data = [], int $parentId = 0, int $count = 1, $type = 'html')
     {
         $html = '';
-        if (isset($data) && !is_null($data) && count($data)) {
+        if (!empty($data)) {
             if ($type == 'html') {
                 foreach ($data as $key => $val) {
                     $name = $val['item']->name;
                     $canonical = write_url($val['item']->canonical, true, true);
-                    $ulClass = ($count >= 1) ? 'menu-level__' . ($count + 1) : '';
-                    $html .= '<li class="' . (($count == 1 && count($val['children'])) ? 'children' : '') . '">';
-                    $html .= '<a href="' . (($name == 'Trang chủ') ? '.' : $canonical) . '" title="' . $name . '">' . $name . '</a>';
-                    if (count($val['children'])) {
-                        $html .= '<div class="dropdown-menu">';
-                        $html .= '<ul class="uk-list uk-clearfix menu-style ' . $ulClass . '">';
-                        $html .= frontend_recursive_menu($val['children'], $val['item']->parent_id,  $count + 1, $type);
+                    $hasChildren = count($val['children']) > 0;
+
+                    if ($hasChildren) {
+                        $html .= '<li class="nav-item dropdown">';
+                        $html .= '<a href="' . (($name == 'Trang chủ') ? '.' : $canonical) . '" class="nav-link dropdown-toggle" id="menu' . $val['item']->id . '" role="button" data-bs-toggle="dropdown" aria-expanded="false">' . $name . '</a>';
+                        $html .= '<ul class="dropdown-menu" aria-labelledby="menu' . $val['item']->id . '">';
+                        $html .= frontend_recursive_menu($val['children'], $val['item']->id, $count + 1, $type);
                         $html .= '</ul>';
-                        $html .= '</div>';
+                        $html .= '</li>';
+                    } else {
+                        $html .= '<li class="nav-item">';
+                        $html .= '<a class="nav-link" href="' . (($name == 'Trang chủ') ? '.' : $canonical) . '">' . $name . '</a>';
+                        $html .= '</li>';
                     }
-                    $html .= '</li>';
                 }
                 return $html;
             }
@@ -388,6 +457,8 @@ if (!function_exists('frontend_recursive_menu')) {
         return $data;
     }
 }
+
+
 
 /*
 *

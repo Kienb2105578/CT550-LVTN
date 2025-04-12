@@ -13,16 +13,11 @@ use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface  as Attrib
 use App\Repositories\Interfaces\SupplierRepositoryInterface  as SupplierRepository;
 use App\Http\Requests\PurchaseOrder\StorePurchaseOrderRequest;
 use App\Http\Requests\PurchaseOrder\UpdatePurchaseOrderRequest;
-use App\Classes\Nestedsetbie;
-use App\Models\Language;
-use Illuminate\Support\Facades\Auth;
 
 class PurchaseOrderController extends Controller
 {
     protected $purchaseOrderService;
     protected $purchaseOrderRepository;
-    protected $languageRepository;
-    protected $language;
     protected $attributeCatalogue;
     protected $supplierRepository;
     protected $attributeRepository;
@@ -37,8 +32,6 @@ class PurchaseOrderController extends Controller
         SupplierRepository $supplierRepository,
     ) {
         $this->middleware(function ($request, $next) {
-            $locale = app()->getLocale();
-            $this->language = 1;
             return $next($request);
         });
 
@@ -94,7 +87,7 @@ class PurchaseOrderController extends Controller
 
     public function store(StorePurchaseOrderRequest $request)
     {
-        if ($this->purchaseOrderService->create($request, $this->language)) {
+        if ($this->purchaseOrderService->create($request)) {
             return redirect()->route('purchase-order.index')->with('success', 'Thêm mới bản ghi thành công');
         }
         return redirect()->route('purchase-order.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
@@ -103,7 +96,7 @@ class PurchaseOrderController extends Controller
     public function edit($id, Request $request)
     {
         $this->authorize('modules', 'purchase-order.update');
-        $purchaseOrder = $this->purchaseOrderRepository->getPurchaseOrderById($id, $this->language);
+        $purchaseOrder = $this->purchaseOrderRepository->getPurchaseOrderById($id);
         $products = $this->productRepository->getAllProducts();
         $suppliers = $this->supplierRepository->getAllSuppliers();
 
@@ -134,7 +127,7 @@ class PurchaseOrderController extends Controller
 
     public function destroy($id)
     {
-        if ($this->purchaseOrderService->destroy($id, $this->language)) {
+        if ($this->purchaseOrderService->destroy($id)) {
             return redirect()->route('purchase-order.index')->with('success', 'Xóa bản ghi thành công');
         }
         return redirect()->route('purchase-order.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');

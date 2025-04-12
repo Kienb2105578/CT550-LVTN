@@ -7,11 +7,8 @@ use App\Services\BaseService;
 use App\Repositories\Interfaces\AttributeRepositoryInterface as AttributeRepository;
 use App\Repositories\Interfaces\RouterRepositoryInterface as RouterRepository;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+
 
 /**
  * Class AttributeService
@@ -31,7 +28,7 @@ class AttributeService extends BaseService implements AttributeServiceInterface
         $this->controllerName = 'AttributeController';
     }
 
-    public function paginate($request, $languageId)
+    public function paginate($request)
     {
         $perPage = $request->integer('perpage');
         $condition = [
@@ -74,49 +71,38 @@ class AttributeService extends BaseService implements AttributeServiceInterface
         return $rawCondition;
     }
 
-    public function create($request, $languageId)
+    public function create($request)
     {
         DB::beginTransaction();
         try {
             $attribute = $this->createAttribute($request);
             if ($attribute->id > 0) {
-                //$this->updateLanguageForAttribute($attribute, $request, $languageId);
-                // $this->updateCatalogueForAttribute($attribute, $request);
-                $this->createRouter($attribute, $request, $this->controllerName, $languageId);
+                $this->createRouter($attribute, $request, $this->controllerName);
             }
             DB::commit();
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }
 
-    public function update($id, $request, $languageId)
+    public function update($id, $request)
     {
         DB::beginTransaction();
         try {
             $attribute = $this->attributeRepository->findById($id);
             if ($this->uploadAttribute($attribute, $request)) {
-                //$this->updateLanguageForAttribute($attribute, $request, $languageId);
-                //$this->updateCatalogueForAttribute($attribute, $request);
                 $this->updateRouter(
                     $attribute,
                     $request,
                     $this->controllerName,
-                    $languageId
                 );
             }
             DB::commit();
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }

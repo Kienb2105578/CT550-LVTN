@@ -173,7 +173,7 @@ class CartService  implements CartServiceInterface
 
 
 
-    public function createCart($request, $language = 1)
+    public function createCart($request)
     {
         try {
             $payload = $request->input();
@@ -190,7 +190,7 @@ class CartService  implements CartServiceInterface
 
                 if (isset($payload['attribute_id']) && count($payload['attribute_id'])) {
                     $attributeId = sortAttributeId($payload['attribute_id']);
-                    $variant = $this->productVariantRepository->findVariant($attributeId, $product->id, $language);
+                    $variant = $this->productVariantRepository->findVariant($attributeId, $product->id);
                     $variantPromotion = $this->promotionRepository->findPromotionByVariantUuid($variant->uuid);
                     $variantPrice = getVariantPrice($variant, $variantPromotion);
 
@@ -220,7 +220,7 @@ class CartService  implements CartServiceInterface
                 ];
                 if (isset($payload['attribute_id']) && count($payload['attribute_id'])) {
                     $attributeId = sortAttributeId($payload['attribute_id']);
-                    $variant = $this->productVariantRepository->findVariant($attributeId, $product->id, $language);
+                    $variant = $this->productVariantRepository->findVariant($attributeId, $product->id);
                     Log::info("SESSION", ['variant', $variant]);
                     $variantPromotion = $this->promotionRepository->findPromotionByVariantUuid($variant->uuid);
                     $variantPrice = getVariantPrice($variant, $variantPromotion);

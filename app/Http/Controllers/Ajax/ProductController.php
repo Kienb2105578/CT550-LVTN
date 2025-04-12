@@ -9,7 +9,7 @@ use App\Repositories\Interfaces\ProductRepositoryInterface  as ProductRepository
 use App\Repositories\Interfaces\ProductVariantRepositoryInterface  as ProductVariantRepository;
 use App\Repositories\Interfaces\PromotionRepositoryInterface  as PromotionRepository;
 use App\Repositories\Interfaces\AttributeRepositoryInterface  as AttributeRepository;
-use App\Models\Language;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Cart;
@@ -24,7 +24,6 @@ class ProductController extends Controller
     protected $promotionRepository;
     protected $attributeRepository;
     protected $cartRepository;
-    protected $language;
 
     public function __construct(
         ProductRepository $productRepository,
@@ -41,17 +40,15 @@ class ProductController extends Controller
         $this->productService = $productService;
         $this->cartRepository = $cartRepository;
         $this->middleware(function ($request, $next) {
-            $locale = app()->getLocale(); // vn en cn
-            $this->language = 1;
             return $next($request);
         });
     }
 
     public function updateProductQuantity(Request $request)
     {
-        $totalQuantity = $request->input('total_quantity', 0); // Lấy tổng số lượng từ request
+        $totalQuantity = $request->input('total_quantity', 0);
         return response()->json([
-            'updated_quantity' => $totalQuantity // Trả về tổng số lượng đã tính
+            'updated_quantity' => $totalQuantity
         ]);
     }
     public function checkQuantity(Request $request)
@@ -196,7 +193,7 @@ class ProductController extends Controller
 
         $attributeId = sortAttributeId($attributeId);
 
-        $variant = $this->productVariantRepository->findVariant($attributeId, $get['product_id'], $get['language_id']);
+        $variant = $this->productVariantRepository->findVariant($attributeId, $get['product_id']);
 
         $variantPromotion = $this->promotionRepository->findPromotionByVariantUuid($variant->uuid);
         $variantPrice = getVariantPrice($variant, $variantPromotion);
@@ -222,11 +219,12 @@ class ProductController extends Controller
 
     public function renderFilterProduct($products)
     {
-
         $html = '';
+
         if (!is_null($products) && count($products)) {
-            $html .= '<div class="uk-grid uk-grid-medium">';
-            foreach ($products as  $product) {
+            $html .= '<div class="row">';
+
+            foreach ($products as $product) {
                 $name = $product->name;
                 Log::info($name);
                 $canonical = write_url($product->canonical);
@@ -234,76 +232,65 @@ class ProductController extends Controller
                 $price = getPrice($product);
                 $catName = $product->product_catalogues->first()->name;
                 $review = getReview($product);
-                if (isset($product->attribute_concat)) {
-                    $attributes = substr($product->attribute_concat, 0, -1);
-                }
+                $attributes = isset($product->attribute_concat) ? substr($product->attribute_concat, 0, -1) : '';
 
-                $html .= '<div class="uk-width-large-1-4 mb20">';
-                $html .= '<div class="product-item product">';
+                $html .= '<div class="col-md-3 mb-4">';
+                $html .= '<div class="product-item product card h-100">';
+
+                // Hiển thị phần trăm giảm giá nếu có
                 // if ($price['percent'] > 0) {
-                //     $html .= "<div class='badge badge-bg-1'>-{$price['percent']}%</div>";
+                //     $html .= "<div class='badge bg-danger position-absolute top-0 start-0 m-2'>-{$price['percent']}%</div>";
                 // }
-                $html .= "<a href='$canonical' class='image img-scaledown img-zoomin'><img src='$image' alt='$product->name'></a>";
-                $html .= '<div class="info">';
 
+                $html .= "<a href='$canonical' class='image img-scaledown img-zoomin position-relative d-block'>";
+                $html .= "<img src='$image' alt='$product->name' class='card-img-top img-fluid'>";
+                $html .= '</a>';
 
-                $html .= "<div class='category-title'><a href='$canonical' title='$product->name'>$catName</a></div>";
-                $html .= "<h3 class='title product-title-filter'><a href='$canonical' title='$product->name'>$product->name</a></h3>";
-                $html .= '<div class="rating">';
-                $html .= '<div class="uk-flex uk-flex-middle">';
-                $html .= '<div class="star-rating">';
-                $html .= '<div class="stars" style="--star-width: ' . $review['star'] . '%"></div>';
+                $html .= '<div class="info card-body p-3 d-flex flex-column justify-content-between">';
+                $html .= '<div class="mb-2">';
+
+                // Danh mục
+                $html .= "<div class='category-title mb-1'>";
+                $html .= "<a href='$canonical' title='$product->name' class='text-muted small text-decoration-none'>$catName</a>";
                 $html .= '</div>';
-                $html .= '<span class="rate-number">(' . $review['count'] . ')</span>';
+
+                // Tên sản phẩm
+                $html .= "<h3 class='title product-title-filter h6 mb-2'>";
+                $html .= "<a href='$canonical' title='$product->name' class='text-dark text-decoration-none'>$product->name</a>";
+                $html .= '</h3>';
+
+                $html .= '</div>'; // End top info
+
+                // Rating
+                $html .= '<div class="rating d-flex align-items-center">';
+                $html .= '<div class="star-rating me-1">';
+                $html .= "<div class='stars' style='--star-width: {$review['star']}%'></div>";
                 $html .= '</div>';
+                $html .= "<span class='rate-number small text-muted'>({$review['count']})</span>";
                 $html .= '</div>';
+
+                // Giá
                 $html .= '<div class="product-group">';
-                $html .= '<div class="uk-flex uk-flex-middle uk-flex-space-between">';
+                $html .= '<div class="d-flex justify-content-between align-items-center">';
                 $html .= $price['html'];
                 $html .= '</div>';
-                $html .= '</div>';
-                $html .= '</div>';
-                $html .= '</div>';
-                $html .= '</div>';
-            }
-            $html .= '</div>';
+                $html .= '</div>'; // End product-group
 
+                $html .= '</div>'; // End card-body
+                $html .= '</div>'; // End product card
+                $html .= '</div>'; // End column
+            }
+
+            $html .= '</div>'; // End row
+
+            // Pagination bên ngoài vòng lặp
+            $html .= '<div class="mt-3">';
             $html .= $products->links('pagination::bootstrap-4');
+            $html .= '</div>';
         } else {
             $html .= '<div class="no-result">Không có sản phẩm phù hợp</div>';
         }
 
-
         return $html;
-    }
-
-    public function wishlist(Request $request)
-    {
-        $id = $request->input('id');
-        $wishlist = Cart::instance('wishlist')->content();
-        $itemIndex = $wishlist->search(function ($item, $rowId) use ($id) {
-            return $item->id === $id;
-        });
-
-        $response['code'] = 0;
-        $response['message'] = '';
-        if ($itemIndex !== false) {
-            Cart::instance('wishlist')->remove($wishlist->keyBy('id')[$id]->rowId);
-
-            $response['code'] = 1;
-            $response['message'] = 'Sản phẩm đã được xóa khỏi danh sách yêu thích';
-        } else {
-            Cart::instance('wishlist')->add([
-                'id' => $id,
-                'name' => 'wishlist item',
-                'qty' => 1,
-                'price' => 0,
-            ]);
-
-            $response['code'] = 2;
-            $response['message'] = 'Đã thêm sản phẩm vào danh sách yêu thích';
-        }
-
-        return response()->json($response);
     }
 }

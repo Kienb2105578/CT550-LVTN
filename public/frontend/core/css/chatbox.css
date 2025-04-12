@@ -57,7 +57,7 @@
     box-shadow: 0 5px 20px var(--chat-shadow);
     display: none;
     overflow: hidden;
-    z-index: 999;
+    z-index: 2000;
     animation: slideUp 0.3s ease;
 }
 

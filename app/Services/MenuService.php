@@ -34,22 +34,17 @@ class MenuService extends BaseService implements MenuServiceInterface
         $this->routerRepository = $routerRepository;
     }
 
-    private function initialize($languageId)
+    private function initialize()
     {
         $this->nestedset = new Nestedsetbie([
             'table' => 'menus',
             'foreignkey' => 'menu_id',
             'isMenu' => TRUE,
-            'language_id' =>  $languageId,
         ]);
     }
 
-    public function paginate($request, $languageId)
-    {
-        return [];
-    }
 
-    public function save($request, $languageId)
+    public function save($request)
     {
         DB::beginTransaction();
         try {
@@ -80,20 +75,9 @@ class MenuService extends BaseService implements MenuServiceInterface
                             );
                         }
                     }
-
-                    if ($menuSave->id > 0) {
-                        // Cập nhật dữ liệu vào bảng liên kết (nếu có)
-                        $payloadLanguage = [
-                            'language_id' => $languageId,
-                            'name' => $val,
-                            'canonical' => $payload['menu']['canonical'][$key],
-                        ];
-                        // Lưu vào bảng pivot, nếu cần
-                        //$this->menuRepository->createPivot($menuSave, $payloadLanguage, 'languages');
-                    }
                 }
 
-                $this->initialize($languageId);
+                $this->initialize();
                 $this->nestedset();
             }
 
@@ -101,15 +85,12 @@ class MenuService extends BaseService implements MenuServiceInterface
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }
 
 
-    public function saveChildren($request, $languageId, $menu)
+    public function saveChildren($request, $menu)
     {
         DB::beginTransaction();
         try {
@@ -134,21 +115,10 @@ class MenuService extends BaseService implements MenuServiceInterface
                     } else {
                         $menuSave = $this->menuRepository->update($menuId, $menuArray);
                     }
-
-                    if ($menuSave->id > 0) {
-                        // Cập nhật dữ liệu vào bảng liên kết (nếu có)
-                        $payloadLanguage = [
-                            'language_id' => $languageId,
-                            'name' => $val,
-                            'canonical' => $payload['menu']['canonical'][$key],
-                        ];
-                        // Lưu vào bảng pivot, nếu cần
-                        //$this->menuRepository->createPivot($menuSave, $payloadLanguage, 'languages');
-                    }
                 }
 
 
-                $this->initialize($languageId);
+                $this->initialize();
                 $this->nestedset();
             }
 
@@ -156,14 +126,11 @@ class MenuService extends BaseService implements MenuServiceInterface
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }
 
-    public function dragUpdate(array $json = [], int $menuCatalogueId = 0, int $languageId = 1, $parentId = 0)
+    public function dragUpdate(array $json = [], int $menuCatalogueId = 0, $parentId = 0)
     {
         if (count($json)) {
             foreach ($json as $key => $val) {
@@ -174,11 +141,11 @@ class MenuService extends BaseService implements MenuServiceInterface
 
                 $menu = $this->menuRepository->update($val['id'], $update);
                 if (isset($val['children']) && count($val['children'])) {
-                    $this->dragUpdate($val['children'], $menuCatalogueId, $languageId, $val['id']);
+                    $this->dragUpdate($val['children'], $menuCatalogueId, $val['id']);
                 }
             }
         }
-        $this->initialize($languageId);
+        $this->initialize();
         $this->nestedset();
     }
 
@@ -194,14 +161,11 @@ class MenuService extends BaseService implements MenuServiceInterface
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }
 
-    public function destroyMenu($id, $languageId)
+    public function destroyMenu($id)
     {
         DB::beginTransaction();
         try {
@@ -210,20 +174,17 @@ class MenuService extends BaseService implements MenuServiceInterface
                 ['lft', '>=', $menu->lft],
                 ['lft', '<=', $menu->rgt],
             ]);
-            $this->initialize($languageId);
+            $this->initialize();
             $this->nestedset();
             DB::commit();
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }
 
-    public function getAndConvertMenu($menu = null, $language = 1): array
+    public function getAndConvertMenu($menu = null): array
     {
         $menuList = $this->menuRepository->findByCondition([
             ['parent_id', '=', $menu->id]
@@ -247,54 +208,5 @@ class MenuService extends BaseService implements MenuServiceInterface
             }
         }
         return $temp;
-    }
-
-    public function findMenuItemTranslate($menus, int $currentLanguage = 1, int $languageId = 1)
-    {
-        $output = [];
-        if (count($menus)) {
-            foreach ($menus as $key => $menu) {
-                $canonical = $menu->canonical; // Lấy canonical từ menu mà không cần đến languages
-                $detailMenu = $this->menuRepository->findById($menu->id, ['*'], []);
-                if ($detailMenu) {
-                    // Cập nhật name và canonical trực tiếp từ bảng menus
-                    $menu->translate_name = $detailMenu->name;
-                    $menu->translate_canonical = $detailMenu->canonical;
-                }
-                $output[] = $menu;
-            }
-        }
-        return $output;
-    }
-
-
-    public function saveTranslateMenu($request, int $languageId = 1)
-    {
-        DB::beginTransaction();
-        try {
-            $payload = $request->only('translate');
-            if (count($payload['translate']['name'])) {
-                foreach ($payload['translate']['name'] as $key => $val) {
-                    if ($val == null) continue;
-                    $menu = $this->menuRepository->findById($payload['translate']['id'][$key]);
-
-                    // Cập nhật name và canonical trực tiếp vào bảng menus
-                    $menuArray = [
-                        'name' => $val,
-                        'canonical' => $payload['translate']['canonical'][$key],
-                    ];
-
-                    $this->menuRepository->update($menu->id, $menuArray);
-                }
-            }
-            DB::commit();
-            return true;
-        } catch (\Exception $e) {
-            DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
-            return false;
-        }
     }
 }

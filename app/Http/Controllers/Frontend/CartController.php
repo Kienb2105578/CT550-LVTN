@@ -14,7 +14,6 @@ use Cart;
 use App\Classes\Vnpay;
 use App\Classes\Momo;
 use App\Classes\Paypal;
-use App\Classes\Zalo;
 
 class CartController extends FrontendController
 {
@@ -26,7 +25,6 @@ class CartController extends FrontendController
     protected $vnpay;
     protected $momo;
     protected $paypal;
-    protected $zalo;
 
     public function __construct(
         ProvinceRepository $provinceRepository,
@@ -36,7 +34,6 @@ class CartController extends FrontendController
         Vnpay $vnpay,
         Momo $momo,
         Paypal $paypal,
-        Zalo $zalo,
     ) {
 
         $this->provinceRepository = $provinceRepository;
@@ -46,7 +43,6 @@ class CartController extends FrontendController
         $this->vnpay = $vnpay;
         $this->momo = $momo;
         $this->paypal = $paypal;
-        $this->zalo = $zalo;
         parent::__construct();
     }
 
