@@ -3,9 +3,8 @@
         <thead>
             <tr>
                 <th>STT</th>
-                <th>Họ Tên</th>
+                <th>Khách hàng</th>
                 <th>Số điện thoại</th>
-                <th>Email</th>
                 <th style="width: 300px;">Nội dung</th>
                 <th>Rate</th>
                 <th>Đối tượng</th>
@@ -25,7 +24,6 @@
                         <td>{{ $index }}</td>
                         <td>{{ $review->fullname }}</td>
                         <td>{{ $review->phone }}</td>
-                        <td>{{ $review->email }}</td>
                         <td>{{ $review->description }}</td>
                         <td class="text-center">
                             <div class="text-navy">{{ $review->score }}</div>

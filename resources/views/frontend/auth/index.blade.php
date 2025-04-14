@@ -19,12 +19,12 @@
                 <div class="d-flex justify-content-start align-items-center" style="">
                     <button type="submit" class="btn-login">Đăng nhập</button>
                     <a class="d-block" style="margin-left: 130px" href="{{ route('forgot.customer.password') }}">Quên mật
-                        khẩu</a>
+                        khẩu!</a>
                 </div>
 
 
                 <div class="text-center mt-4">
-                    <span>Bạn chưa có tài khoản</span>
+                    <span>Bạn chưa có tài khoản?</span>
                     <a href="{{ route('customer.register') }}">Đăng ký ngay</a>
                 </div>
 

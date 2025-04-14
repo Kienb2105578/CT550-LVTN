@@ -60,9 +60,9 @@
                     </svg>
                 </button>
             </div>
-            <button class="btn-new-chat" id="startNewChat">
+            {{-- <button class="btn-new-chat" id="startNewChat">
                 Bắt đầu cuộc trò chuyện mới
-            </button>
+            </button> --}}
             <div class="chat-powered">⚙ INCOM</div>
         </div>
     </div>

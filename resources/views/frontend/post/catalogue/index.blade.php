@@ -7,8 +7,8 @@
         <div class="page-breadcrumb background">
             <div class="container">
                 <ul class="list-unstyled d-flex flex-wrap mb-0">
-                    <li class="me-2"><a href="/"><i class="mr5"></i>{{ __('frontend.home') }}</a></li>
-                    <li class="me-2"><a href="{{ route('post.main') }}" title="Bài viết">Bài Viết</a></li>
+                    <li><a href="/"><i class="mr5"></i>{{ __('frontend.home') }}</a></li>
+                    <li><a href="{{ route('post.main') }}" title="Bài viết">Bài Viết</a></li>
                     <li><a href="{{ write_url($postCatalogue->canonical) }}"
                             title="{{ $postCatalogue->name }}">{{ $postCatalogue->name }}</a></li>
                 </ul>
@@ -40,10 +40,10 @@
                                             </div>
                                             <div class="col-8">
                                                 <div class="blog-item">
-                                                    <h3 class="title" style="text-align: justify;">
+                                                    <h5 class="title" style="text-align: justify;">
                                                         <a href="{{ $canonical }}"
                                                             title="{{ $name }}">{{ $name }}</a>
-                                                    </h3>
+                                                    </h5>
                                                     <div class="description" style="text-align: justify;">
                                                         {!! $description !!}
                                                     </div>

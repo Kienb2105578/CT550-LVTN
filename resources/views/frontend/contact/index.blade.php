@@ -4,7 +4,7 @@
         <div class="page-breadcrumb background">
             <div class="container">
                 <ul class="list-unstyled d-flex flex-wrap mb-0">
-                    <li class="me-2"><a href="/"><i class="mr5"></i>{{ __('frontend.home') }}</a></li>
+                    <li><a href="/"><i class="mr5"></i>{{ __('frontend.home') }}</a></li>
                     <li><a href="{{ route('fe.contact.index') }}" title="Liên hệ">Liên hệ</a></li>
                 </ul>
             </div>

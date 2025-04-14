@@ -1,44 +1,20 @@
 <base href="{{ config('app.url') }}" />
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1,user-scalable=0">
-<meta content="text/html; charset=UTF-8; X-Content-Type-Options=nosniff" http-equiv="Content-Type" />
+<meta charset="utf-8" />
+{{-- <meta http-equiv="content-type" content="text/html; charset=utf-8" /> --}}
+{{-- <meta content="text/html; charset=UTF-8; X-Content-Type-Options=nosniff" http-equiv="Content-Type" /> --}}
 <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-<meta name="robots" content="index,follow" />
-<meta name="author" content="{{ $system['homepage_company'] }}" />
-<meta name="copyright" content="{{ $system['homepage_company'] }}" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1,user-scalable=0">
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<meta http-equiv="refresh" content="1800" />
 <link rel="icon" href="{{ $system['homepage_favicon'] }}" type="image/png" sizes="30x30">
-<!-- GOOGLE -->
+
 <title>{{ $seo['meta_title'] }}</title>
 <meta name="description" content="{{ $seo['meta_description'] }}" />
 <meta name="keyword" content="{{ $seo['meta_keyword'] }}" />
 <link rel="canonical" href="{{ $seo['canonical'] }}" />
-<meta property="og:locale" content="vi_VN" />
-<!-- for Facebook -->
-<meta property="og:title" content="{{ $seo['meta_title'] }}" />
-<meta property="og:type" content="website" />
-<meta property="og:image" content="{{ $seo['meta_image'] }}" />
-<meta property="og:url" content="{{ $seo['canonical'] }}" />
-<meta property="og:description" content="{{ $seo['meta_description'] }}" />
-<meta property="og:site_name" content="" />
-<meta property="fb:admins" content="" />
-<meta property="fb:app_id" content="" />
-<meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="{{ $seo['meta_title'] }}" />
-<meta name="twitter:description" content="{{ $seo['meta_description'] }}" />
-<meta name="twitter:image" content="{{ $seo['meta_image'] }}" />
 
-{{-- <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"> --}}
-{{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> --}}
-
-{{-- <link href="backend/css/bootstrap.min.css" rel="stylesheet"> --}}
 
 <link href="{{ asset('frontend/bootstrap-5.3.3-dist/css/bootstrap.min.css') }}" rel="stylesheet">
 <script src="{{ asset('frontend/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js') }}"></script>
-
-
 <link rel="stylesheet" href="{{ asset('assets/css/swiper-bundle.min.css') }}">
 <script src="{{ asset('assets/js/swiper-bundle.min.js') }}"></script>
 
@@ -60,5 +36,42 @@
 @foreach ($coreCss as $item)
     <link rel="stylesheet" href="{{ asset($item) }}">
 @endforeach
-<script src="{{ asset('frontend/resources/library/js/jquery.js') }}"></script>
 @yield('css')
+
+<script src="{{ asset('frontend/resources/library/js/jquery.js') }}"></script>
+
+
+
+{{-- <!-- Open Graph (Facebook) -->
+<meta property="og:locale" content="vi_VN" />
+<meta property="og:title" content="{{ $seo['meta_title'] }}" />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="{{ $seo['meta_image'] }}" />
+<meta property="og:url" content="{{ $seo['canonical'] }}" />
+<meta property="og:description" content="{{ $seo['meta_description'] }}" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="{{ $seo['meta_title'] }}" />
+<meta name="twitter:description" content="{{ $seo['meta_description'] }}" />
+<meta name="twitter:image" content="{{ $seo['meta_image'] }}" /> --}}
+
+
+{{-- <meta name="robots" content="index,follow" />
+<meta name="author" content="{{ $system['homepage_company'] }}" />
+<meta name="copyright" content="{{ $system['homepage_company'] }}" />
+<meta http-equiv="refresh" content="1800" />
+<meta property="og:site_name" content="" />
+<meta property="fb:admins" content="" />
+<meta property="fb:app_id" content="" /> --}}
+
+{{-- <meta http-equiv="content-type" content="text/html; charset=utf-8" /> --}}
+{{-- <meta content="text/html; charset=UTF-8; X-Content-Type-Options=nosniff" http-equiv="Content-Type" /> --}}
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+
+
+{{-- <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css"> --}}
+{{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> --}}
+
+{{-- <link href="backend/css/bootstrap.min.css" rel="stylesheet"> --}}

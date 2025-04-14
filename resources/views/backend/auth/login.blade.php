@@ -27,14 +27,14 @@
             <form class="m-t" method="post" role="form" action="{{ route('auth.login') }}">
                 @csrf
                 <div class="form-group">
-                    <input type="text" name="email" class="form-control" placeholder="email"
+                    <input type="text" name="email" class="form-control" placeholder="Email"
                         value="{{ old('email') }}">
                     @if ($errors->has('email'))
                         <span class="error-message">* {{ $errors->first('email') }}</span>
                     @endif
                 </div>
                 <div class="form-group">
-                    <input type="password" name="password" class="form-control" placeholder="password">
+                    <input type="password" name="password" class="form-control" placeholder="Mật khẩu">
                     @if ($errors->has('password'))
                         <span class="error-message">* {{ $errors->first('password') }}</span>
                     @endif

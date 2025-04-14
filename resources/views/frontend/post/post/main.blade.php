@@ -32,10 +32,10 @@
                                             </div>
                                             <div class="col-8">
                                                 <div class="blog-item">
-                                                    <h3 class="title" style="text-align: justify;">
+                                                    <h5 class="title" style="text-align: justify;">
                                                         <a href="{{ $canonical }}"
                                                             title="{{ $name }}">{{ $name }}</a>
-                                                    </h3>
+                                                    </h5>
                                                     <div class="description"
                                                         style="text-align: justify; font-size: 13px; font-weight: 400 !important;">
                                                         {!! $description !!}

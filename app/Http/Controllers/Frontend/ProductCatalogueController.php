@@ -205,7 +205,9 @@ class ProductCatalogueController extends FrontendController
             }
 
             $similarity = $this->cosineSimilarity($uploadedImageFeatures, $storedFeatures);
-            if ($similarity > 0.5) {
+            LOG::info("ĐỘ TƯƠNG ĐỒNG: " . $similarity);
+
+            if ($similarity > 0.6) {
                 $similarProducts[] = $product;
             }
         }

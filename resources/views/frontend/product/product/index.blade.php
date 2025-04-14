@@ -4,10 +4,10 @@
         <div class="page-breadcrumb bg-light py-2">
             <div class="container">
                 <ul class="list-unstyled d-flex flex-wrap mb-0">
-                    <li class="me-2">
+                    <li>
                         <a href="/"><i class="me-1"></i>{{ __('frontend.home') }}</a>
                     </li>
-                    <li class="me-2">
+                    <li>
                         <a href="{{ write_url($productCatalogue->canonical) }}" title="{{ $productCatalogue->name }}">
                             {{ $productCatalogue->name }}
                         </a>

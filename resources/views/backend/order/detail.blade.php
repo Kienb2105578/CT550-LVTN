@@ -2,10 +2,10 @@
 
 <div class="order-wrapper">
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                    <div class="d-flex align-items-center justify-content-between">
                         <div class="ibox-title-left">
                             <h5>Chi tiết đơn hàng #{{ $order->code }}</h5>
                             <span class="badge">
@@ -18,6 +18,32 @@
                             </span>
                         </div>
                     </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <a href="{{ route('order.exportPdf', ['id' => $order->id]) }}" target="_blank" id="printButton"
+                            class="btn btn-primary">
+                            <i class="fa fa-print"></i> In hóa đơn
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content order-customer-information">
+                    <div class="customer-line">
+                        <strong>Khách hàng: </strong>
+                        <span class="fullname">{{ $order->fullname }}</span>
+                    </div>
+                    <div class="customer-line">
+                        <strong>Email: </strong>
+                        <span class="email">{{ $order->email }}</span>
+                    </div>
+                    <div class="customer-line">
+                        <strong>Phone: </strong>
+                        <span class="phone">{{ $order->phone }}</span>
+                    </div>
+                    <div class="customer-line">
+                        <strong>Địa chỉ: </strong>
+                        <span class="address">{{ $order->address }}</span>
+                        , {{ $order->ward_name }}, {{ $order->district_name }}, {{ $order->province_name }}
+                    </div>
+
                 </div>
                 <div class="ibox-content">
                     <table class="table-order">
@@ -88,9 +114,10 @@
                 <div class="payment-confirm confirm-box">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div class="uk-flex uk-flex-middle">
-                            <span class="icon"><img
-                                    src="{{ $order->confirm == 'pending' ? asset('backend/img/warning.png') : asset('backend/img/correct.png') }}"
-                                    alt=""></span>
+                            <span class="icon">
+                                <img src="{{ $order->confirm == 'pending' ? asset('backend/img/warning.png') : asset('backend/img/correct.png') }}"
+                                    alt="">
+                            </span>
                             <div class="payment-title">
                                 <div class="text_1">
                                     <span class="isConfirm">{{ __('order.confirm')[$order->confirm] }}</span>
@@ -119,10 +146,10 @@
                                 <button class="button updateField" data-field="confirm" data-value="returned"
                                     data-title="XÁC NHẬN HOÀN TRẢ">Xác nhận hoàn trả</button>
                             @endif
-
                         </div>
                     </div>
                 </div>
+
                 @if ($order->payment !== 'refunded' && $order->delivery !== 'returned')
                     <div class="payment-confirm">
                         <div class="uk-flex uk-flex-middle uk-flex-space-between">
@@ -139,17 +166,19 @@
                                 @else
                                     Đã xác nhận
                                 @endif
-
                             </div>
                         </div>
                     </div>
                 @endif
+
             </div>
         </div>
-        <div class="col-lg-4 order-aside">
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                    <div class="d-flex align-items-center justify-content-between">
                         <h5>Ghi chú</h5>
                     </div>
                     <div class="edit span edit-order" data-target="description">Sửa</div>
@@ -157,57 +186,6 @@
                 <div class="ibox-content">
                     <div class="description">
                         {{ $order->description ?? 'Không có ghi chú' }}
-                    </div>
-                </div>
-            </div>
-            <div class="ibox">
-                <div class="ibox-title">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <h5>Thông tin khách hàng</h5>
-                    </div>
-                    <div class="edit span edit-order" data-target="customerInfo">Sửa</div>
-                </div>
-                <div class="ibox-content order-customer-information">
-                    <div class="customer-line">
-                        <strong>N:</strong>
-                        <span class="fullname">{{ $order->fullname }}</span>
-                    </div>
-                    <div class="customer-line">
-                        <strong>E:</strong>
-                        <span class="email">{{ $order->email }}</span>
-                    </div>
-                    <div class="customer-line">
-                        <strong>P:</strong>
-                        <span class="phone">{{ $order->phone }}</span>
-                    </div>
-                    <div class="customer-line">
-                        <strong>A:</strong>
-                        <span class="address">{{ $order->address }}</span>
-                    </div>
-                    <div class="customer-line">
-                        <strong>P:</strong>
-                        {{ $order->ward_name }}
-
-                    </div>
-                    <div class="customer-line">
-                        <strong>Q:</strong>
-                        {{ $order->district_name }}
-
-                    </div>
-                    <div class="customer-line">
-                        <strong>T:</strong>
-                        {{ $order->province_name }}
-
-                    </div>
-                </div>
-            </div>
-            <div class="ibox">
-                <div class="ibox-title">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <a href="{{ route('order.exportPdf', ['id' => $order->id]) }}" target="_blank"
-                            id="printButton" class="btn btn-primary">
-                            <i class="fa fa-print"></i> In hóa đơn
-                        </a>
                     </div>
                 </div>
             </div>
