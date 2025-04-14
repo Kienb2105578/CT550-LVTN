@@ -13,16 +13,17 @@ class CustomerController extends Controller
 {
 
     protected $customerService;
-    
+
     public function __construct(
         CustomerService $customerService,
-    ){
+    ) {
         $this->customerService = $customerService;
     }
 
-    public function createCustomer(StoreCustomerRequest $request){
-        $customer = $this->customerService->create($request); 
-        if($customer !== FALSE){
+    public function createCustomer(StoreCustomerRequest $request)
+    {
+        $customer = $this->customerService->create($request);
+        if ($customer !== FALSE) {
             return response()->json([
                 'code' => 0,
                 'message' => 'Tạo khách hàng thành công!',
@@ -34,6 +35,4 @@ class CustomerController extends Controller
             'code' => 1
         ]);
     }
-
 }
-

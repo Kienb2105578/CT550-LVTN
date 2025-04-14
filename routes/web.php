@@ -17,28 +17,28 @@ use App\Http\Controllers\Ajax\PurchaseOrderController as AjaxPurchaseOrderContro
 use App\Http\Controllers\Ajax\CustomerController as AjaxCustomerController;
 use App\Http\Controllers\Ajax\LocationController;
 
-use App\Http\Controllers\Backend\User\AuthController;
-use App\Http\Controllers\Backend\DashboardController;
-use App\Http\Controllers\Backend\User\UserController;
-use App\Http\Controllers\Backend\User\UserCatalogueController;
-use App\Http\Controllers\Backend\User\PermissionController;
-use App\Http\Controllers\Backend\Customer\CustomerController;
-use App\Http\Controllers\Backend\Supplier\SupplierController;
-use App\Http\Controllers\Backend\Post\PostCatalogueController;
-use App\Http\Controllers\Backend\Post\PostController;
-use App\Http\Controllers\Backend\MenuController;
-use App\Http\Controllers\Backend\SlideController;
-use App\Http\Controllers\Backend\ReportController;
-use App\Http\Controllers\Backend\OrderController;
-use App\Http\Controllers\Backend\PurchaseOrderController;
-use App\Http\Controllers\Backend\StockController;
-use App\Http\Controllers\Backend\Promotion\PromotionController;
-use App\Http\Controllers\Backend\ReviewController;
-use App\Http\Controllers\Backend\Product\ProductCatalogueController;
-use App\Http\Controllers\Backend\Product\ProductController;
-use App\Http\Controllers\Backend\Attribute\AttributeCatalogueController;
-use App\Http\Controllers\Backend\Attribute\AttributeController;
-use App\Http\Controllers\Backend\SystemController;
+use App\Http\Controllers\Admin\User\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\User\UserController;
+use App\Http\Controllers\Admin\User\UserCatalogueController;
+use App\Http\Controllers\Admin\User\PermissionController;
+use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\Admin\Post\PostCatalogueController;
+use App\Http\Controllers\Admin\Post\PostController;
+use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\SlideController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\PurchaseOrderController;
+use App\Http\Controllers\Admin\StockController;
+use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\ReviewController;
+use App\Http\Controllers\Admin\Product\ProductCatalogueController;
+use App\Http\Controllers\Admin\Product\ProductController;
+use App\Http\Controllers\Admin\Attribute\AttributeCatalogueController;
+use App\Http\Controllers\Admin\Attribute\AttributeController;
+use App\Http\Controllers\Admin\SystemController;
 
 
 use App\Http\Controllers\Frontend\HomeController;
@@ -119,8 +119,8 @@ Route::group(['middleware' => 'license'], function () {
       Route::group(['prefix' => 'stock'], function () {
          Route::get('report/index', [StockController::class, 'report'])->name('stock.report.index');
          Route::get('stock-taking/index', [StockController::class, 'stockTaking'])->name('stock.stock-taking.index');
-         Route::get('create', [StockController::class, 'create'])->name('stock.stock-taking.create');
-         Route::post('store', [StockController::class, 'store'])->name('stock.stock-taking.store');
+         Route::get('create', [StockController::class, 'createStockTaking'])->name('stock.stock-taking.create');
+         Route::post('store', [StockController::class, 'storecreateStockTaking'])->name('stock.stock-taking.store');
          Route::get('inventory/index', [StockController::class, 'inventory'])->name('stock.inventory.index');
          Route::get('report/exportFile', [StockController::class, 'exportFile'])->name('stock.report.exportFile');
       });

@@ -98,8 +98,8 @@ return [
         ],
         'stockTaking' => [
             'title' => 'Kiểm kê kho',
-            'table' => 'Danh sách kiểm kê kho',
-            'create' => 'Thêm mới phiếu xuất hàng'
+            'table' => 'Danh sách biến động kho',
+            'create' => 'Thêm mới phiếu kiểm kê kho'
         ],
         'inventory' => [
             'title' => 'Quản lý tồn kho',

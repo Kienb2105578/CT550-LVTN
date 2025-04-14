@@ -22,18 +22,20 @@ class StoreStockTakingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'keyword' => 'required|unique:slides',
-            'slide.image' => 'required',
+            'code' => 'required|exists:inventory_batches,code',
         ];
     }
 
+    /**
+     * Get the custom messages for the validation errors.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
-            'name.required' => 'Bạn chưa nhập tên của Slide',
-            'keyword.required' => 'Bạn chưa nhập từ khóa của slide',
-            'slide.image.required' => 'Bạn chưa chọn hình ảnh nào cho slide'
+            'code.required' => 'Lô hàng là bắt buộc.',
+            'code.exists' => 'Lô hàng không tồn tại.',
         ];
     }
 }

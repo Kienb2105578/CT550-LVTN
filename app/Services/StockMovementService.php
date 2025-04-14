@@ -73,14 +73,12 @@ class StockMovementService extends BaseService implements StockMovementServiceIn
         DB::beginTransaction();
         try {
 
-            $payload = $request->only(['_token', 'name', 'keyword', 'setting', 'short_code']);
+            $payload = $request->all();
 
             DB::commit();
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            echo $e->getMessage();
-            die();
             return false;
         }
     }

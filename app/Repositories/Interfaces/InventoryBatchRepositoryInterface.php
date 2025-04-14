@@ -10,4 +10,5 @@ interface InventoryBatchRepositoryInterface
 {
     public function getInventoryWithProduct();
     public function getReport($catalogue_id, $startDate, $endDate);
+    public function getCodeInventory();
 }

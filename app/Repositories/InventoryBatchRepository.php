@@ -8,6 +8,8 @@ use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\Product;
+use App\Models\ProductVariant;
 
 /**
  * Class UserService
@@ -332,5 +334,67 @@ class InventoryBatchRepository extends BaseRepository implements InventoryBatchR
         }
         Log::info("GETREPORT", $data);
         return $data;
+    }
+    public function getCodeInventory()
+    {
+        // Lấy tất cả các batch inventory, bao gồm các sản phẩm và biến thể
+        $inventoryBatches = InventoryBatch::with(['products', 'variant'])
+            ->orderByDesc('created_at')
+            ->get();
+
+        $result = [];
+
+        foreach ($inventoryBatches as $batch) {
+            $code = $batch->code; // Lấy mã batch
+
+            // Nếu batch chưa tồn tại trong kết quả, thêm vào
+            if (!isset($result[$code])) {
+                $result[$code] = [
+                    'code' => $code,
+                    'products' => []
+                ];
+            }
+
+            $productId = $batch->product_id;
+            $productName = $batch->products ? $batch->products->name : 'Không có sản phẩm';
+
+            // Nếu sản phẩm chưa có trong danh sách, thêm vào (chỉ khi không có biến thể)
+            if (!isset($result[$code]['products'][$productId])) {
+                $result[$code]['products'][$productId] = [
+                    'product_id' => $productId,
+                    'product_name' => $productName,
+                    'variant' => [],
+                    'initial_quantity' => null,
+                    'quantity' => null,
+                    'price' => null,
+                    'batch_id' => null // Mặc định batch_id là null, sẽ cập nhật sau
+                ];
+            }
+
+            // Nếu có biến thể, thêm thông tin biến thể vào
+            if ($batch->variant_id) {
+                $result[$code]['products'][$productId]['variant'][] = [
+                    'variant_id' => $batch->variant_id,
+                    'variant_name' => optional($batch->variant)->name ?? 'Không có biến thể',
+                    'initial_quantity' => $batch->initial_quantity,
+                    'quantity' => $batch->quantity,
+                    'price' => $batch->price,
+                    'batch_id' => $batch->id, // Thêm batch_id cho biến thể
+                ];
+            } else {
+                // Nếu không có biến thể, lưu trữ thông tin về sản phẩm và batch_id
+                $result[$code]['products'][$productId]['initial_quantity'] = $batch->initial_quantity;
+                $result[$code]['products'][$productId]['quantity'] = $batch->quantity;
+                $result[$code]['products'][$productId]['price'] = $batch->price;
+                $result[$code]['products'][$productId]['batch_id'] = $batch->id; // Lưu batch_id vào sản phẩm không có biến thể
+            }
+        }
+
+        // Chuyển đổi từ dạng associative array sang mảng tuần tự cho products
+        foreach ($result as $code => &$batch) {
+            $batch['products'] = array_values($batch['products']);
+        }
+
+        return $result;
     }
 }
