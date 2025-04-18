@@ -6,7 +6,7 @@
                 @include('frontend.auth.customer.components.sidebar')
             </div>
             <div class="col-12 col-md-8 col-lg-9 mx-auto">
-                @include('backend/dashboard/component/formError')
+                @include('admin.dashboard.component.formError')
                 <h4 class="text-center mb-3 mt-3 profile-title">Chi Tiết Đơn Hàng</h4>
                 <div class="order-section px-5">
                     <!-- Thông tin người mua -->

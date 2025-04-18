@@ -37,7 +37,6 @@ class AttributeService extends BaseService implements AttributeServiceInterface
         ];
         $paginationConfig = [
             'path' => 'attribute.index',
-            'groupBy' => $this->paginateSelect()
         ];
         $orderBy = ['attributes.id', 'DESC'];
         $rawQuery = $this->whereRaw($request);
@@ -48,6 +47,7 @@ class AttributeService extends BaseService implements AttributeServiceInterface
             $paginationConfig,
             $orderBy,
             [],
+            ['attribute_catalogue'],
             $rawQuery
         );
         return $attributes;
@@ -163,9 +163,11 @@ class AttributeService extends BaseService implements AttributeServiceInterface
             'attributes.image',
             'attributes.name',
             'attributes.description',
-            'attributes.canonical'
+            'attributes.canonical',
+            'attribute_catalogues.name as attribute_catalogue_name',
         ];
     }
+
 
     private function payload()
     {

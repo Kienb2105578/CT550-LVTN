@@ -40,6 +40,9 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
             if (isset($condition['publish']) && $condition['publish'] != 0) {
                 $query->where('publish', '=', $condition['publish']);
             }
+            if (isset($condition['user_catalogue_id']) && $condition['user_catalogue_id'] != 0) {
+                $query->where('user_catalogue_id', '=', $condition['user_catalogue_id']);
+            }
             return $query;
         })->with('user_catalogues');
         if (!empty($join)) {

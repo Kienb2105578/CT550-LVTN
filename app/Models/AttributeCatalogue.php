@@ -23,6 +23,11 @@ class AttributeCatalogue extends Model
 
     protected $table = 'attribute_catalogues';
 
+    public function attributes()
+    {
+        return $this->hasMany(Attribute::class, 'attribute_catalogue_id', 'id');
+    }
+
 
     public static function isNodeCheck($id = 0)
     {

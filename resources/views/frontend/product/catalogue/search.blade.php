@@ -10,7 +10,7 @@
                     <div class="product-list">
                         <div class="row g-3">
                             @foreach ($products as $product)
-                                @if ($product->publish == 2 && $product->total_quantity > 0)
+                                @if ($product && $product->publish == 2 && $product->total_quantity > 0)
                                     <div class="col-6 col-sm-4 col-md-3 col-lg-2-4 mb-3">
                                         @include('frontend.component.product-item', [
                                             'product' => $product,

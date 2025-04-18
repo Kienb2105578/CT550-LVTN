@@ -10,14 +10,13 @@
             </div>
         </div>
 
-        @if (isset($product_promotion))
+        @if (isset($product_promotion) && isset($promotion_new))
             <div class="panel-flash-sale">
                 <div class="container">
                     <div class="panel-head style-sale ">
                         <div class="heading-sale">
                             <span>Flash sale:</span>
-                            <span id="countdown" data-end-date="{{ $promotion_new->endDate }}"></span>
-
+                            <span id="countdown" data-end-date="{{ optional($promotion_new)->endDate }}"></span>
                             <script>
                                 document.addEventListener("DOMContentLoaded", function() {
                                     var countdownElement = document.getElementById("countdown");

@@ -68,9 +68,6 @@ return [
             'title' => 'Thêm mới Slide',
             'children' => 'Cập nhật Slide con cho mục '
         ],
-        'translate' => [
-            'title' => 'Tạo Bản Dịch {language} Cho',
-        ],
         'show' => [
             'title' => 'Danh sách Slide'
         ],
@@ -83,9 +80,6 @@ return [
         'create' => [
             'title' => 'Thêm mới Menu',
             'children' => 'Cập nhật menu con cho mục '
-        ],
-        'translate' => [
-            'title' => 'Tạo Bản Dịch {language} Cho',
         ],
         'show' => [
             'title' => 'Danh sách Menu'
@@ -131,29 +125,29 @@ return [
     ],
     'productCatalogue' => [
         'index' => [
-            'title' => 'Quản lý nhóm sản phẩm',
-            'table' => 'Danh sách nhóm sản phẩm'
+            'title' => 'Quản lý danh mục sản phẩm',
+            'table' => 'Danh sách danh mục sản phẩm'
         ],
         'create' => [
-            'title' => 'Thêm mới nhóm sản phẩm'
+            'title' => 'Thêm mới danh mục sản phẩm'
         ],
         'edit' => [
-            'title' => 'Cập nhật nhóm sản phẩm'
+            'title' => 'Cập nhật danh mục sản phẩm'
         ],
         'delete' => [
-            'title' => 'Xóa nhóm sản phẩm'
+            'title' => 'Xóa danh mục sản phẩm'
         ],
     ],
     'attributeCatalogue' => [
         'index' => [
-            'title' => 'Quản lý loại thuộc tính',
-            'table' => 'Danh sách loại thuộc tính'
+            'title' => 'Quản lý nhóm thuộc tính',
+            'table' => 'Danh sách nhóm thuộc tính'
         ],
         'create' => [
-            'title' => 'Thêm mới loại thuộc tính'
+            'title' => 'Thêm mới nhóm thuộc tính'
         ],
         'edit' => [
-            'title' => 'Cập nhật loại thuộc tính'
+            'title' => 'Cập nhật nhóm thuộc tính'
         ],
         'delete' => [
             'title' => 'Xóa loại thuộc tính'
@@ -197,17 +191,17 @@ return [
     ],
     'postCatalogue' => [
         'index' => [
-            'title' => 'Quản lý bài viết',
-            'table' => 'Danh sách nhóm bài viết'
+            'title' => 'Quản lý danh mục bài viết',
+            'table' => 'Danh sách danh mục bài viết'
         ],
         'create' => [
-            'title' => 'Thêm mới nhóm bài viết'
+            'title' => 'Thêm mới danh mục bài viết'
         ],
         'edit' => [
-            'title' => 'Cập nhật nhóm bài viết'
+            'title' => 'Cập nhật danh mục bài viết'
         ],
         'delete' => [
-            'title' => 'Xóa nhóm bài viết'
+            'title' => 'Xóa danh mục bài viết'
         ],
     ],
     'post' => [

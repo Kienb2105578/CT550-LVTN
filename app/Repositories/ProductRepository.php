@@ -139,7 +139,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             'product_catalogues.name as product_catalogue_name'
         ])
             ->join('product_catalogues', 'product_catalogues.id', '=', 'products.product_catalogue_id')
-            ->where('products.publish', '=', 2)
             ->whereNull('products.deleted_at')
             ->with([
                 'product_variants' => function ($query) {

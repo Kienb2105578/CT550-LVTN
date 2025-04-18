@@ -10,18 +10,20 @@ use App\Repositories\Interfaces\AttributeRepositoryInterface  as AttributeReposi
 use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface  as AttributeCatalogueRepository;
 use App\Http\Requests\Attribute\StoreAttributeRequest;
 use App\Http\Requests\Attribute\UpdateAttributeRequest;
-
+use App\Services\AttributeCatalogueService;
 
 class AttributeController extends Controller
 {
     protected $attributeService;
     protected $attributeRepository;
     protected $attributeCatalogueRepository;
+    protected $attributeCatalogueService;
 
     public function __construct(
         AttributeService $attributeService,
         AttributeRepository $attributeRepository,
         AttributeCatalogueRepository $attributeCatalogueRepository,
+        AttributeCatalogueService $attributeCatalogueService,
     ) {
         $this->middleware(function ($request, $next) {
             return $next($request);
@@ -29,6 +31,7 @@ class AttributeController extends Controller
         $this->attributeCatalogueRepository = $attributeCatalogueRepository;
         $this->attributeService = $attributeService;
         $this->attributeRepository = $attributeRepository;
+        $this->attributeCatalogueService = $attributeCatalogueService;
     }
 
     public function index(Request $request)
@@ -36,6 +39,8 @@ class AttributeController extends Controller
         $this->authorize('modules', 'attribute.index');
         $attributes = $this->attributeService->paginate($request);
         $attributes = $this->attributeRepository->addAttributeCatalogueNamesToAttributes($attributes);
+        $attributeCatalogues = $this->attributeCatalogueRepository->getAllAtt();
+        $dropdown  = $this->attributeCatalogueRepository->getAll();
         $config = [
             'js' => [
                 'backend/js/plugins/switchery/switchery.js',
@@ -54,7 +59,8 @@ class AttributeController extends Controller
             'template',
             'config',
             'dropdown',
-            'attributes'
+            'attributes',
+            'attributeCatalogues'
         ));
     }
 

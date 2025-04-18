@@ -52,17 +52,17 @@ return [
             'name' => ['product', 'attribute'],
             'subModule' => [
                 [
-                    'title' => 'QL Nhóm Sản Phẩm',
+                    'title' => 'Danh Mục Sản Phẩm',
                     'route' => 'product/catalogue/index'
                 ],
                 [
                     'title' => 'QL Sản Phẩm',
                     'route' => 'product/index'
                 ],
-                [
-                    'title' => 'QL Loại Thuộc Tính',
-                    'route' => 'attribute/catalogue/index'
-                ],
+                // [
+                //     'title' => 'QL Loại Thuộc Tính',
+                //     'route' => 'attribute/catalogue/index'
+                // ],
                 [
                     'title' => 'QL Thuộc Tính',
                     'route' => 'attribute/index'
@@ -92,7 +92,7 @@ return [
             'name' => ['post'],
             'subModule' => [
                 [
-                    'title' => 'QL Nhóm Bài Viết',
+                    'title' => 'Danh Mục Bài Viết',
                     'route' => 'post/catalogue/index'
                 ],
                 [

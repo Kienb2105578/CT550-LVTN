@@ -6,7 +6,6 @@
     var _token = $('meta[name="csrf-token"]').attr("content");
 
     HT.swiperOption = (setting) => {
-        // console.log(setting);
         let option = {};
         if (setting.animation.length) {
             option.effect = setting.animation;

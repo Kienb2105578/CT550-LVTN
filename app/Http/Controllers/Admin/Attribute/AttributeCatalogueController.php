@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\Attribute;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use App\Services\Interfaces\AttributeServiceInterface  as AttributeService;
 use App\Services\Interfaces\AttributeCatalogueServiceInterface  as AttributeCatalogueService;
 use App\Repositories\Interfaces\AttributeCatalogueRepositoryInterface  as AttributeCatalogueRepository;
 use App\Http\Requests\Attribute\StoreAttributeCatalogueRequest;
@@ -67,12 +67,18 @@ class AttributeCatalogueController extends Controller
         ));
     }
 
+    /**
+     * Summary of store
+     * @param \App\Http\Requests\Attribute\StoreAttributeCatalogueRequest $request
+     * attribute.catalogue.index
+     */
+
     public function store(StoreAttributeCatalogueRequest $request)
     {
         if ($this->attributeCatalogueService->create($request)) {
-            return redirect()->route('attribute.catalogue.index')->with('success', 'Thêm mới bản ghi thành công');
+            return redirect()->route('attribute.index')->with('success', 'Thêm mới bản ghi thành công');
         }
-        return redirect()->route('attribute.catalogue.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('attribute.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
 
     public function edit($id, Request $request)
@@ -96,9 +102,9 @@ class AttributeCatalogueController extends Controller
     {
         $queryUrl = base64_decode($request->getQueryString());
         if ($this->attributeCatalogueService->update($id, $request)) {
-            return redirect()->route('attribute.catalogue.index', $queryUrl)->with('success', 'Cập nhật bản ghi thành công');
+            return redirect()->route('attribute.index', $queryUrl)->with('success', 'Cập nhật bản ghi thành công');
         }
-        return redirect()->route('attribute.catalogue.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('attribute.index')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
     }
 
     public function delete($id)
@@ -117,9 +123,9 @@ class AttributeCatalogueController extends Controller
     public function destroy($id)
     {
         if ($this->attributeCatalogueService->destroy($id)) {
-            return redirect()->route('attribute.catalogue.index')->with('success', 'Xóa bản ghi thành công');
+            return redirect()->route('attribute.index')->with('success', 'Xóa bản ghi thành công');
         }
-        return redirect()->route('attribute.catalogue.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('attribute.index')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
     }
 
     private function configData()

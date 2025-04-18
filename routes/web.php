@@ -121,6 +121,10 @@ Route::group(['middleware' => 'license'], function () {
          Route::get('stock-taking/index', [StockController::class, 'stockTaking'])->name('stock.stock-taking.index');
          Route::get('create', [StockController::class, 'createStockTaking'])->name('stock.stock-taking.create');
          Route::post('store', [StockController::class, 'storecreateStockTaking'])->name('stock.stock-taking.store');
+         Route::get('list', [StockController::class, 'listStockTaking'])->name('stock.stock-taking.list');
+         Route::get('{id}/edit', [StockController::class, 'editStockTaking'])->where(['id' => '[0-9]+'])->name('stock.stock-taking.edit');
+         Route::post('{id}/update', [StockController::class, 'updateStockTaking'])->where(['id' => '[0-9]+'])->name('stock.stock-taking.update');
+         Route::delete('{id}/destroy', [StockController::class, 'destroyStockTaking'])->where(['id' => '[0-9]+'])->name('stock.stock-taking.destroy');
          Route::get('inventory/index', [StockController::class, 'inventory'])->name('stock.inventory.index');
          Route::get('report/exportFile', [StockController::class, 'exportFile'])->name('stock.report.exportFile');
       });

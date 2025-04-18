@@ -169,7 +169,7 @@
                             <i class="fa fa-bar-chart-o fa-5x"></i>
                         </div>
                         <div class="col-xs-8 text-right report-da">
-                            <h4 class="font-bold">Xem báo cáo theo thời gian</h4>
+                            <h4 class="font-bold">Xem báo cáo doanh thu</h4>
                         </div>
                     </div>
                 </div>

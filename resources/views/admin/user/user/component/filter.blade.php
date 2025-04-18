@@ -25,17 +25,25 @@
                                 {{ $val }}</option>
                         @endforeach
                     </select>
+                    @php
+                        $user_catalogue_id = request('user_catalogue_id') ?: old('user_catalogue_id');
+                    @endphp
                     <select name="user_catalogue_id" class="form-control mr10 setupSelect2">
-                        <option value="0" selected="selected">Chọn nhóm nhân viên</option>
-                        <option value="1">Quản trị viên</option>
+                        <option value="0" {{ $user_catalogue_id == 0 ? 'selected' : '' }}>Chọn nhóm nhân viên
+                        </option>
+                        @foreach ($userCatalogues as $key => $value)
+                            <option value="{{ $key }}" {{ $user_catalogue_id == $key ? 'selected' : '' }}>
+                                {{ $value }}
+                            </option>
+                        @endforeach
                     </select>
+
                     <div class="uk-search uk-flex uk-flex-middle mr10">
                         <div class="input-group">
                             <input type="text" name="keyword" value="{{ request('keyword') ?: old('keyword') }}"
                                 placeholder="Nhập từ khóa ..." class="form-control">
                             <span class="input-group-btn">
-                                <button type="submit" name="search" value="search" class="btn btn-primary mb0 btn-sm"
-                                    style="height: 40px">Tìm Kiếm
+                                <button type="submit" class="btn btn-primary mb0 btn-sm" style="height: 40px">Tìm Kiếm
                                 </button>
                             </span>
                         </div>

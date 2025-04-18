@@ -22,7 +22,38 @@ class AttributeRepository extends BaseRepository implements AttributeRepositoryI
         $this->model = $model;
     }
 
+    public function pagination(
+        array $column = ['*'],
+        array $condition = [],
+        int $perPage = 1,
+        array $extend = [],
+        array $orderBy = ['id', 'DESC'],
+        array $join = [],
+        array $relations = [],
+        array $rawQuery = [],
+    ) {
+        // Sử dụng join để kết nối với bảng attribute_catalogues
+        $query = $this->model->select($column)
+            ->leftJoin('attribute_catalogues', 'attributes.attribute_catalogue_id', '=', 'attribute_catalogues.id');
 
+        // Đảm bảo eager load quan hệ nếu cần
+        if (!empty($relations)) {
+            $query = $query->with($relations);
+        }
+
+        return $query
+            ->keyword($condition['keyword'] ?? null)
+            ->publish($condition['publish'] ?? null)
+            ->relationCount($relations ?? null)
+            ->CustomWhere($condition['where'] ?? null)
+            ->customWhereRaw($rawQuery['whereRaw'] ?? null)
+            ->customJoin($join ?? null)
+            ->customGroupBy($extend['groupBy'] ?? null)
+            ->customOrderBy($orderBy ?? null)
+            ->paginate($perPage)
+            ->withQueryString()
+            ->withPath(env('APP_URL') . $extend['path']);
+    }
 
     public function getAttributeById(int $id = 0)
     {

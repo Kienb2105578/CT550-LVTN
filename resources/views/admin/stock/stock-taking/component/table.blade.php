@@ -21,7 +21,7 @@
                         <td class="text-center">
                             <input type="checkbox" value="{{ $stock->id }}" class="input-checkbox checkBoxItem">
                         </td>
-                        <td class="text-center">{{ $stock->purchaseOrder->code }}</td>
+                        <td class="text-center">{{ $stock->purchaseOrder->code ?? '' }}</td>
                         <td class="text-truncate-2">
                             {{ $stock->product_name }}
                             @if ($stock->variant)

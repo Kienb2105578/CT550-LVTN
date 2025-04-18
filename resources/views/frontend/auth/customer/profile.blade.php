@@ -7,7 +7,7 @@
             </div>
 
             <div class="col-12 col-md-8 col-lg-9 mx-auto">
-                @include('backend/dashboard/component/formError')
+                @include('admin.dashboard.component.formError')
                 <form action="{{ route('customer.profile.update') }}" method="post" class="px-5"
                     enctype="multipart/form-data">
                     @csrf

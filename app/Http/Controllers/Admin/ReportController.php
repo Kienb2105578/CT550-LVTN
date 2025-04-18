@@ -33,12 +33,14 @@ class ReportController extends Controller
         $orderStatistic = $this->orderService->statistic();
         $customerStatistic = $this->customerService->statistic();
         $reports = [];
+        $charts = [];
         if ($request->input('startDate')) {
             $startDate = $request->input('startDate');
             $endDate = $request->input('endDate');
             $startDate = date("Y-m-d H:i:s", strtotime(str_replace('/', '-', $startDate)));
             $endDate = date("Y-m-d H:i:s", strtotime(str_replace('/', '-', $endDate)));
             $reports = $this->orderRepository->getReportTime($startDate, $endDate);
+            $charts = $this->orderRepository->getReportTimeIncom($startDate, $endDate);
         }
 
         $config = $this->config();
@@ -49,7 +51,8 @@ class ReportController extends Controller
             'orderStatistic',
             'customerStatistic',
             'user',
-            'reports'
+            'reports',
+            'charts',
         ));
     }
 

@@ -45,13 +45,10 @@ class StockMovementService extends BaseService implements StockMovementServiceIn
                 $condition['dropdown'][$key] = $request->string($key);
             }
         }
-
-        // Các tham số phân trang và sắp xếp
         $perPage = $request->integer('perpage', 20);
         $sortBy = $request->input('sort_by', 'created_at');
         $sortOrder = $request->input('sort_order', 'desc');
 
-        // Các điều kiện truyền vào cho câu truy vấn
         $queryConditions = [
             ['stock_movements.*', 'products.name as product_name'],
             $condition,

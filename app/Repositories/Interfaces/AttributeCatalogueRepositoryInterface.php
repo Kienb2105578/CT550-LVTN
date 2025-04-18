@@ -9,5 +9,6 @@ namespace App\Repositories\Interfaces;
 interface AttributeCatalogueRepositoryInterface
 {
     public function getAll();
+    public function getAllAtt();
     public function getAttributeCatalogueById(int $id = 0);
 }

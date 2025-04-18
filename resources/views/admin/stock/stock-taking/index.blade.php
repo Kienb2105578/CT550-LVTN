@@ -2,7 +2,7 @@
 <div class="row mt20">
     <div class="col-lg-12">
         <a href="{{ route('stock.stock-taking.create') }}" class="btn btn-danger"></i>Thực hiện kiểm kê kho</a>
-        <a href="{{ route('stock.stock-taking.create') }}" class="btn btn-warning mr10"></i>Danh sách kiểm kê kho</a>
+        <a href="{{ route('stock.stock-taking.list') }}" class="btn btn-warning mr10"></i>Danh sách kiểm kê kho</a>
     </div>
 </div>
 <div class="row mt20">

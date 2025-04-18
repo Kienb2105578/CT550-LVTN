@@ -30,8 +30,7 @@
                             <input type="text" name="keyword" value="{{ request('keyword') ?: old('keyword') }}"
                                 placeholder="Nhập từ khóa ..." class="form-control">
                             <span class="input-group-btn">
-                                <button type="submit" name="search" value="search" class="btn btn-primary mb0 btn-sm"
-                                    style="height: 40px">Tìm Kiếm
+                                <button type="submit" class="btn btn-primary mb0 btn-sm" style="height: 40px">Tìm Kiếm
                                 </button>
                             </span>
                         </div>

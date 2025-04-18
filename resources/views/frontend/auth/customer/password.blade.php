@@ -7,7 +7,7 @@
             </div>
 
             <div class="col-12 col-md-8 col-lg-9 mx-auto">
-                @include('backend/dashboard/component/formError')
+                @include('admin.dashboard.component.formError')
                 <form action="{{ route('customer.password.recovery') }}" method="post" class="px-5">
                     @csrf
                     <h4 class="text-center mb-3 mt-3 profile-title">Thay đổi mật khẩu</h4>

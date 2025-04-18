@@ -3,7 +3,7 @@
         @include('admin.dashboard.component.statistic')
         <div class="row mb15 mt30">
             <div class="col-lg-6">
-                <div class="panel-title">Báo cáo doanh thu theo thời gian</div>
+                <div class="panel-title">Báo cáo doanh thu</div>
                 <h4 class="heading-1"><span>Chọn khoảng thời gian:</span></h4>
                 <div class="ibox">
                     <div class="ibox-content">
@@ -53,6 +53,18 @@
                 </div>
             </div>
         </div>
+        <div class="row mb15">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>Lợi nhuận theo ngày</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div id="morris-line-chart" style="height: 250px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row" style= "background: white; padding: 10px;">
             <div class="col-12 text-end" style="float: right; margin-right: 20px;">
                 <a href="{{ route('report.exportFileTime', [
@@ -66,6 +78,8 @@
         </div>
         <script src="backend/js/plugins/d3/d3.min.js"></script>
         <script src="backend/js/plugins/c3/c3.min.js"></script>
+        <script src="backend/js/plugins/morris/raphael-2.1.0.min.js"></script>
+        <script src="backend/js/plugins/morris/morris.js"></script>
         <script src="{{ asset('backend/js/plugins/icheck/icheck.min.js') }}"></script>
         <script src="backend/js/plugins/jvectormap/jquery-jvectormap-2.0.2.min.js"></script>
         <script src="backend/js/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
@@ -113,6 +127,19 @@
                 } else {
                     console.error("C3.js chưa được tải!");
                 }
+            });
+            var chartData = @json($charts);
+
+            Morris.Line({
+                element: 'morris-line-chart',
+                data: chartData,
+                xkey: 'order_date',
+                ykeys: ['sum_profit'],
+                labels: ['Profit'],
+                lineColors: ['#1ab394'],
+                resize: true,
+                lineWidth: 4,
+                pointSize: 5,
             });
         </script>
         <div class="row">
@@ -162,6 +189,31 @@
                 </table>
             </div>
         </div>
-        {{-- {{  $users->links('pagination::bootstrap-4') }} --}}
     </div>
 </form>
+<style>
+    .morris-hover {
+        z-index: 10000;
+        position: absolute;
+        background-color: #fff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .morris-default-style {
+        margin: 0 auto;
+        padding: 10px;
+    }
+
+    .morris-tooltip {
+        position: relative;
+        z-index: 10001;
+        background-color: #fff;
+        padding: 5px;
+        border-radius: 3px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .nosbij {
+        margin-left: 20px;
+    }
+</style>

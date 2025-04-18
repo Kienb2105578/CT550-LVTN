@@ -120,9 +120,6 @@ class PostService extends BaseService implements PostServiceInterface
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }

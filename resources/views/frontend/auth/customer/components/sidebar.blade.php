@@ -31,15 +31,21 @@
         let menuItems = document.querySelectorAll(".list-group-item");
 
         menuItems.forEach(item => {
-            let menuUrl = new URL(item.href).pathname;
-            if (
-                currentUrl.startsWith(menuUrl) ||
-                (menuUrl === "/don-hang-cua-toi" && currentUrl.startsWith("/don-hang-cua-toi/")) ||
-                (menuUrl === "/my-order" && currentUrl.startsWith("/my-order/"))
-            ) {
-                item.classList.add("active");
-            } else {
-                item.classList.remove("active");
+            if (!item.href) return; // Bỏ qua nếu không có href
+
+            try {
+                let menuUrl = new URL(item.href).pathname;
+                if (
+                    currentUrl.startsWith(menuUrl) ||
+                    (menuUrl === "/don-hang-cua-toi" && currentUrl.startsWith("/don-hang-cua-toi/")) ||
+                    (menuUrl === "/my-order" && currentUrl.startsWith("/my-order/"))
+                ) {
+                    item.classList.add("active");
+                } else {
+                    item.classList.remove("active");
+                }
+            } catch (error) {
+                console.warn("Không thể xử lý URL:", item.href, error);
             }
         });
     });

@@ -653,10 +653,55 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
             ->join('order_product', 'order_product.order_id', '=', 'orders.id')
             ->whereDate('created_at', '>=', $startDate)
             ->whereDate('created_at', '<=', $endDate)
-            ->where('orders.payment', '=', 'paid')
+            ->where('orders.delivery', 'success')
             ->groupBy('order_date')
             ->get()->toArray();
     }
+
+    public function getReportTimeIncom($startDate, $endDate)
+    {
+        // Lấy dữ liệu đơn hàng theo ngày
+        $orders = $this->model->select(
+            DB::raw("DATE(orders.created_at) as order_date"),
+            DB::raw("SUM(order_product.price * order_product.qty) as sum_revenue"), // Doanh thu
+            DB::raw("SUM(inventory_batches.price * order_product.qty) as sum_cost"), // Giá vốn
+            DB::raw("SUM(order_product.price * order_product.qty) - SUM(inventory_batches.price * order_product.qty) as sum_profit") // Lợi nhuận
+        )
+            ->join('order_product', 'order_product.order_id', '=', 'orders.id')
+            ->leftJoin('inventory_batches', 'inventory_batches.id', '=', 'order_product.batch_id')
+            ->where('orders.delivery', 'success')
+            ->whereDate('orders.created_at', '>=', $startDate)
+            ->whereDate('orders.created_at', '<=', $endDate)
+            ->groupBy(DB::raw("DATE(orders.created_at)"))
+            ->get()
+            ->keyBy('order_date'); // Để dễ tra cứu theo ngày
+
+        // Tạo danh sách ngày từ startDate đến endDate
+        $dates = collect();
+        $current = strtotime($startDate);
+        $end = strtotime($endDate);
+
+        while ($current <= $end) {
+            $dates->push(date('Y-m-d', $current));
+            $current = strtotime('+1 day', $current);
+        }
+
+        // Gộp dữ liệu và tính lợi nhuận, lọc bỏ những ngày có sum_profit = 0 hoặc null
+        $result = $dates->map(function ($date) use ($orders) {
+            $data = $orders->get($date);
+            return [
+                'order_date' => $date,
+                'sum_profit' => $data->sum_profit ?? 0, // Lợi nhuận
+                'sum_revenue' => $data->sum_revenue ?? 0, // Doanh thu
+                'sum_cost' => $data->sum_cost ?? 0, // Giá vốn
+            ];
+        })->filter(function ($item) {
+            return $item['sum_profit'] > 0;
+        });
+
+        return $result->values()->toArray();
+    }
+
 
 
     public function getTopSellingProducts()

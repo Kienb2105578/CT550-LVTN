@@ -17,15 +17,15 @@ class System
                 'logo' => ['type' => 'images', 'label' => 'Logo Website', 'title' => 'Click vào ô phía dưới để tải logo'],
                 'favicon' => ['type' => 'images', 'label' => 'Favicon', 'title' => 'Click vào ô phía dưới để tải logo'],
                 'copyright' => ['type' => 'text', 'label' => 'Copyright'],
-                'website' => [
-                    'type' => 'select',
-                    'label' => 'Tình trạng website',
-                    'option' => [
-                        'open' => 'Mở cửa website',
-                        'close' => 'Website đang bảo trì'
-                    ]
-                ],
-                'short_intro' => ['type' => 'editor', 'label' => 'Giới thiệu ngắn'],
+                // 'website' => [
+                //     'type' => 'select',
+                //     'label' => 'Tình trạng website',
+                //     'option' => [
+                //         'open' => 'Mở cửa website',
+                //         'close' => 'Website đang bảo trì'
+                //     ]
+                // ],
+                // 'short_intro' => ['type' => 'editor', 'label' => 'Giới thiệu ngắn'],
             ]
         ];
 
@@ -36,10 +36,10 @@ class System
                 'office' => ['type' => 'text', 'label' => 'Địa chỉ công ty'],
                 'address' => ['type' => 'text', 'label' => 'Văn phòng giao dịch'],
                 'hotline' => ['type' => 'text', 'label' => 'Hotline'],
-                'technical_phone' => ['type' => 'text', 'label' => 'Hotline kỹ thuật'],
-                'sell_phone' => ['type' => 'text', 'label' => 'Hotline kinh doanh'],
-                'phone' => ['type' => 'text', 'label' => 'Số cố định'],
-                'fax' => ['type' => 'text', 'label' => 'Fax'],
+                // 'technical_phone' => ['type' => 'text', 'label' => 'Hotline kỹ thuật'],
+                // 'sell_phone' => ['type' => 'text', 'label' => 'Hotline kinh doanh'],
+                // 'phone' => ['type' => 'text', 'label' => 'Số cố định'],
+                // 'fax' => ['type' => 'text', 'label' => 'Fax'],
                 'email' => ['type' => 'text', 'label' => 'Email'],
                 'website' => ['type' => 'text', 'label' => 'Website'],
                 'map' => [

@@ -52,9 +52,9 @@
                             <a href="{{ route('slide.edit', $slide->id) }}" class="btn btn-info btn-outline"><i
                                     class="fa fa-edit"></i></a>
                             <!-- Nút Xóa mở Modal -->
-                            <button type="button" class="btn btn-danger btn-outline" data-toggle="modal"
+                            {{-- <button type="button" class="btn btn-danger btn-outline" data-toggle="modal"
                                 data-target="#deleteSlideModal-{{ $slide->id }}"><i
-                                    class="fa fa-trash"></i></button>
+                                    class="fa fa-trash"></i></button> --}}
                         </td>
                     </tr>
 

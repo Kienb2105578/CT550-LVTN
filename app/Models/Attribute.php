@@ -25,6 +25,11 @@ class Attribute extends Model
     protected $table = 'attributes';
 
 
+    public function attribute_catalogue()
+    {
+        return $this->belongsTo(AttributeCatalogue::class, 'attribute_catalogue_id', 'id');
+    }
+
     public function product_variants()
     {
         return  $this->belongsToMany(ProductVariant::class, 'product_variant_attribute', 'attribute_id', 'attribute_id')

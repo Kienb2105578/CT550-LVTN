@@ -11,6 +11,7 @@ use App\Services\Interfaces\StockTakingServiceInterface  as StockTakingService;
 use App\Repositories\Interfaces\InventoryBatchRepositoryInterface  as InventoryBatchRepository;
 use App\Repositories\Interfaces\ProductRepositoryInterface  as ProductRepository;
 use App\Http\Requests\Stock\StoreStockTakingRequest;
+use App\Http\Requests\Stock\UpdateStockTakingRequest;
 use Illuminate\Support\Facades\Log;
 
 use Barryvdh\DomPDF\Facade\Pdf as PDF;
@@ -78,6 +79,12 @@ class StockController extends Controller
         ));
     }
 
+
+    /**
+     * 
+     * DANH SÁCH CÁC BIẾN ĐỘNG TRONG KHO
+     * 
+     */
     public function stockTaking(Request $request)
     {
         $this->authorize('modules', 'stock.stock-taking.index');
@@ -119,10 +126,55 @@ class StockController extends Controller
     public function storecreateStockTaking(StoreStockTakingRequest $request)
     {
         if ($this->stockTakingService->create($request)) {
-            return redirect()->route('stock.stock-taking.index')->with('success', 'Thêm mới bản ghi thành công');
+            return redirect()->route('stock.stock-taking.list')->with('success', 'Thêm mới bản ghi thành công');
         }
-        return redirect()->route('stock.stock-taking.index')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
+        return redirect()->route('stock.stock-taking.list')->with('error', 'Thêm mới bản ghi không thành công. Hãy thử lại');
     }
+
+    /**
+     * Summary of listStockTaking
+     * DANH SÁCH CÁC PHIẾU KIỂM KÊ KHO
+     * 
+     */
+    public function listStockTaking(Request $request)
+    {
+        $this->authorize('modules', 'stock.stock-taking.list');
+        $stocks = $this->stockTakingService->paginate($request);
+        $config = [
+            'js' => [
+                'backend/js/plugins/switchery/switchery.js',
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js'
+            ],
+            'css' => [
+                'backend/css/plugins/switchery/switchery.css',
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+            ]
+        ];
+        $config['seo'] = __('messages.stock');
+        $template = 'admin.stock.stock-taking.list';
+
+        return view('admin.dashboard.layout', compact(
+            'template',
+            'config',
+            'stocks'
+        ));
+    }
+    public function destroyStockTaking($id)
+    {
+        if ($this->stockTakingService->destroy($id)) {
+            return redirect()->route('stock.stock-taking.list')->with('success', 'Xóa bản ghi thành công');
+        }
+        return redirect()->route('stock.stock-taking.list')->with('error', 'Xóa bản ghi không thành công. Hãy thử lại');
+    }
+
+    public function updateStockTaking($id, UpdateStockTakingRequest $request)
+    {
+        if ($this->stockTakingService->update($id, $request)) {
+            return redirect()->route('stock.stock-taking.list')->with('success', 'Cập nhật bản ghi thành công');
+        }
+        return redirect()->route('stock.stock-taking.list')->with('error', 'Cập nhật bản ghi không thành công. Hãy thử lại');
+    }
+
 
     public function inventory(Request $request)
     {

@@ -38,6 +38,11 @@ class AttributeCatalogueRepository extends BaseRepository implements AttributeCa
     {
         return $this->model->get();
     }
+    public function getAllAtt()
+    {
+        return $this->model->orderBy('created_at', 'DESC')->get();
+    }
+
     public function getAttributeCatalogueWhereIn($whereIn, $whereInField = 'id')
     {
         return $this->model->select([

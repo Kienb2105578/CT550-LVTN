@@ -8,19 +8,23 @@
         <thead class="thead-light">
             <tr>
                 <th style="width:50px;">
-                    <input type="checkbox" value="" id="checkAll" class="input-checkbox">
+                    STT
                 </th>
                 <th>Tên thuộc tính</th>
-                <th class="text-center" style="width:12%">{{ __('messages.tableAction') }}</th>
+                <th class="text-center">{{ __('messages.tableAction') }}</th>
             </tr>
         </thead>
+        @php
+            $index = 0;
+        @endphp
         <tbody>
             @if (isset($attributes) && is_object($attributes))
                 @foreach ($attributes as $attribute)
+                    @php
+                        $index += 1;
+                    @endphp
                     <tr id="{{ $attribute->id }}">
-                        <td>
-                            <input type="checkbox" value="{{ $attribute->id }}" class="input-checkbox checkBoxItem">
-                        </td>
+                        <td>{{ $index }}</td>
                         <td>
                             <div class="d-flex align-items-center">
                                 <div class="main-info">
@@ -29,10 +33,9 @@
                                     </div>
                                     <div class="catalogue">
                                         <span class="text-danger">{{ __('messages.tableGroup') }} </span>
-                                        @foreach ($attribute->array_attribute_catalogue_name as $val)
-                                            <a href="{{ route('attribute.index', ['attribute_catalogue_id' => $val['id']]) }}"
-                                                class="catalogue-link">{{ $val['name'] }}</a>
-                                        @endforeach
+                                        <span class="catalogue-link">
+                                            {{ $attribute->attribute_catalogue_name ?? '' }}
+                                        </span>
                                     </div>
                                 </div>
                             </div>

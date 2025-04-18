@@ -6,22 +6,22 @@
     <table class="table">
         <thead>
             <tr>
-                <th style="width:50px;">
-                    <input type="checkbox" value="" id="checkAll" class="input-checkbox">
-                </th>
+                <th style="width:50px;">STT</th>
                 <th>{{ __('messages.tableName') }}</th>
                 <th class="text-center" style="width:200px;">{{ __('messages.tableAction') }} </th>
             </tr>
         </thead>
+        @php
+            $index = 0;
+        @endphp
         <tbody>
             @if (isset($attributeCatalogues) && is_object($attributeCatalogues))
                 @foreach ($attributeCatalogues as $attributeCatalogue)
                     <tr>
-                        <td>
-                            <input type="checkbox" value="{{ $attributeCatalogue->id }}"
-                                class="input-checkbox checkBoxItem">
-                        </td>
-
+                        @php
+                            $index += 1;
+                        @endphp
+                        <td>{{ $index }}</td>
                         <td>
                             {{ str_repeat('|----', $attributeCatalogue->level > 0 ? $attributeCatalogue->level - 1 : 0) . $attributeCatalogue->name }}
                         </td>
@@ -83,6 +83,6 @@
         </tbody>
     </table>
 </div>
-<div class="pagination-wrapper">
+{{-- <div class="pagination-wrapper">
     {{ $attributeCatalogues->links('pagination::bootstrap-4') }}
-</div>
+</div> --}}

@@ -36,7 +36,7 @@ class UserController extends Controller
     {
         $this->authorize('modules', 'user.index');
         $users = $this->userService->paginate($request);
-
+        $userCatalogues = $this->userCatalogueRepository->getActiveUserCatalogueList();
         $config = [
             'js' => [
                 'backend/js/plugins/switchery/switchery.js',
@@ -53,7 +53,8 @@ class UserController extends Controller
         return view('admin.dashboard.layout', compact(
             'template',
             'config',
-            'users'
+            'users',
+            'userCatalogues',
         ));
     }
 

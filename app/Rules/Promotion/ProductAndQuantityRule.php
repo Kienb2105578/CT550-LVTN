@@ -32,8 +32,8 @@ class ProductAndQuantityRule implements ValidationRule
             $fail('Bạn phải nhập vào giá trị của chiết khấu');
         }
 
-        if (!isset($this->data['object'])) {
-            $fail('Bạn chưa chọn đối tượng áp dụng chiết khấu');
-        }
+        // if (!isset($this->data['object'])) {
+        //     $fail('Bạn chưa chọn đối tượng áp dụng chiết khấu');
+        // }
     }
 }
