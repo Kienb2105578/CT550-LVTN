@@ -217,9 +217,6 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             'post_catalogues.order',
             'post_catalogues.name',
             'post_catalogues.canonical',
-            'post_catalogues.meta_title',
-            'post_catalogues.meta_keyword',
-            'post_catalogues.meta_description',
             'post_catalogues.description',
             'post_catalogues.content',
         ];
@@ -232,12 +229,8 @@ class PostCatalogueService extends BaseService implements PostCatalogueServiceIn
             'follow',
             'publish',
             'image',
-            'album',
             'name',
             'canonical',
-            'meta_title',
-            'meta_keyword',
-            'meta_description',
             'description',
             'content',
         ];

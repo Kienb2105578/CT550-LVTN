@@ -37,9 +37,6 @@ class PostCatalogueRepository extends BaseRepository implements PostCatalogueRep
                 'post_catalogues.name',
                 'post_catalogues.description',
                 'post_catalogues.content',
-                'post_catalogues.meta_title',
-                'post_catalogues.meta_keyword',
-                'post_catalogues.meta_description',
                 'post_catalogues.canonical',
             ]
         )

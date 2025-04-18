@@ -23,9 +23,6 @@ class PostCatalogue extends Model
         'user_id',
         'name',
         'canonical',
-        'meta_title',
-        'meta_keyword',
-        'meta_description',
         'description',
         'content',
     ];

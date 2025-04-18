@@ -14,4 +14,5 @@ interface OrderRepositoryInterface
     public function getCustomerReportTime($startDate, $endDate);
     public function getReportTime($startDate, $endDate);
     public function getProductReportTime($startDate, $endDate);
+    public function getReportTimeIncom($startDate, $endDate);
 }
