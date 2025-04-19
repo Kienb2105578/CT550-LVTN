@@ -26,11 +26,10 @@
                         <td>{{ $user->phone }}</td>
                         <td>{{ $user->address }}</td>
                         <td class="text-center">{{ $user->user_catalogues->name }}</td>
-                        <td class="text-center">
-                            <input type="checkbox" value="{{ $user->publish }}"
-                                class="js-switch status js-switch-{{ $user->id }}" data-field="publish"
-                                data-model="{{ $config['model'] }}" {{ $user->publish == 2 ? 'checked' : '' }}
-                                data-modelId="{{ $user->id }}" />
+                        <td class="text-center js-switch-{{ $user->id }}">
+                            <input type="checkbox" value="{{ $user->publish }}" class="js-switch status"
+                                data-field="publish" data-model="{{ $config['model'] }}"
+                                {{ $user->publish == 2 ? 'checked' : '' }} data-modelId="{{ $user->id }}" />
                         </td>
                         <td class="text-center">
                             <a href="{{ route('user.edit', $user->id) }}" class="btn btn-info btn-outline"><i

@@ -17,7 +17,7 @@
         <tbody>
             @if (isset($productCatalogues) && is_object($productCatalogues))
                 @foreach ($productCatalogues as $productCatalogue)
-                    <tr>
+                    <tr id="{{ $productCatalogue->id }}">
                         <td>
                             <input type="checkbox" value="{{ $productCatalogue->id }}"
                                 class="input-checkbox checkBoxItem">
@@ -26,10 +26,9 @@
                         <td>
                             {{ str_repeat('|----', $productCatalogue->level > 0 ? $productCatalogue->level - 1 : 0) . $productCatalogue->name }}
                         </td>
-                        <td class="text-center">
-                            <input type="checkbox" value="{{ $productCatalogue->publish }}"
-                                class="js-switch status js-switch-{{ $productCatalogue->id }}" data-field="publish"
-                                data-model="{{ $config['model'] }}"
+                        <td class="text-center  js-switch-{{ $productCatalogue->id }} ">
+                            <input type="checkbox" value="{{ $productCatalogue->publish }}" class="js-switch status"
+                                data-field="publish" data-model="{{ $config['model'] }}"
                                 {{ $productCatalogue->publish == 2 ? 'checked' : '' }}
                                 data-modelId="{{ $productCatalogue->id }}" />
                         </td>
@@ -62,7 +61,8 @@
                                     </div>
                                     <div class="modal-body">
                                         <p>Bạn có chắc chắn muốn xóa danh mục sản phẩm
-                                            <strong>{{ $productCatalogue->name }}</strong> không?</p>
+                                            <strong>{{ $productCatalogue->name }}</strong> không?
+                                        </p>
                                         <p><span class="text-danger">Lưu ý:</span> Thao tác này không thể hoàn tác.</p>
                                         <div class="form-group">
                                             <label>Tên danh mục sản phẩm</label>

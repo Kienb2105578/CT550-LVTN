@@ -1,0 +1,178 @@
+.btn-main {
+    height: 33px;
+    background: #da2229;
+    text-transform: uppercase;
+    color: #fff;
+    font-weight: 600;
+    right: 5px;
+    top: 6px;
+    border: 12px;
+    padding: 0 20px;
+    border-radius: 5px;
+}
+.order-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.button.cancelOrderButton {
+    background: linear-gradient(to right, #cc0000, #ff3300);
+    color: white;
+    text-transform: uppercase;
+    border-radius: 5px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.mt-20 {
+    margin-bottom: 20px;
+}
+
+.button.cancelOrderButton:hover {
+    background: darkred;
+}
+
+.order-item {
+    display: flex;
+}
+
+.order-status .text-right {
+    text-align: right;
+}
+
+.order-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.order-item {
+    display: flex;
+}
+
+.label {
+    flex: 0 0 40%;
+    font-weight: bold;
+}
+
+.value {
+    flex: 1;
+}
+
+.order-item strong {
+    margin-right: 10px;
+}
+
+.profile-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.profile-section img {
+    border-radius: 50%;
+}
+
+.profile-section .username {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.profile-section .edit-profile {
+    font-size: 14px;
+    color: #888;
+}
+
+.nav-link {
+    color: #333;
+    font-size: 16px;
+}
+
+.nav-link.active {
+    color: #ee4d2d;
+}
+
+.order-section {
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.order-header .shop-name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#backround-padding {
+    background-color: rgb(246, 246, 246);
+    padding: 20px;
+}
+
+.order-header .btn {
+    font-size: 14px;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.order-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.order-item .item-details {
+    flex-grow: 1;
+    margin-left: 20px;
+}
+
+.order-item .item-details .item-name {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.order-item .item-details .item-category {
+    font-size: 14px;
+    color: #888;
+}
+
+.order-item .item-details .item-quantity {
+    font-size: 14px;
+    color: #888;
+}
+
+.order-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-footer .total-price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ee4d2d;
+}
+
+.order-footer .btn {
+    font-size: 14px;
+}

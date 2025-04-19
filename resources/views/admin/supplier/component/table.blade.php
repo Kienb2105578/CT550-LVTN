@@ -2,22 +2,24 @@
     <table class="table">
         <thead>
             <tr>
-                <th>
-                    <input type="checkbox" value="" id="checkAll" class="input-checkbox">
-                </th>
+                <th>STT</th>
                 <th>Tên nhà cung cấp</th>
                 <th>SĐT liên hệ</th>
                 <th>Địa chỉ</th>
                 <th class="text-center">Thao tác</th>
             </tr>
         </thead>
+        @php
+            $index = 0;
+        @endphp
         <tbody>
             @if (isset($suppliers) && is_object($suppliers))
                 @foreach ($suppliers as $supplier)
+                    @php
+                        $index += 1;
+                    @endphp
                     <tr>
-                        <td>
-                            <input type="checkbox" value="{{ $supplier->id }}" class="input-checkbox checkBoxItem">
-                        </td>
+                        <td>{{ $index }}</td>
                         <td>{{ $supplier->name }}</td>
                         <td>{{ $supplier->phone }}</td>
                         <td>

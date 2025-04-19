@@ -6,7 +6,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th class="text-center" style="width:4%;"><input type="checkbox" id="checkAll" class="input-checkbox"></th>
+                <th class="text-center" style="width:4%;">STT</th>
                 <th class="text-center" style="width:10%;">Mã đơn</th>
                 <th>Nhà cung cấp</th>
                 <th class="text-center" style="width:11%">Tổng tiền</th>
@@ -16,14 +16,19 @@
                 <th class="text-center" style="width:14%;">{{ __('messages.tableAction') }}</th>
             </tr>
         </thead>
+        @php
+            $index = 0;
+        @endphp
         <tbody>
             @if (isset($purchaseOrders) && $purchaseOrders->count())
                 @foreach ($purchaseOrders as $purchaseOrder)
+                    @php
+                        $index += 1;
+                    @endphp
                     <tr id="{{ $purchaseOrder->id }}">
-                        <td class="text-center"><input type="checkbox" value="{{ $purchaseOrder->id }}"
-                                class="input-checkbox checkBoxItem"></td>
-                        <td class="text-center">{{ $purchaseOrder->code }}</td> <!-- Mã đơn -->
-                        <td>{{ $purchaseOrder->supplier_name }}</td> <!-- Nhà cung cấp -->
+                        <td class="text-center">{{ $index }}</td>
+                        <td class="text-center">{{ $purchaseOrder->code }}</td>
+                        <td>{{ $purchaseOrder->supplier_name }}</td>
                         <td class="text-center" style="color: red;">
                             {{ number_format($purchaseOrder->total, 0, ',', '.') }} đ</td>
                         <td class="text-center">

@@ -19,5 +19,3 @@
 @foreach ($coreScript as $item)
     <script src="{{ asset($item) }}"></script>
 @endforeach
-
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>

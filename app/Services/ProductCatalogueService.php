@@ -85,9 +85,6 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }
@@ -114,9 +111,6 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }
@@ -161,8 +155,6 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
         $flag = $this->productCatalogueRepository->update($productCatalogue->id, $payload);
         return $flag;
     }
-
-
 
     public function setAttribute($product)
     {
@@ -251,12 +243,23 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            echo $e->getMessage();
-            die();
             return false;
         }
     }
 
+    public function updateStatusAll($post)
+    {
+        DB::beginTransaction();
+        try {
+            $payload[$post['field']] = $post['value'];
+            $flag = $this->productCatalogueRepository->updateByWhereIn('id', $post['id'], $payload);
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return false;
+        }
+    }
 
     private function changeUserStatus($post, $value)
     {
@@ -274,13 +277,9 @@ class ProductCatalogueService extends BaseService implements ProductCatalogueSer
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }
-
 
 
     private function paginateSelect()

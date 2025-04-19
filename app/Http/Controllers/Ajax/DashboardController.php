@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\OrderRepositoryInterface  as OrderRepository;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\Log;
 
 
 class DashboardController extends Controller
@@ -31,6 +31,7 @@ class DashboardController extends Controller
             $serviceInstance = app($serviceInterfaceNamespace);
         }
         $flag = $serviceInstance->updateStatus($post);
+        Log::info($flag);
 
         return response()->json(['flag' => $flag]);
     }

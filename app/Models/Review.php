@@ -16,6 +16,7 @@ class Review extends Model
         'email',
         'gender',
         'fullname',
+        'images',
         'phone',
         'description',
         'score',

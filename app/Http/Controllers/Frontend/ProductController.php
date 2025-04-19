@@ -47,8 +47,10 @@ class ProductController extends FrontendController
         $product = $this->productRepository->getProductById($id);
         $product = $this->productService->combineProductAndPromotion([$id], $product, true);
 
-        $userId = auth()->id();
+        $user = auth()->guard('customer')->user();
+        $userId = $user ? $user->id : null;
         $order_product = $this->orderRepository->checkUserHasOrderForProduct($userId, $id);
+
 
         $productCatalogue = $this->productCatalogueRepository->getProductCatalogueById($product->product_catalogue_id, $this->language);
         $productId = $productCatalogue->products->pluck('id')->toArray();

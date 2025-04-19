@@ -1,12 +1,11 @@
 @extends('frontend.homepage.layout')
 @section('content')
-    <div id="customer-container" class="customer-container container p-5">
+    <div id="customer-container" class="customer-container  p-5">
         <div class="row">
-            <div class="col-12 col-md-4 col-lg-3 mx-auto side-profile">
+            <div class="col-12 col-lg-3 mx-auto side-profile">
                 @include('frontend.auth.customer.components.sidebar')
             </div>
-            <div class="col-12 col-md-8 col-lg-9 mx-auto">
-                @include('admin.dashboard.component.formError')
+            <div class="col-12 col-lg-9 mx-auto">
                 <h4 class="text-center mb-3 mt-3 profile-title">Chi Tiết Đơn Hàng</h4>
                 <div class="order-section px-5">
                     <!-- Thông tin người mua -->
@@ -107,6 +106,7 @@
                             padding: 10px; margin-bottom: 10px;">
                         @foreach ($order->products as $key => $val)
                             @php
+
                                 $name = $val->pivot->name;
                                 $qty = $val->pivot->qty;
                                 $price = convert_price($val->pivot->price, true);
@@ -323,6 +323,151 @@
         .order-footer .btn {
             font-size: 14px;
         }
+
+        @media (max-width: 992px) {
+
+            body,
+            html {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+
+            .row {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            #sidebar-section {
+                order: -1;
+                width: 100%;
+                text-align: center;
+                padding: 10px 0;
+                background: #fff;
+            }
+
+            #sidebar-menu {
+                position: sticky;
+                top: 20px;
+                height: fit-content;
+            }
+
+            .list-group {
+                display: flex;
+                justify-content: center;
+                padding: 10px;
+            }
+
+            .list-group-item {
+                flex: 1;
+                text-align: center;
+            }
+
+            #content-section {
+                width: 100%;
+                padding: 10px;
+            }
+        }
+
+
+        @media (max-width: 992px) {
+            #sidebar-menu {
+                margin-bottom: 15px;
+            }
+
+            .list-group {
+                flex-direction: row;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .list-group-item {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            #order-content {
+                padding: 10px;
+            }
+
+            .order-item img {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .nav-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-item {
+                width: 100%;
+            }
+
+            .nav-link {
+                text-align: center;
+                font-size: 14px;
+            }
+
+            .order-item {
+                padding: 8px;
+            }
+
+            .order-footer {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .order-footer .btn {
+                margin-top: 10px;
+            }
+        }
+
+        @media (max-width: 415px) {
+            #customer-container {
+                padding: 5px;
+            }
+
+            .list-group {
+                flex-direction: column;
+            }
+
+            .list-group-item {
+                font-size: 13px;
+                padding: 8px;
+            }
+
+            .order-item {
+                flex-direction: column;
+                padding: 5px;
+            }
+
+            .order-item img {
+                width: 20px;
+                height: 20px;
+            }
+
+            .order-footer {
+                font-size: 12px;
+            }
+
+            .btn-main {
+                font-size: 12px;
+                padding: 5px 10px;
+            }
+
+            .form-order {
+                padding: 0px 0px;
+            }
+        }
     </style>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -336,6 +481,18 @@
             }
             updateContainerClass();
             window.addEventListener("resize", updateContainerClass);
+        });
+        document.addEventListener("DOMContentLoaded", function() {
+            function updateOrderSectionClass() {
+                const orderSection = document.querySelector('.order-section');
+                if (window.innerWidth < 992) {
+                    orderSection.classList.remove('px-5');
+                } else {
+                    orderSection.classList.add('px-5');
+                }
+            }
+            updateOrderSectionClass();
+            window.addEventListener('resize', updateOrderSectionClass);
         });
     </script>
     <style>
@@ -352,9 +509,4 @@
             border-radius: 5px;
         }
     </style>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
 @endsection

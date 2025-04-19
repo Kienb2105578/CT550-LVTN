@@ -45,18 +45,26 @@ class ReviewService extends BaseService implements ReviewServiceInterface
         DB::beginTransaction();
         try {
             $payload = $request->except('_token');
+
+            if ($request->hasFile('images')) {
+                $images = $request->file('images');
+                $imagePaths = [];
+
+                foreach ($images as $image) {
+                    $fileName = time() . '_' . $image->getClientOriginalName();
+                    $image->move(public_path('review'), $fileName);
+                    $imagePaths[] = 'review/' . $fileName;
+                }
+                $payload['images'] = json_encode($imagePaths);
+            }
+
             $payload['product_id'] = $payload['reviewable_id'];
             $user = Auth::guard('customer')->user();
             $payload['customer_id'] = $user->id;
-            $review = $this->reviewRepository->create($payload);
+            $this->reviewRepository->create($payload);
             DB::commit();
-            return [
-                'code' => 10,
-                'message' => 'Đánh giá sản phẩm thành công'
-            ];
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
             echo $e->getMessage();
             die();
         }

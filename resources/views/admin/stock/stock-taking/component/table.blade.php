@@ -2,25 +2,26 @@
     <table class="table">
         <thead>
             <tr>
-                <th class="text-center" style="width:3%;">
-                    <input type="checkbox" value="" id="checkAll" class="input-checkbox">
-                </th>
+                <th class="text-center" style="width:3%;">STT</th>
                 <th class="text-center" style="width:10%;">Mã Lô Hàng</th>
                 <th class="text-center">Tên sản phẩm</th>
                 <th class="text-center" style="width:10%;">Nhân viên</th>
                 <th class="text-center" style="width:10%;">Vai trò</th>
                 <th class="text-center" style="width:10%;">Loại giao dịch</th>
                 <th class="text-center" style="width:7%;">Số lượng</th>
-                {{-- <th class="text-center" style="width:10%;">Thao tác</th> --}}
             </tr>
         </thead>
+        @php
+            $index = 0;
+        @endphp
         <tbody>
             @if ($stocks->count())
                 @foreach ($stocks as $stock)
+                    @php
+                        $index += 1;
+                    @endphp
                     <tr>
-                        <td class="text-center">
-                            <input type="checkbox" value="{{ $stock->id }}" class="input-checkbox checkBoxItem">
-                        </td>
+                        <td class="text-center">{{ $index }}</td>
                         <td class="text-center">{{ $stock->purchaseOrder->code ?? '' }}</td>
                         <td class="text-truncate-2">
                             {{ $stock->product_name }}

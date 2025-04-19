@@ -2,22 +2,24 @@
     <table class="table">
         <thead>
             <tr>
-                <th class="text-center">
-                    <input type="checkbox" value="" id="checkAll" class="input-checkbox">
-                </th>
+                <th class="text-center">STT</th>
                 <th class="text-center">Mã Lô Hàng</th>
                 <th class="text-center">Tên nhà cung cấp</th>
                 <th class="text-center">SĐT liên hệ</th>
                 <th class="text-center">Thao tác</th>
             </tr>
         </thead>
+        @php
+            $index = 0;
+        @endphp
         <tbody>
             @if (isset($inventorys) && $inventorys->count())
                 @foreach ($inventorys as $inventory)
+                    @php
+                        $index += 1;
+                    @endphp
                     <tr>
-                        <td class="text-center">
-                            <input type="checkbox" value="{{ $inventory->id }}" class="input-checkbox checkBoxItem">
-                        </td>
+                        <td class="text-center">{{ $index }}</td>
                         <td class="text-center">
                             {{ $inventory->purchaseOrder->code }}
                         </td>

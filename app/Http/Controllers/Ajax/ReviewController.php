@@ -20,18 +20,26 @@ class ReviewController extends Controller
 
     public function create(Request $request)
     {
-        $response = $this->reviewService->create($request);
-        return response()->json($response);
+        try {
+            $this->reviewService->create($request);
+            return response()->json([
+                'code' => 10,
+                'messages' => 'Đánh giá sản phẩm thành công',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'code' => 0,
+                'messages' => 'Đánh giá sản phẩm thất bại',
+            ], 500);
+        }
     }
+
 
     public function reply(Request $request)
     {
-        // Lấy dữ liệu từ request
+
         $reviewId = $request->input('review_id');
         $replyText = $request->input('reply_text');
-        Log::info($replyText);
-        Log::info($reviewId);
-
         if ($reviewId && $replyText) {
             $this->reviewService->reply($reviewId, $replyText);
             return response()->json(['success' => true]);

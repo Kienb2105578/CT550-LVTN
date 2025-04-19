@@ -2,21 +2,23 @@
     <table class="table">
         <thead>
             <tr>
-                <th>
-                    <input type="checkbox" value="" id="checkAll" class="input-checkbox">
-                </th>
+                <th>STT</th>
                 <th>Tiêu đề</th>
                 <th>Canonical</th>
                 <th class="text-center">Thao tác</th>
             </tr>
         </thead>
+        @php
+            $index = 0;
+        @endphp
         <tbody>
             @if (isset($permissions) && is_object($permissions))
                 @foreach ($permissions as $permission)
+                    @php
+                        $index += 1;
+                    @endphp
                     <tr>
-                        <td>
-                            <input type="checkbox" value="{{ $permission->id }}" class="input-checkbox checkBoxItem">
-                        </td>
+                        <td>{{ $index }} </td>
                         <td>{{ $permission->name }}</td>
                         <td>{{ $permission->canonical }}</td>
                         <td class="text-center">

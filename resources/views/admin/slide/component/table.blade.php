@@ -2,9 +2,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>
-                    <input type="checkbox" value="" id="checkAll" class="input-checkbox">
-                </th>
+                <th class="text-center">STT</th>
                 <th>Tên nhóm</th>
                 <th>Từ khóa</th>
                 <th>Danh sách Hình Ảnh</th>
@@ -12,13 +10,17 @@
                 <th class="text-center">Thao tác</th>
             </tr>
         </thead>
+        @php
+            $index = 0;
+        @endphp
         <tbody>
             @if (isset($slides) && is_object(value: $slides))
                 @foreach ($slides as $slide)
+                    @php
+                        $index += 1;
+                    @endphp
                     <tr>
-                        <td>
-                            <input type="checkbox" value="{{ $slide->id }}" class="input-checkbox checkBoxItem">
-                        </td>
+                        <td class="text-center">{{ $index }}</td>
                         <td>{{ $slide->name }}</td>
                         <td>{{ $slide->keyword }}</td>
                         <td>

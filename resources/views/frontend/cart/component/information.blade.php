@@ -34,7 +34,7 @@
 
         <div class="form-group mb-3">
             <input type="text" name="address" value="{{ old('address', $user->address ?? '') }}"
-                placeholder="Nhập vào địa chỉ: ví dụ đường Lạc Long Quân..." class="form-control input-text">
+                placeholder="Nhập vào địa chỉ ... " class="form-control input-text">
         </div>
 
         <div class="row mb-3">

@@ -107,15 +107,10 @@ class BaseService implements BaseServiceInterface
             $model = lcfirst($post['model']) . 'Repository';
             $payload[$post['field']] = $post['value'];
             $flag = $this->{$model}->updateByWhereIn('id', $post['id'], $payload);
-            //$this->changeUserStatus($post, $post['value']);
-
             DB::commit();
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            // Log::error($e->getMessage());
-            echo $e->getMessage();
-            die();
             return false;
         }
     }

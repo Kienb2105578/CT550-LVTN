@@ -13,7 +13,7 @@
         <tbody>
             @if (isset($postCatalogues) && is_object($postCatalogues))
                 @foreach ($postCatalogues as $postCatalogue)
-                    <tr>
+                    <tr id="{{ $postCatalogue->id }}">
                         <td>
                             <input type="checkbox" value="{{ $postCatalogue->id }}" class="input-checkbox checkBoxItem">
                         </td>
@@ -21,10 +21,10 @@
                         <td>
                             {{ str_repeat('|----', $postCatalogue->level > 0 ? $postCatalogue->level - 1 : 0) . $postCatalogue->name }}
                         </td>
-                        <td class="text-center">
-                            <input type="checkbox" value="{{ $postCatalogue->publish }}"
-                                class="js-switch status js-switch-{{ $postCatalogue->id }}" data-field="publish"
-                                data-model="{{ $config['model'] }}" {{ $postCatalogue->publish == 2 ? 'checked' : '' }}
+                        <td class="text-center js-switch-{{ $postCatalogue->id }}">
+                            <input type="checkbox" value="{{ $postCatalogue->publish }}" class="js-switch status"
+                                data-field="publish" data-model="{{ $config['model'] }}"
+                                {{ $postCatalogue->publish == 2 ? 'checked' : '' }}
                                 data-modelId="{{ $postCatalogue->id }}" />
                         </td>
                         <td class="text-center">

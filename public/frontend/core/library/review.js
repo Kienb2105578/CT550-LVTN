@@ -37,16 +37,48 @@
 
             $(".rate-text").addClass("d-none");
 
+            // Tạo đối tượng FormData để gửi dữ liệu bao gồm ảnh
+            var formData = new FormData();
+            formData.append("score", score);
+            formData.append("description", $(".review-textarea").val());
+            formData.append("gender", $(".gender:checked").val());
+            formData.append(
+                "fullname",
+                $(".product-preview input[name=fullname]").val()
+            );
+            formData.append(
+                "email",
+                $(".product-preview input[name=email]").val()
+            );
+            formData.append(
+                "phone",
+                $(".product-preview input[name=phone]").val()
+            );
+            formData.append("reviewable_type", $(".reviewable_type").val());
+            formData.append("reviewable_id", $(".reviewable_id").val());
+            formData.append("_token", _token);
+            formData.append("parent_id", $(".review_parent_id").val());
+
+            // Thêm các ảnh đã chọn vào FormData
+            var files = $("#review-images")[0].files;
+            if (files.length > 0) {
+                for (var i = 0; i < files.length; i++) {
+                    formData.append("images[]", files[i]);
+                }
+            }
+
             $.ajax({
                 url: "ajax/review/create",
                 type: "POST",
-                data: option,
+                data: formData,
                 dataType: "json",
+                processData: false,
+                contentType: false,
                 beforeSend: function () {},
                 success: function (res) {
                     if (res.code === 10) {
                         toastr.success(res.messages, "Thông báo từ hệ thống!");
-                        modal.hide(); // dùng Bootstrap
+                        modal.hide();
                         location.reload();
                     } else {
                         toastr.error(res.messages, "Thông báo từ hệ thống!");

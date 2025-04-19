@@ -1,11 +1,11 @@
 @extends('frontend.homepage.layout')
 @section('content')
-    <div id="customer-container" class=" p-5">
+    <div id="customer-container" class="p-5">
         <div class="row">
-            <div class="col-12 col-md-4 col-lg-3 mx-auto side-profile">
+            <div class="col-12 col-lg-3 mx-auto side-profile">
                 @include('frontend.auth.customer.components.sidebar')
             </div>
-            <div class="col-12 col-md-8 col-lg-9 mx-auto">
+            <div class="col-12 col-lg-9 mx-auto">
                 <form action="{{ route('my-order.index') }}" method="post" class="form-order">
                     @csrf
                     <h4 class="text-center mb-3 mt-3 profile-title">Đơn hàng đã mua</h4>
@@ -257,7 +257,7 @@
             padding-right: 25px;
         }
 
-        @media (max-width: 960px) {
+        @media (max-width: 992px) {
 
             body,
             html {
@@ -309,7 +309,7 @@
         }
 
 
-        @media (max-width: 767px) {
+        @media (max-width: 992px) {
             #sidebar-menu {
                 margin-bottom: 15px;
             }

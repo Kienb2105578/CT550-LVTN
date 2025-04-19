@@ -2,9 +2,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>
-                    <input type="checkbox" value="" id="checkAll" class="input-checkbox">
-                </th>
+                <th>STT</th>
                 <th>Tên chương trình</th>
                 <th>Chiết khấu</th>
                 <th>Thông tin</th>
@@ -14,6 +12,9 @@
                 <th class="text-center">Thao tác</th>
             </tr>
         </thead>
+        @php
+            $index = 0;
+        @endphp
         <tbody>
             @if (isset($promotions) && is_object($promotions))
                 @foreach ($promotions as $key => $promotion)
@@ -25,10 +26,11 @@
                             $status = '<span class="text-danger text-small">- Hết Hạn</span>';
                         }
                     @endphp
+                    @php
+                        $index += 1;
+                    @endphp
                     <tr>
-                        <td>
-                            <input type="checkbox" value="{{ $promotion->id }}" class="input-checkbox checkBoxItem">
-                        </td>
+                        <td>{{ $index }}</td>
                         <td>
                             <div>{{ $promotion->name }} {!! $status !!} </div>
                             <div class="text-small text-success">Mã: {{ $promotion->code }}</div>
